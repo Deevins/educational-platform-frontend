@@ -3,6 +3,10 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+import {Button} from "@/components/ui/button.tsx"
+import {Avatar} from "@/components/ui/avatar.tsx";
+import {AvatarFallback, AvatarImage} from "@radix-ui/react-avatar";
+
 function App() {
   const [count, setCount] = useState(0)
 
@@ -18,9 +22,13 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <Button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
+        </Button>
+          <Avatar>
+              <AvatarImage src="https://githgub.com/shadcn.png"/>
+              <AvatarFallback>Avatar not loaded</AvatarFallback>
+          </Avatar>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
