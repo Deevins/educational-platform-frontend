@@ -1,7 +1,7 @@
 import React from 'react'
 
 import styles from './MainLayout.module.scss'
-import Navbar from '@/pages/Navbar.tsx'
+import Header from '@/components/Header'
 
 type PropsType = {
   children: React.ReactNode
@@ -10,8 +10,8 @@ type PropsType = {
 export const MainLayout: React.FC<PropsType> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <Navbar />
-      <div className={'mt-20 h-full'}>{children}</div>
+      <Header />
+      <div className={'h-full'}>{children}</div>
     </div>
   )
 }

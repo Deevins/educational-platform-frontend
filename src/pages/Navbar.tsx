@@ -26,8 +26,8 @@ const Navbar: React.FC = () => {
                 to='/courses'
                 className={({ isActive }) => {
                   return isActive
-                    ? 'underline transition ease-in-out hover:text-lg block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
-                    : 'transition ease-in-out hover:text-lg'
+                    ? 'underline flex text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent'
+                    : 'ext-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent'
                 }}
               >
                 Курсы
@@ -45,24 +45,11 @@ const Navbar: React.FC = () => {
                 Форум
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to='/profiles'
-                className={({ isActive }) => {
-                  return isActive
-                    ? 'underline block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
-                    : ''
-                }}
-              >
-                Профили
-              </NavLink>
-            </li>
           </ul>
         </div>
         <div className='flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse'>
           <Link to={'/profiles/my-page'}>
             <Avatar className={'hover:scale-105'}>
-              {' '}
               {/*if authorized try to render image and if not render register/login button*/}
               <AvatarImage src='https://github.com/shadcn.png' />
               <AvatarFallback>CN</AvatarFallback>
