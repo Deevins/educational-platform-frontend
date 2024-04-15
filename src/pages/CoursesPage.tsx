@@ -1,7 +1,12 @@
 import React from 'react'
+import CoursesList from '@/components/CoursesList.tsx'
 
 const CoursesPage: React.FC = () => {
-  return <div>courses page</div>
+  return (
+    <>
+      <CoursesList />
+    </>
+  )
 }
 
 export default CoursesPage

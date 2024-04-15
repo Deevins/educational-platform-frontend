@@ -7,8 +7,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { NotFoundPage } from '@/pages/404.tsx'
 import { IndexPage } from '@/pages'
 import CoursesPage from '@/pages/CoursesPage.tsx'
-import ForumListPage from '@/pages/ForumListPage.tsx'
+import ForumPage from '@/pages/ForumPage.tsx'
 import ProfilesListPage from '@/pages/ProfilesListPage.tsx'
+import MainPage from '@/pages/MainPage.tsx'
+import CoursePage from '@/pages/CoursePage.tsx'
+import ThreadPage from '@/pages/ThreadPage.tsx'
+import ProfilePage from '@/pages/ProfilePage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -17,13 +21,28 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       {
+        path: '/',
+        element: <MainPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
         path: '/courses',
         element: <CoursesPage />,
         errorElement: <NotFoundPage />,
       },
       {
+        path: '/courses/:courseID',
+        element: <CoursePage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
         path: '/forum',
-        element: <ForumListPage />,
+        element: <ForumPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/forum/threads/:threadID',
+        element: <ThreadPage />,
         errorElement: <NotFoundPage />,
       },
       {
@@ -31,9 +50,13 @@ const router = createBrowserRouter([
         element: <ProfilesListPage />,
         errorElement: <NotFoundPage />,
       },
+      {
+        path: '/profiles/:profileID',
+        element: <ProfilePage />,
+        errorElement: <NotFoundPage />,
+      },
     ],
   },
-  {},
 ])
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
