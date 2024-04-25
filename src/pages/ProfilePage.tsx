@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 
 type ParamsType = {
   profileID: string
@@ -6,6 +6,11 @@ type ParamsType = {
 
 const ProfilePage = () => {
   const { profileID } = useParams<ParamsType>()
+  if (!isNaN(Number(profileID))) {
+    console.log(!isNaN(Number(profileID)))
+    return <Navigate to={'/profiles`)'} />
+  }
+
   return <div>profile with ID {profileID}</div>
 }
 

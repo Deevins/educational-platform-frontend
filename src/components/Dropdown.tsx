@@ -1,4 +1,9 @@
-import { DropdownElem } from '@/components/Navbar.tsx'
+import { NavLink } from 'react-router-dom'
+
+export type DropdownElem = {
+  title: string
+  url: string
+}
 
 type Props = {
   submenus: DropdownElem[]
@@ -12,7 +17,7 @@ const Dropdown = ({ submenus, isActive }: Props) => {
     <ul className={`dropdown ${isActive ? 'show' : ''}`}>
       {submenus.map((submenu, index) => (
         <li key={index} className='menu-items'>
-          <a href={submenu.url}>{submenu.title}</a>
+          <NavLink to={submenu.url}>{submenu.title}</NavLink>
         </li>
       ))}
     </ul>

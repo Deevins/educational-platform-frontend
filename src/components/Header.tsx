@@ -1,47 +1,63 @@
-import Navbar from '@/components/Navbar.tsx'
-import { Link, NavLink } from 'react-router-dom'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
+import { DropdownElem } from '@/components/Dropdown.tsx'
+import AvatarWithDropdown from '@/components/AvatarWithDropdown.tsx'
+import { Navbar } from '@/components/Navbar.tsx'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button.tsx'
+import { NavLink } from 'react-router-dom'
+
+const menuItemsData: DropdownElem[] = [
+  { title: 'one', url: 'dasdsa' },
+  { title: 'one', url: 'dasdsa' },
+  { title: 'one', url: '222222' },
+]
 
 const Header = () => {
-  const isAuthorized = true
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  const handleLogin = () => {
+    setIsAuthenticated(true)
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+  }
 
   return (
-    <header>
-      <nav className={'bg-white border-gray-200 px-4 lg:px-6 py-3.5 dark:bg-gray-800 '}>
-        <div
-          className={
-            'flex flex-wrap justify-between max-w-screen-xl bg-blue items-center mx-auto'
-          }
-        >
-          <NavLink to='/' className='flex items-center'>
-            <img
-              src='https://flowbite.com/docs/images/logo.svg'
-              className='h-8'
-              alt='Flowbite Logo'
-            />
-            <span className='self-start text-2xl font-semibold whitespace-nowrap dark:text-white'>
-              Study-work
-            </span>
-          </NavLink>
-          <Navbar />
-          <div className={'flex justify-center items-center'}>
-            {/*if authorized try to render image and if not render register/login button*/}
-            {isAuthorized ? (
-              <>
-                <Link to={'/profiles/my-page'}>
-                  <Avatar className={'hover:scale-105'}>
-                    <AvatarImage src='https://github.com/shadcn.png' />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </Link>
-              </>
-            ) : (
-              <div>NOT AUTHORIZED</div>
-            )}
-            <div className={'pl-5'}>switcher</div>
-          </div>
-        </div>
-      </nav>
+    <header className='bg-gray-100 text-black p-4 flex justify-between items-center'>
+      <NavLink to={'/'} className='flex items-center'>
+        <img
+          src='https://flowbite.com/docs/images/logo.svg'
+          alt='Логотип'
+          className='h-8 mr-4'
+        />
+
+        <h1 className='text-lg font-bold'>Study-work</h1>
+      </NavLink>
+
+      <div className='text-center flex justify-center space-x-4'>
+        <Navbar />
+      </div>
+
+      <div className='flex space-x-4'>
+        {isAuthenticated ? (
+          <AvatarWithDropdown submenus={menuItemsData} />
+        ) : (
+          <>
+            <Button
+              onClick={handleLogin}
+              className=' bg-white text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer'
+            >
+              Войти
+            </Button>
+            <Button
+              onClick={handleLogout}
+              className=' bg-white text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300'
+            >
+              Зарегистрироваться
+            </Button>
+          </>
+        )}
+      </div>
     </header>
   )
 }
