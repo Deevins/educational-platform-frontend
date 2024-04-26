@@ -13,6 +13,9 @@ import MainPage from '@/pages/MainPage.tsx'
 import CoursePage from '@/pages/CoursePage.tsx'
 import ThreadPage from '@/pages/ThreadPage.tsx'
 import ProfilePage from '@/pages/ProfilePage.tsx'
+import RegistrationPage from '@/pages/auth/RegistrationPage.tsx'
+import LoginPage from '@/pages/auth/LoginPage.tsx'
+import AuthPage from '@/pages/auth/AuthPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -53,6 +56,23 @@ const router = createBrowserRouter([
       {
         path: '/profiles/:profileID',
         element: <ProfilePage />,
+        errorElement: <NotFoundPage />,
+      },
+    ],
+  },
+  {
+    path: '/auth/',
+    element: <AuthPage />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        path: 'register',
+        element: <RegistrationPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
         errorElement: <NotFoundPage />,
       },
     ],

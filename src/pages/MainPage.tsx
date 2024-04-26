@@ -2,7 +2,7 @@ import React from 'react'
 import SliderWithImageAndText from '@/components/slider-with-image-and-text.tsx'
 import CoursesSection from '@/components/CourseSection/CoursesSection.tsx'
 
-// TODO: add pre-fetch courses from redux with tpyes
+// TODO: add pre-fetch courses from redux with types
 const courses = [
   {
     title: 'Курс 1',
@@ -19,13 +19,28 @@ const courses = [
     description: 'Описание курса 3',
     url: '/courses/3',
   },
+  {
+    title: 'Курс 4',
+    description: 'Описание курса 4',
+    url: '/courses/1',
+  },
+  {
+    title: 'Курс 5',
+    description: 'Описание курса 5',
+    url: '/courses/2',
+  },
+  {
+    title: 'Курс 6',
+    description: 'Описание курса 6',
+    url: '/courses/3',
+  },
 ]
 const MainPage: React.FC = () => {
   return (
     <div className={'flex flex-col'}>
       <div className={'mt-20 mr-[20%] ml-[20%] flex flex-col'}>
         <SliderWithImageAndText />
-        <CoursesSection courses={courses} sectionTitle='Все курсы' />
+        <CoursesSection courses={courses} />
       </div>
     </div>
   )

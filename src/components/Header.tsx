@@ -43,18 +43,22 @@ const Header = () => {
           <AvatarWithDropdown submenus={menuItemsData} />
         ) : (
           <>
-            <Button
-              onClick={handleLogin}
-              className=' bg-white text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer'
-            >
-              Войти
-            </Button>
-            <Button
-              onClick={handleLogout}
-              className=' bg-white text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300'
-            >
-              Зарегистрироваться
-            </Button>
+            <NavLink to={'/auth/login'}>
+              <Button
+                onClick={handleLogin}
+                className=' bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer'
+              >
+                Войти
+              </Button>
+            </NavLink>
+            <NavLink to={'/auth/register'}>
+              <Button
+                onClick={handleLogout}
+                className=' bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300'
+              >
+                Зарегистрироваться
+              </Button>
+            </NavLink>
           </>
         )}
       </div>

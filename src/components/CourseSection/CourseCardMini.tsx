@@ -36,7 +36,7 @@ const CourseCardMini: React.FC<Course> = ({ title, description, url }) => {
   const color = getRandomColor()
 
   return (
-    <div className='w-full sm:w-1/2 md:w-1/3 p-4'>
+    <div className='w-full sm:w-1/2 md:w-1/3 p-4 hover:scale-140 hover:cursor-pointer'>
       <div
         className={`bg-red-500 p-6 rounded-lg shadow-md relative`}
         style={{
@@ -48,7 +48,7 @@ const CourseCardMini: React.FC<Course> = ({ title, description, url }) => {
             <FaArrowRightLong
               size={20}
               className={
-                ' duration-100 ease-in-out transform hover:scale-115 hover:cursor-pointer'
+                'duration-100 ease-in-out transform hover:scale-115 hover:cursor-pointer'
               }
             />
           </NavLink>

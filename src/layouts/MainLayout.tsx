@@ -20,34 +20,34 @@ export const MainLayout: React.FC<PropsType> = ({ children }) => {
 
 const Footer = () => {
   return (
-    <footer className='bg-gray-800 text-gray-300 py-4 s w-full'>
+    <footer className='bg-gray-800 text-gray-300 py-4 w-full'>
+      <hr className='border-gray-700 my-4' />
       <div className='container mx-auto text-center'>
-        <hr className='border-gray-700 my-4' />
         <div className='flex flex-col md:flex-row justify-between'>
           <div className='w-full md:w-1/2'>
             <h3 className='text-lg font-bold'>Ваше название компании</h3>
             <p>Мы обучаем профессионалов</p>
             <ul className='mt-2'>
               <li>
-                <NavLink to='#'>Все курсы</NavLink>
+                <NavLink to='/courses/all'>Все курсы</NavLink>
               </li>
               <li>
-                <NavLink to='#'>Форум</NavLink>
+                <NavLink to='/forum'>Форум</NavLink>
               </li>
               <li>
-                <NavLink to='#'>Facebook</NavLink>
+                <NavLink to='https://facebook.com/'>Facebook</NavLink>
               </li>
               <li>
-                <NavLink to='#'>Twitter</NavLink>
+                <NavLink to='https://twitter.com/'>Twitter</NavLink>
               </li>
               <li>
-                <NavLink to='#'>VK</NavLink>
+                <NavLink to='https://vk.com'>VK</NavLink>
               </li>
             </ul>
           </div>
           <div className='w-full md:w-1/2 mt-4 md:mt-0'>
             <h3 className='text-lg font-bold'>Контакты</h3>
-            <p>Телефон: +123456789</p>
+            <p>Телефон: +8-800-555-35-35</p>
             <p>Почта: example@example.com</p>
           </div>
         </div>
