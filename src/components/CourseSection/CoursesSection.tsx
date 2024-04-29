@@ -25,7 +25,7 @@ interface ArrowLinkProps {
 
 const ArrowLink: React.FC<ArrowLinkProps> = ({ title }) => {
   return (
-    <NavLink to={'/courses/all'}>
+    <NavLink to={'/courses'}>
       <div className='flex items-center'>
         <h2 className='text-lg font-bold mr-2'>{title}</h2>
         <div className='transform transition-transform hover:translate-x-1'>

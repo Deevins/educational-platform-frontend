@@ -22,17 +22,17 @@ const courses = [
   {
     title: 'Курс 4',
     description: 'Описание курса 4',
-    url: '/courses/1',
+    url: '/courses/4',
   },
   {
     title: 'Курс 5',
     description: 'Описание курса 5',
-    url: '/courses/2',
+    url: '/courses/5',
   },
   {
     title: 'Курс 6',
     description: 'Описание курса 6',
-    url: '/courses/3',
+    url: '/courses/6',
   },
 ]
 const MainPage: React.FC = () => {

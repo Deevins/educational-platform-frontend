@@ -2,13 +2,13 @@ import React from 'react'
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
-    <div className='min-h-screen mx-36 flex flex-col mb-32 mt-10'>
+    <div className='min-h-screen mx-6 sm:mx-12 lg:mx-24 xl:mx-36 flex flex-col mb-12 sm:mb-24 mt-6 sm:mt-10'>
       <hr className='border-t border-gray-400 mb-4 opacity-75' />
-      <div className='flex items-center text-center justify-center my-12'>
-        <p className='mr-4 text-ellipsis text-lg'>ProdigyPath Education</p>
+      <div className='flex flex-col items-center text-center justify-center my-6 sm:my-12'>
+        <p className='text-ellipsis text-lg font-semibold'>ProdigyPath Education</p>
         <p className='text-xl font-bold'>Политика Конфиденциальности</p>
       </div>
-      <hr className='border-t border-gray-400 mb-10 w-full' />
+      <hr className='border-t border-gray-400 mb-6 sm:mb-10 w-full' />
 
       <div>
         <CustomP>
@@ -19,8 +19,8 @@ const PrivacyPolicyPage: React.FC = () => {
           нами в связи с нашим сайтом (любые и все вышеперечисленные «Услуги»).
         </CustomP>
         <ul className='list-none pl-4'>
-          <li className={'mb-4 space-x-10'}>
-            <h3 className='font-bold mb-4 '>
+          <li className='mb-8 sm:mb-12'>
+            <h3 className='font-bold mb-2 sm:mb-4'>
               СБОР ИНФОРМАЦИИ: ЛИЧНО ИДЕНТИФИЦИРУЕМАЯ ИНФОРМАЦИЯ
             </h3>
             <CustomP>
@@ -30,8 +30,8 @@ const PrivacyPolicyPage: React.FC = () => {
               операций наших Сервисов и нашего Сайта.
             </CustomP>
           </li>
-          <li className={'mb-4 space-x-10'}>
-            <h3 className='font-bold mb-4 '>ФАЙЛЫ COOKIE И ДРУГИЕ ТЕХНОЛОГИИ</h3>
+          <li className='mb-8 sm:mb-12'>
+            <h3 className='font-bold mb-2 sm:mb-4'>ФАЙЛЫ COOKIE И ДРУГИЕ ТЕХНОЛОГИИ</h3>
             <CustomP>
               Как и многие веб-сайты и приложения, мы используем файлы cookie для сбора
               информации. Файл cookie — это небольшой файл данных, который мы передаем на
@@ -46,8 +46,10 @@ const PrivacyPolicyPage: React.FC = () => {
               функции Сервисов.
             </CustomP>
           </li>
-          <li className={'mb-4 space-x-10'}>
-            <h3 className='font-bold mb-4 '>ОБМЕН ИНФОРМАЦИЕЙ И РАСКРЫТИЕ ИНФОРМАЦИИ</h3>
+          <li className='mb-8 sm:mb-12'>
+            <h3 className='font-bold mb-2 sm:mb-4'>
+              БМЕН ИНФОРМАЦИЕЙ И РАСКРЫТИЕ ИНФОРМАЦИИ
+            </h3>
             <CustomP>
               МЫ НЕ БУДЕМ ДЕЛИТЬСЯ, ПРОДАВАТЬ, АРЕНДОВАТЬ ИЛИ ОБМЕНИВАТЬ ВАШУ ЛИЧНУЮ
               ИНФОРМАЦИЮ ДРУГИМ СТОРОНАМ, ЗА ИСКЛЮЧЕНИЕМ УСЛОВИЙ, ПРЕДУСМОТРЕННЫХ НИЖЕ:
@@ -115,8 +117,8 @@ const PrivacyPolicyPage: React.FC = () => {
               или других лиц.
             </CustomP>
           </li>
-          <li className={'mb-4 space-x-10'}>
-            <h3 className='font-bold mb-4 '>БИЗНЕС-ТРАНСФЕРЫ</h3>
+          <li className='mb-8 sm:mb-12'>
+            <h3 className='font-bold mb-2 sm:mb-4'>БИЗНЕС-ТРАНСФЕРЫ</h3>
             <CustomP>
               Мы можем продать, передать или иным образом поделиться некоторыми или всеми
               его активами, включая вашу Персональную информацию, в связи со слиянием,
@@ -124,8 +126,8 @@ const PrivacyPolicyPage: React.FC = () => {
               Такая передача будет соответствовать всем применимым законам и правилам.
             </CustomP>
           </li>
-          <li className={'space-x-10'}>
-            <h3 className='font-bold mb-4 '>БЕЗОПАСНОСТЬ</h3>
+          <li className='mb-8 sm:mb-12'>
+            <h3 className='font-bold mb-2 sm:mb-4'>БЕЗОПАСНОСТЬ</h3>
             <CustomP>
               Мы заботимся о безопасности вашей личной информации и обязуемся принимать
               разумные меры для ее защиты от несанкционированного доступа и использования.

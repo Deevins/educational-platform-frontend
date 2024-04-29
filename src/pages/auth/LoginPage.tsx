@@ -1,59 +1,77 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import Popup from '@/components/Popup.tsx'
+import Input from '@/components/Input.tsx'
 
 const LoginPage: React.FC = () => {
-  const hasErrorOccurred = true
-  const [isErrorVisible, setErrorVisible] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  // Функция для обработки входа
-  const handleLogin = () => {
-    // Проверка на корректность данных (check response from backend)
-    if (hasErrorOccurred) {
-      setErrorVisible(true)
-      setErrorMessage('Некорректные данные. Пожалуйста, проверьте введенные данные.')
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  })
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
-      setTimeout(() => {
-        setErrorVisible(false)
-      }, 1500)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    console.log(e.target, name, value)
+    // Очищаем ошибку для данного поля, если она существует
+    if (errors[name]) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }))
+    }
+    setFormData((prevData) => ({ ...prevData, [name]: value }))
+  }
+
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    // Проверка данных формы на ошибки
+    const formErrors: { [key: string]: string } = {}
+    if (formData.email.trim() === '') {
+      console.log('123')
+      formErrors.email = 'Введите адрес электронной почты'
+    }
+    if (formData.password.trim() === '') {
+      console.log('321')
+      formErrors.password = 'Введите пароль'
+    }
+    // Устанавливаем ошибки в состояние
+    setErrors(formErrors)
+
+    // Если нет ошибок, отправляем данные
+    if (Object.keys(formErrors).length === 0) {
+      // Здесь можно отправить данные формы
+      console.log('Форма отправлена:', formData)
     }
   }
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
       <div className='bg-white p-8 rounded-lg shadow-lg'>
-        <h2 className='text-2xl mb-4'>Вход</h2>
-        <form>
+        <h2 className='text-2xl mb-4 font-bold'>Вход</h2>
+        <form onSubmit={handleLogin}>
           <div className='mb-4'>
-            <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='email'>
-              Email
-            </label>
-            <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            <Input
+              className={errors.email ? 'border-red-500' : ''}
               id='email'
               type='email'
-              placeholder='Введите ваш email'
+              name={'password'}
+              label='Введите ваш email'
+              onChange={handleChange}
             />
+            {errors.email && <p className='text-red-500'>{errors.email}</p>}
           </div>
           <div className='mb-6'>
-            <label
-              className='block text-gray-700 text-sm font-bold mb-2'
-              htmlFor='password'
-            >
-              Пароль
-            </label>
-            <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
+            <Input
+              className={errors.password ? 'border-red-500' : ''}
               id='password'
               type='password'
-              placeholder='Введите ваш пароль'
+              name={'password'}
+              label={'Введите ваш пароль'}
+              onChange={handleChange}
             />
+            {errors.password && <p className='text-red-500'>{errors.password}</p>}
           </div>
           <div>
             <button
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2 w-full focus:outline-none focus:shadow-outline'
-              type='button'
-              onClick={handleLogin}
+              type='submit'
             >
               Войти
             </button>
@@ -71,10 +89,6 @@ const LoginPage: React.FC = () => {
           </div>
         </form>
       </div>
-
-      {isErrorVisible && (
-        <Popup type={'error'} text={errorMessage} isPopupTriggered={isErrorVisible} />
-      )}
     </div>
   )
 }

@@ -12,7 +12,7 @@ const CommonFooter: React.FC = () => {
             <p>Здесь обучаются все!</p>
             <ul className='mt-2'>
               <li>
-                <NavLink to='/courses/all'>Все курсы</NavLink>
+                <NavLink to='/courses'>Все курсы</NavLink>
               </li>
               <li>
                 <NavLink to='/forum'>Форум</NavLink>

@@ -16,15 +16,11 @@ const menuItemsData: NavBarElem[] = [
     submenu: [
       {
         title: 'Все курсы',
-        url: '/courses/all',
+        url: '/courses',
       },
       {
         title: 'Мои курсы',
         url: '/courses/my',
-      },
-      {
-        title: 'Курсы по теме',
-        url: '/courses/by-theme',
       },
       {
         title: 'Поиск курсов',
@@ -55,7 +51,7 @@ const menuItemsData: NavBarElem[] = [
         url: '/profiles/all',
       },
       {
-        title: 'Избранное',
+        title: 'Избранные треды',
         url: '/profiles/all',
       },
     ],
@@ -64,7 +60,7 @@ const menuItemsData: NavBarElem[] = [
 
 export const Navbar = () => {
   return (
-    <nav className='desktop-nav'>
+    <nav className='desktop-nav bg-red-100 flex flex-row'>
       <ul className='menus'>
         {menuItemsData.map((menu, index) => {
           return <MenuItem item={menu} key={index} />
@@ -128,7 +124,7 @@ const MenuItem = ({ item }: Props) => {
               to={item.url}
               className={({ isActive }) => {
                 return isActive
-                  ? 'underline flex text-gray-900 hover:bg-gray-600 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent'
+                  ? 'underline flex text-gray-900 text-sm hover:bg-gray-600 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent'
                   : 'ext-gray-900 hover:bg-gray-500 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent'
               }}
             >
