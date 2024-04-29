@@ -74,7 +74,7 @@ const RegistrationPage: React.FC = () => {
           <div className='mt-4 text-center'>
             <p>
               Уже есть аккаунт?
-              <NavLink to='/auth/login' className='text-blue-500 hover:underline'>
+              <NavLink to='/auth/login' className='text-blue-500 hover:underline pl-1'>
                 Войти
               </NavLink>
             </p>

@@ -16,6 +16,8 @@ import ProfilePage from '@/pages/ProfilePage.tsx'
 import RegistrationPage from '@/pages/auth/RegistrationPage.tsx'
 import LoginPage from '@/pages/auth/LoginPage.tsx'
 import AuthPage from '@/pages/auth/AuthPage.tsx'
+import TermsOfServicePage from '@/pages/TermsOfServicePage.tsx'
+import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -56,6 +58,16 @@ const router = createBrowserRouter([
       {
         path: '/profiles/:profileID',
         element: <ProfilePage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/terms-of-service',
+        element: <TermsOfServicePage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/privacy',
+        element: <PrivacyPolicyPage />,
         errorElement: <NotFoundPage />,
       },
     ],

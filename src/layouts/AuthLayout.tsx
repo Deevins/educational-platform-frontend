@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import styles from '@/layouts/MainLayout.module.scss'
-import Header from '@/components/Header.tsx'
+import AuthHeader from '@/components/headers/AuthHeader.tsx'
 
 type PropsType = {
   children: React.ReactNode
@@ -9,7 +9,7 @@ type PropsType = {
 const AuthLayout: React.FC<PropsType> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <Header />
+      <AuthHeader />
       <div className={'h-full'}>{children}</div>
       <Footer />
     </div>

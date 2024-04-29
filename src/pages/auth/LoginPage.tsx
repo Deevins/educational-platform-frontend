@@ -1,7 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import Popup from '@/components/Popup.tsx'
 
 const LoginPage: React.FC = () => {
+  const hasErrorOccurred = true
+  const [isErrorVisible, setErrorVisible] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  // Функция для обработки входа
+  const handleLogin = () => {
+    // Проверка на корректность данных (check response from backend)
+    if (hasErrorOccurred) {
+      setErrorVisible(true)
+      setErrorMessage('Некорректные данные. Пожалуйста, проверьте введенные данные.')
+
+      setTimeout(() => {
+        setErrorVisible(false)
+      }, 1500)
+    }
+  }
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
       <div className='bg-white p-8 rounded-lg shadow-lg'>
@@ -36,10 +53,10 @@ const LoginPage: React.FC = () => {
             <button
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2 w-full focus:outline-none focus:shadow-outline'
               type='button'
+              onClick={handleLogin}
             >
               Войти
             </button>
-            {/* Ссылка для входа */}
             <div className='mt-4 text-center'>
               <p>
                 Впервые здесь?
@@ -54,6 +71,10 @@ const LoginPage: React.FC = () => {
           </div>
         </form>
       </div>
+
+      {isErrorVisible && (
+        <Popup type={'error'} text={errorMessage} isPopupTriggered={isErrorVisible} />
+      )}
     </div>
   )
 }

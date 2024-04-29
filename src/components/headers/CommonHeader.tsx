@@ -1,17 +1,16 @@
 import { DropdownElem } from '@/components/Dropdown.tsx'
-import AvatarWithDropdown from '@/components/AvatarWithDropdown.tsx'
-import { Navbar } from '@/components/Navbar.tsx'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button.tsx'
 import { NavLink } from 'react-router-dom'
+import { Navbar } from '@/components/Navbar.tsx'
+import AvatarWithDropdown from '@/components/AvatarWithDropdown.tsx'
+import { Button } from '@/components/ui/button.tsx'
 
 const menuItemsData: DropdownElem[] = [
   { title: 'one', url: 'dasdsa' },
   { title: 'one', url: 'dasdsa' },
   { title: 'one', url: '222222' },
 ]
-
-const Header = () => {
+const CommonHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const handleLogin = () => {
@@ -31,7 +30,7 @@ const Header = () => {
           className='h-8 mr-4'
         />
 
-        <h1 className='text-lg font-bold'>Study-work</h1>
+        <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
       </NavLink>
 
       <div className='text-center flex justify-center space-x-4'>
@@ -66,4 +65,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default CommonHeader
