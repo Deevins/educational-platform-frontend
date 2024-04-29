@@ -34,7 +34,7 @@ const menuItemsData: NavBarElem[] = [
     submenu: [
       {
         title: 'Все профили',
-        url: '/profiles/all',
+        url: '/profiles',
       },
       {
         title: 'Поиск профилей',
@@ -48,11 +48,11 @@ const menuItemsData: NavBarElem[] = [
     submenu: [
       {
         title: 'Все форумы',
-        url: '/profiles/all',
+        url: '/forum',
       },
       {
         title: 'Избранные треды',
-        url: '/profiles/all',
+        url: '/forum/favorites',
       },
     ],
   },
@@ -60,7 +60,7 @@ const menuItemsData: NavBarElem[] = [
 
 export const Navbar = () => {
   return (
-    <nav className='desktop-nav bg-red-100 flex flex-row'>
+    <nav className='desktop-nav flex flex-row'>
       <ul className='menus'>
         {menuItemsData.map((menu, index) => {
           return <MenuItem item={menu} key={index} />
@@ -107,7 +107,6 @@ const MenuItem = ({ item }: Props) => {
   return (
     <li
       className='menu-items'
-      // @ts-ignore
       ref={ref}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -119,6 +118,7 @@ const MenuItem = ({ item }: Props) => {
             aria-haspopup='menu'
             aria-expanded={isDropdownActive ? 'true' : 'false'}
             onClick={() => toggleDropdown()}
+            className={'hover:bg-red-300'}
           >
             <NavLink
               to={item.url}
@@ -134,7 +134,9 @@ const MenuItem = ({ item }: Props) => {
           <Dropdown submenus={item.submenu} isActive={isDropdownActive} />
         </>
       ) : (
-        <NavLink to={item.url}>{item.title}</NavLink>
+        <div className={'hover:bg-red-300'}>
+          <NavLink to={item.url}>{item.title}</NavLink>
+        </div>
       )}
     </li>
   )

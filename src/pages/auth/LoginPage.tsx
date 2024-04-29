@@ -11,8 +11,7 @@ const LoginPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    console.log(e.target, name, value)
-    // Очищаем ошибку для данного поля, если она существует
+    
     if (errors[name]) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }))
     }
@@ -49,10 +48,11 @@ const LoginPage: React.FC = () => {
           <div className='mb-4'>
             <Input
               className={errors.email ? 'border-red-500' : ''}
-              id='email'
+              label='E-mail'
               type='email'
-              name={'password'}
-              label='Введите ваш email'
+              id='email'
+              name='email' // Передаем атрибут name
+              isRequired={true}
               onChange={handleChange}
             />
             {errors.email && <p className='text-red-500'>{errors.email}</p>}

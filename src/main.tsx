@@ -20,6 +20,9 @@ import TermsOfServicePage from '@/pages/TermsOfServicePage.tsx'
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage.tsx'
 import CoursesSearchPage from '@/pages/CoursesSearchPage.tsx'
 import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
+import ThreadCreationPage from '@/pages/ThreadCreationPage.tsx'
+import ProfilesSearchPage from '@/pages/ProfilesSearchPage.tsx'
+import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -53,8 +56,18 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
+        path: '/forum/create/thread',
+        element: <ThreadCreationPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
         path: '/profiles',
         element: <ProfilesListPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/profiles/search',
+        element: <ProfilesSearchPage />,
         errorElement: <NotFoundPage />,
       },
 
@@ -100,58 +113,15 @@ const router = createBrowserRouter([
         element: <LoginPage />,
         errorElement: <NotFoundPage />,
       },
+      {
+        path: 'logout',
+        element: <LogOutPage />,
+        errorElement: <NotFoundPage />,
+      },
     ],
   },
 ])
 
-const menuItemsData: NavBarElem[] = [
-  {
-    title: 'Курсы',
-    url: '/courses',
-    submenu: [
-      {
-        title: 'Все курсы',
-        url: '/courses',
-      },
-      {
-        title: 'Мои курсы',
-        url: '/courses/my',
-      },
-      {
-        title: 'Поиск курсов',
-        url: '/courses/search',
-      },
-    ],
-  },
-  {
-    title: 'Профили',
-    url: '/profiles',
-    submenu: [
-      {
-        title: 'Все профили',
-        url: '/profiles/all',
-      },
-      {
-        title: 'Поиск профилей',
-        url: '/profiles/search',
-      },
-    ],
-  },
-  {
-    title: 'Форум',
-    url: '/forum',
-    submenu: [
-      {
-        title: 'Все форумы',
-        url: '/profiles/all',
-      },
-      {
-        title: 'Избранные треды',
-        url: '/profiles/all',
-      },
-    ],
-  },
-]
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />

@@ -1,17 +1,11 @@
-import { DropdownElem } from '@/components/Dropdown.tsx'
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Navbar } from '@/components/Navbar.tsx'
-import AvatarWithDropdown from '@/components/AvatarWithDropdown.tsx'
 import { Button } from '@/components/ui/button.tsx'
+import AvatarMenu from '@/components/AvatarMenu.tsx'
 
-const menuItemsData: DropdownElem[] = [
-  { title: 'one', url: 'dasdsa' },
-  { title: 'one', url: 'dasdsa' },
-  { title: 'one', url: '222222' },
-]
 const CommonHeader = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
 
   const handleLogin = () => {
     setIsAuthenticated(true)
@@ -22,7 +16,7 @@ const CommonHeader = () => {
   }
 
   return (
-    <header className='bg-gray-100 text-black p-4 flex justify-between items-center '>
+    <header className='bg-gray-300 text-black p-4 flex justify-between items-center z-10'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
         <img
           src='https://flowbite.com/docs/images/logo.svg'
@@ -37,9 +31,9 @@ const CommonHeader = () => {
         <Navbar />
       </div>
 
-      <div className='flex space-x-4'>
+      <div className='flex space-x-4 lg:mr-16'>
         {isAuthenticated ? (
-          <AvatarWithDropdown submenus={menuItemsData} />
+          <AvatarMenu />
         ) : (
           <>
             <NavLink to={'/auth/login'}>

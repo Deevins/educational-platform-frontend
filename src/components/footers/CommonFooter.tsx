@@ -28,10 +28,21 @@ const CommonFooter: React.FC = () => {
               </li>
             </ul>
           </div>
-          <div className='w-full md:w-1/2 mt-4 md:mt-0'>
+          <div className='w-full md:w-1/4 mt-4 md:mt-0'>
             <h3 className='text-lg font-bold'>Контакты</h3>
             <p>Телефон: +7-800-555-35-35</p>
             <p>Почта: prodigy@education.com</p>
+          </div>
+          <div className='w-full md:w-1/4 mt-4 md:mt-0'>
+            <h3 className='text-lg font-bold'>Правовая информация</h3>
+            <ul className='mt-2'>
+              <li>
+                <NavLink to='/terms-of-service'>Условия использования</NavLink>
+              </li>
+              <li>
+                <NavLink to='/privacy'>Политика конфиденциальности</NavLink>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
