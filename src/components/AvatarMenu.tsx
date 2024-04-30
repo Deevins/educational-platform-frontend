@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios'
 import Popup from '@/components/Popup.tsx'
+import { IUser } from '@/pages/UserProfilePage.tsx'
 
 interface MenuItem {
   label: string
@@ -16,6 +17,14 @@ const AvatarMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const user: IUser = {
+    id: 1,
+    username: 'friend1',
+    fullName: 'Friend One',
+    email: 'friend1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  }
 
   const logout = async () => {
     try {
@@ -38,7 +47,7 @@ const AvatarMenu: React.FC = () => {
   }
 
   const menuItems: MenuItem[] = [
-    { label: 'Моя страница', to: '/my-page' },
+    { label: 'Моя страница', to: `/profiles/${user.id}` },
     { label: 'Настройки', to: '/settings' },
     { label: 'Подписки', to: '/subscriptions' },
     { label: 'Избранное', to: '/favorites' },

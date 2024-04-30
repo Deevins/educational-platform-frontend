@@ -25,16 +25,6 @@ const menuItemsData: NavBarElem[] = [
     ],
   },
   {
-    title: 'Профили',
-    url: '/profiles',
-    submenu: [
-      {
-        title: 'Все профили',
-        url: '/profiles',
-      },
-    ],
-  },
-  {
     title: 'Форум',
     url: '/forum',
     submenu: [
