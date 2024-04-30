@@ -20,12 +20,10 @@ const AvatarMenu: React.FC = () => {
   const logout = async () => {
     try {
       setLoading(true)
+      // TODO: after backend registration fix
       await axios.post('/api/logout').then((r) => console.log(`xyi ${r.status}`))
-      setTimeout(() => {
-        console.log('Hello after 4 seconds')
-      }, 4 * 1000)
+
       localStorage.removeItem('accessToken')
-      // Успешный выход - переадресация на страницу /logout
     } catch (error) {
       console.error('Ошибка при попытке выйти из аккаунта:', error)
       setError(
@@ -46,7 +44,7 @@ const AvatarMenu: React.FC = () => {
     { label: 'Избранное', to: '/favorites' },
     { label: 'Друзья', to: '/friends' },
     { label: 'Сообщения', to: '/messages' },
-    { label: 'Выйти', to: '', onClick: logout },
+    { label: 'Выйти', to: '/auth/logout', onClick: logout },
   ]
 
   return (

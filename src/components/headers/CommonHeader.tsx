@@ -23,7 +23,6 @@ const CommonHeader = () => {
           alt='Логотип'
           className='h-8 mr-4'
         />
-
         <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
       </NavLink>
 
@@ -39,7 +38,7 @@ const CommonHeader = () => {
             <NavLink to={'/auth/login'}>
               <Button
                 onClick={handleLogin}
-                className=' bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer'
+                className='bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer'
               >
                 Войти
               </Button>
@@ -47,7 +46,7 @@ const CommonHeader = () => {
             <NavLink to={'/auth/register'}>
               <Button
                 onClick={handleLogout}
-                className=' bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300'
+                className='bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300'
               >
                 Зарегистрироваться
               </Button>

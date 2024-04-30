@@ -6,7 +6,6 @@ type ParamsType = {
 
 const ThreadPage = () => {
   const params = useParams<ParamsType>()
-  console.log(params)
 
   return <div>thread page {params.threadID}</div>
 }

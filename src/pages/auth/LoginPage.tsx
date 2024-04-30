@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    
+
     if (errors[name]) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }))
     }
@@ -23,11 +23,9 @@ const LoginPage: React.FC = () => {
     // Проверка данных формы на ошибки
     const formErrors: { [key: string]: string } = {}
     if (formData.email.trim() === '') {
-      console.log('123')
       formErrors.email = 'Введите адрес электронной почты'
     }
     if (formData.password.trim() === '') {
-      console.log('321')
       formErrors.password = 'Введите пароль'
     }
     // Устанавливаем ошибки в состояние
@@ -51,7 +49,7 @@ const LoginPage: React.FC = () => {
               label='E-mail'
               type='email'
               id='email'
-              name='email' // Передаем атрибут name
+              name='email'
               isRequired={true}
               onChange={handleChange}
             />

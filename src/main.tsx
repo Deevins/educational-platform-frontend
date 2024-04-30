@@ -12,7 +12,6 @@ import ProfilesListPage from '@/pages/ProfilesListPage.tsx'
 import MainPage from '@/pages/MainPage.tsx'
 import CoursePage from '@/pages/CoursePage.tsx'
 import ThreadPage from '@/pages/ThreadPage.tsx'
-import ProfilePage from '@/pages/ProfilePage.tsx'
 import RegisterPage from '@/pages/auth/RegisterPage.tsx'
 import LoginPage from '@/pages/auth/LoginPage.tsx'
 import AuthPage from '@/pages/auth/AuthPage.tsx'
@@ -23,6 +22,7 @@ import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
 import ThreadCreationPage from '@/pages/ThreadCreationPage.tsx'
 import ProfilesSearchPage from '@/pages/ProfilesSearchPage.tsx'
 import LogOutPage from '@/pages/auth/LogOutPage.tsx'
+import UserProfilePage from '@/pages/UserProfilePage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -81,9 +81,10 @@ const router = createBrowserRouter([
         element: <PrivacyPolicyPage />,
         errorElement: <NotFoundPage />,
       },
+
       {
         path: '/profiles/:profileID',
-        element: <ProfilePage />,
+        element: <UserProfilePage />,
         errorElement: <NotFoundPage />,
       },
       {
@@ -121,7 +122,13 @@ const router = createBrowserRouter([
     ],
   },
 ])
-
+// { label: 'Моя страница', to: '/my-page' },
+// { label: 'Настройки', to: '/settings' },
+// { label: 'Подписки', to: '/subscriptions' },
+// { label: 'Избранное', to: '/favorites' },
+// { label: 'Друзья', to: '/friends' },
+// { label: 'Сообщения', to: '/messages' },
+// { label: 'Выйти', to: '/auth/logout', onClick: logout },
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
