@@ -1,5 +1,5 @@
-import Dropdown, { DropdownElem } from '@/components/Dropdown.tsx'
 import React, { useEffect, useRef, useState } from 'react'
+import Dropdown, { DropdownElem } from '@/components/Dropdown.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Link, NavLink } from 'react-router-dom'
 
@@ -12,11 +12,11 @@ type NavBarElem = {
 const menuItemsData: NavBarElem[] = [
   {
     title: 'Курсы',
-    url: '/courses',
+    url: '',
     submenu: [
       {
         title: 'Все курсы',
-        url: '/courses',
+        url: '/courses/all',
       },
       {
         title: 'Мои курсы',

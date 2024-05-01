@@ -12,7 +12,7 @@ export const MainLayout: React.FC<PropsType> = ({ children }) => {
   return (
     <div className={styles.root}>
       <CommonHeader />
-      <div className={'h-full'}>{children}</div>
+      <div className={'h-screen'}>{children}</div>
       <CommonFooter />
     </div>
   )
