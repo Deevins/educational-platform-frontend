@@ -1,5 +1,5 @@
 import Dropdown, { DropdownElem } from '@/components/Dropdown.tsx'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { NavLink } from 'react-router-dom'
 
@@ -41,9 +41,10 @@ const menuItemsData: NavBarElem[] = [
 ]
 
 export const Navbar = () => {
-  const [isSearchVisible, setIsSearchVisible] = useState(false)
+  const [isSearchVisible, setIsSearchVisible] = React.useState(false)
 
   const toggleSearch = () => {
+    console.log(isSearchVisible)
     setIsSearchVisible((prev) => !prev)
   }
   return (
@@ -61,7 +62,11 @@ export const Navbar = () => {
           })}
         </ul>
       </nav>
-      {isSearchVisible && <SearchDialog />}
+      {isSearchVisible && (
+        <div className={'z-50'}>
+          <SearchDialog />
+        </div>
+      )}
     </>
   )
 }
@@ -140,15 +145,130 @@ const MenuItem = ({ item }: Props) => {
   )
 }
 
+type Person = {
+  type: 'person'
+  fullName: string
+  avatar: string
+  nickname: string
+}
+
+type Course = {
+  type: 'course'
+  title: string
+  image: string
+  rating: number
+  enrollment: number
+}
+
+type Thread = {
+  type: 'thread'
+  title: string
+  topic: string
+}
+
+type SearchResult = Person | Course | Thread
+
+type SearchPossibility = 'courses' | 'profiles' | 'threads'
+
+const mockData: Record<SearchPossibility, SearchResult[]> = {
+  courses: [
+    {
+      type: 'course',
+      title: 'Курс 1',
+      image: '/course1.jpg',
+      rating: 4.5,
+      enrollment: 100,
+    },
+    {
+      type: 'course',
+      title: 'Курс 2',
+      image: '/course2.jpg',
+      rating: 4.8,
+      enrollment: 120,
+    },
+    {
+      type: 'course',
+      title: 'Курс 3',
+      image: '/course3.jpg',
+      rating: 4.2,
+      enrollment: 80,
+    },
+  ],
+  profiles: [
+    {
+      type: 'person',
+      fullName: 'Иван Иванов',
+      avatar: '/avatar1.jpg',
+      nickname: '@ivan',
+    },
+    {
+      type: 'person',
+      fullName: 'Петр Петров',
+      avatar: '/avatar2.jpg',
+      nickname: '@peter',
+    },
+    {
+      type: 'person',
+      fullName: 'Анна Сидорова',
+      avatar: '/avatar3.jpg',
+      nickname: '@anna',
+    },
+  ],
+  threads: [
+    { type: 'thread', title: 'Тред 1', topic: 'Тема треда 1' },
+    { type: 'thread', title: 'Тред 2', topic: 'Тема треда 2' },
+    { type: 'thread', title: 'Тред 3', topic: 'Тема треда 3' },
+  ],
+}
+
 const SearchDialog = () => {
+  const [searchOption, setSearchOption] = useState<SearchPossibility>('courses')
+  const [searchText, setSearchText] = useState<string>('')
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handleSearchOptionChange = (option: SearchPossibility) => {
+    setSearchOption(option)
+    setSearchText('')
+    setSearchResults([])
+  }
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value
+    setSearchText(text)
+
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      const data = mockData[searchOption].filter((item) =>
+        getItemName(item).toLowerCase().includes(text.toLowerCase())
+      )
+      setSearchResults(data)
+    }, 1000)
+  }
+
+  const getItemName = (item: SearchResult): string => {
+    switch (item.type) {
+      case 'person':
+        return (item as Person).fullName
+      case 'course':
+        return (item as Course).title
+      case 'thread':
+        return (item as Thread).title
+      default:
+        return ''
+    }
+  }
+
   return (
-    <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-20 ml-0'>
-      <div className='bg-white p-8 rounded-lg'>
+    <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-2/3 lg:w-1/2 bg-white rounded-lg shadow-lg overflow-hidden'>
+      <div className='p-8'>
         <div className='flex items-center mb-4'>
           <input
             type='text'
             placeholder='Поиск...'
             className='border border-gray-300 px-4 py-2 w-full rounded-lg focus:outline-none focus:border-blue-500'
+            value={searchText}
+            onChange={handleSearchInputChange}
           />
           <button className='ml-4 focus:outline-none'>
             <svg
@@ -175,17 +295,81 @@ const SearchDialog = () => {
         </div>
         <div className='border-b border-gray-300' />
         <div className='flex justify-between mt-4'>
-          <button className='text-gray-500 hover:text-gray-900 focus:outline-none'>
-            Курсы
-          </button>
-          <button className='text-gray-500 hover:text-gray-900 focus:outline-none'>
-            Профили
-          </button>
-          <button className='text-gray-500 hover:text-gray-900 focus:outline-none'>
-            Треды
-          </button>
+          {['courses', 'profiles', 'threads'].map((option, index) => (
+            <button
+              key={index}
+              className={`text-gray-500 hover:text-gray-900 focus:outline-none ${
+                searchOption === option ? 'font-bold' : ''
+              }`}
+              onClick={() => handleSearchOptionChange(option as SearchPossibility)}
+            >
+              {option === 'courses' && 'Курсы'}
+              {option === 'profiles' && 'Профили'}
+              {option === 'threads' && 'Треды'}
+            </button>
+          ))}
+        </div>
+        <div className='mt-4 space-y-4'>
+          {searchResults.length > 0 ? (
+            <div className='search-results'>
+              {searchResults.map((result, index) => (
+                <div
+                  key={index}
+                  className='search-result-card border border-gray-300 rounded-lg overflow-hidden'
+                >
+                  {result.type === 'person' && <PersonCard person={result as Person} />}
+                  {result.type === 'course' && <CourseCard course={result as Course} />}
+                  {result.type === 'thread' && <ThreadCard thread={result as Thread} />}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Нет результатов</p>
+          )}
         </div>
       </div>
     </div>
   )
 }
+
+const PersonCard: React.FC<{ person: Person }> = ({ person }) => {
+  return (
+    <div className='flex p-4'>
+      <img
+        src={person.avatar}
+        alt={person.fullName}
+        className='w-16 h-16 mr-4 rounded-full'
+      />
+      <div>
+        <h3 className='text-lg font-semibold'>{person.fullName}</h3>
+        <p className='text-sm text-gray-500'>{person.nickname}</p>
+      </div>
+    </div>
+  )
+}
+
+const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
+  return (
+    <div className='flex p-4'>
+      <img src={course.image} alt={course.title} className='w-16 h-16 mr-4' />
+      <div>
+        <h3 className='text-lg font-semibold'>{course.title}</h3>
+        <div className='flex items-center'>
+          <span className='mr-2'>{course.rating}</span>
+          <span>{course.enrollment}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const ThreadCard: React.FC<{ thread: Thread }> = ({ thread }) => {
+  return (
+    <div className='p-4'>
+      <h3 className='text-lg font-semibold'>{thread.title}</h3>
+      <p className='text-sm text-gray-500'>{thread.topic}</p>
+    </div>
+  )
+}
+
+export default SearchDialog

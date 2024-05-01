@@ -16,7 +16,7 @@ const CommonHeader = () => {
   }
 
   return (
-    <header className='bg-gray-300 text-black p-4 flex justify-between items-center z-10'>
+    <header className='bg-gray-300 text-black p-4 flex justify-between items-center'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
         <img
           src='https://flowbite.com/docs/images/logo.svg'

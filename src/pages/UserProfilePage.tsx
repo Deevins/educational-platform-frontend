@@ -13,9 +13,6 @@ export interface IUser {
   courses?: number[]
 }
 
-// <AvatarImage src='https://github.com/shadcn.png' />
-// <AvatarFallback>CN</AvatarFallback>
-
 interface Course {
   id: number
   title: string
@@ -26,7 +23,6 @@ type MainTab = 'friends' | 'courses'
 
 type FriendsSubTab = 'friends' | 'requests' | 'sentRequests'
 
-// Определение данных о друзьях, запросах в друзья и отправленных запросах
 const friendsData: IUser[] = [
   {
     id: 2,
@@ -42,7 +38,6 @@ const friendsData: IUser[] = [
     email: 'friend2@example.com',
     avatar: 'https://github.com/shadcn.png',
   },
-  // Добавьте другие друзья по аналогии
 ]
 
 const requestsData: IUser[] = [
@@ -98,12 +93,10 @@ const courses: Course[] = [
   },
 ]
 
-// FriendsList.tsx
 const FriendsList: React.FC<{ friends: IUser[] }> = ({ friends }) => {
   const handleRemoveFriend = (friendId: number) => {
     // Здесь должен быть запрос на сервер для удаления друга
     console.log(`Removing friend with id ${friendId}`)
-    // Реализуйте удаление друга из списка или отправьте запрос на сервер
   }
 
   const handleViewProfile = (friendId: number) => {
