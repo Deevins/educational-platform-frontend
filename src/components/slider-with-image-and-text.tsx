@@ -22,7 +22,7 @@ const items = [
     image:
       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2006-09-15_18-47-19_ziaja.jpg/1200px-2006-09-15_18-47-19_ziaja.jpg',
     title: 'Заголовок 3',
-    text: 'Текст 3 здесь...',
+    text: 'Данная платформа предлагает какую-то хуйню за какую-то хуйню, мимо которй...',
   },
 ]
 

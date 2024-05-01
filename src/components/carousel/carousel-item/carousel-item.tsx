@@ -9,35 +9,15 @@ interface CarouselItemProps {
 const CarouselItem: React.FC<CarouselItemProps> = ({ image, title, text }) => {
   return (
     <div
-      className={'h-[30rem] rounded-2xl'}
-      style={{
-        backgroundImage: `url(${image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative',
-        width: '100%',
-        zIndex: '-1',
-      }}
+      className='relative h-80 md:h-64 lg:h-80 xl:h-96 rounded-2xl bg-cover bg-center'
+      style={{ backgroundImage: `url(${image})` }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '10%',
-          left: '45%',
-          background: 'white',
-          zIndex: '-2',
-        }}
-        className={'w-[45%] h-[39%] rounded-bl p-3 pl-[3.5%] opacity-80'}
-      >
-        <div
-          style={{
-            zIndex: '44',
-            maxWidth: '100%',
-            maxHeight: '100%',
-          }}
-        >
-          <h2 className={'font-bold text-2xl pb-2 '}>{title}</h2>
-          <p className={' text-xl'}>{text}</p>
+      <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-80 rounded-lg p-3 md:p-4 lg:p-5 w-70% h-20%'>
+        <div className='text-center'>
+          <h2 className='font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl mb-2'>
+            {title}
+          </h2>
+          <p className='text-sm md:text-base lg:text-lg xl:text-xl'>{text}</p>
         </div>
       </div>
     </div>

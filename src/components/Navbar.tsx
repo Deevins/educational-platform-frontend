@@ -341,15 +341,16 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
             value={searchText}
             onChange={handleSearchInputChange}
           />
-          <button className='ml-4 focus:outline-none'></button>
         </div>
         <div className='border-b border-gray-300' />
         <div className='flex justify-between mt-4'>
           {['courses', 'profiles', 'threads'].map((option, index) => (
             <button
               key={index}
-              className={`text-gray-500 hover:text-gray-900 focus:outline-none ${
-                searchOption === option ? 'font-bold' : ''
+              className={`text-gray-500 hover:text-gray-900 focus:outline-none hover:scale-105 ${
+                searchOption === option
+                  ? 'font-bold bg-gray-100 px-4 py-2 rounded-lg'
+                  : ''
               }`}
               onClick={() => handleSearchOptionChange(option as SearchPossibility)}
             >
