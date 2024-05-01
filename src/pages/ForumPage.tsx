@@ -6,6 +6,7 @@ interface Thread {
   author: string
   createdDate: string
   lastReplyDate: string
+  repliesCount: number // New field for replies count
   tags: string[]
 }
 
@@ -14,6 +15,7 @@ interface ThreadCardProps {
   author: string
   createdDate: string
   lastReplyDate: string
+  repliesCount: number // New prop for replies count
   tags: string[]
 }
 
@@ -22,6 +24,7 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
   author,
   createdDate,
   lastReplyDate,
+  repliesCount,
   tags,
 }) => {
   return (
@@ -45,12 +48,186 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
           )}
         </div>
       </div>
-      <div className='mt-4 md:mt-0'>
+      <div className='flex flex-col items-end md:items-center'>
+        <span className='text-sm text-gray-600 mb-2'>
+          Replies: {repliesCount} {/* Display replies count */}
+        </span>
         <span className='text-sm text-gray-600'>{lastReplyDate}</span>
       </div>
     </div>
   )
 }
+
+const ForumPage: React.FC = () => {
+  const [filter, setFilter] = useState<'hot' | 'newest'>('hot')
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [threads, setThreads] = useState<Thread[]>([])
+  const [filteredThreads, setFilteredThreads] = useState<Thread[]>([])
+  const [activeTags, setActiveTags] = useState<string[]>([])
+
+  useEffect(() => {
+    const initialThreads: Thread[] = [
+      {
+        id: 1,
+        title: 'Thread 1',
+        author: 'User 1',
+        createdDate: '2024-04-30',
+        lastReplyDate: '2024-05-01',
+        repliesCount: 5, // Initial replies count
+        tags: ['tag1', 'tag2', 'tag3'],
+      },
+      {
+        id: 2,
+        title: 'Thread 2',
+        author: 'User 2',
+        createdDate: '2024-04-29',
+        lastReplyDate: '2024-04-30',
+        repliesCount: 10, // Initial replies count
+        tags: ['tag4', 'tag5'],
+      },
+    ]
+    setThreads(initialThreads)
+    setFilteredThreads(initialThreads)
+  }, [])
+
+  useEffect(() => {
+    if (activeTags.length > 0) {
+      const filtered = threads.filter((thread) =>
+        activeTags.every((tag) => thread.tags.includes(tag))
+      )
+      setFilteredThreads(filtered)
+    } else {
+      const sortedThreads = [...threads]
+      if (filter === 'newest') {
+        sortedThreads.sort(
+          (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+        )
+      } else if (filter === 'hot') {
+        sortedThreads.sort((a, b) => {
+          const repliesDifference = b.repliesCount - a.repliesCount
+          if (repliesDifference !== 0) {
+            return repliesDifference
+          } else {
+            return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+          }
+        })
+      }
+      setFilteredThreads(sortedThreads)
+    }
+  }, [activeTags, filter, threads])
+
+  const handleCloseCreateModal = () => {
+    setShowCreateModal(false)
+  }
+
+  const handleAddThread = (newThread: Thread) => {
+    const repliesCount = Math.floor(Math.random() * 20)
+    newThread.repliesCount = repliesCount
+
+    setThreads((prevThreads) => [...prevThreads, newThread])
+    setFilteredThreads((prevThreads) => [...prevThreads, newThread])
+
+    if (filter === 'hot') {
+      const sortedThreads = [...filteredThreads, newThread]
+      sortedThreads.sort((a, b) => {
+        const repliesDifference = b.repliesCount - a.repliesCount
+        if (repliesDifference !== 0) {
+          return repliesDifference
+        } else {
+          return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+        }
+      })
+      setFilteredThreads(sortedThreads)
+    }
+  }
+
+  const handleTagSelect = (tag: string) => {
+    setActiveTags((prevTags) => [...prevTags, tag])
+  }
+
+  const handleRemoveTag = (tag: string) => {
+    setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag !== tag))
+  }
+
+  return (
+    <div className='flex flex-col md:flex-row justify-center'>
+      <div className='w-full md:w-3/4 p-4'>
+        {filteredThreads.map((thread) => (
+          <ThreadCard
+            key={thread.id}
+            title={thread.title}
+            author={thread.author}
+            createdDate={thread.createdDate}
+            lastReplyDate={thread.lastReplyDate}
+            repliesCount={thread.repliesCount} // Pass replies count to ThreadCard
+            tags={thread.tags}
+          />
+        ))}
+      </div>
+      <div className='w-full md:w-1/4 p-4 border-l border-gray-200'>
+        <div className='mb-4'>
+          {activeTags.map((tag, index) => (
+            <div
+              key={index}
+              className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center'
+            >
+              <span>{tag}</span>
+              <button className='ml-2 text-xs' onClick={() => handleRemoveTag(tag)}>
+                &times;
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className='mb-4'>
+          <h2 className='text-lg font-semibold mb-2'>Tags</h2>
+          <div className='flex flex-wrap'>
+            {['tag1', 'tag2', 'tag3', 'tag4', 'tag5'].map((tag, index) => (
+              <div
+                key={index}
+                className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
+                onClick={() => handleTagSelect(tag)}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className='mb-4'>
+          <button
+            onClick={() => setFilter('hot')}
+            className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 ${
+              filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Hot Threads
+          </button>
+          <button
+            onClick={() => setFilter('newest')}
+            className={`bg-blue-500 text-white px-4 py-2 rounded ${
+              filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Newest Threads
+          </button>
+        </div>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className={'bg-red-500 text-white px-4 py-2 rounded block'}
+        >
+          Create new thread
+        </button>
+      </div>
+      {showCreateModal && (
+        <CreateThreadModal
+          onClose={handleCloseCreateModal}
+          onAddThread={handleAddThread}
+        />
+      )}
+    </div>
+  )
+}
+
+export default ForumPage
 
 const CreateThreadModal: React.FC<{
   onClose: () => void
@@ -92,13 +269,16 @@ const CreateThreadModal: React.FC<{
     // Simulating API request delay
     await new Promise((resolve) => setTimeout(resolve, 2000))
     // Mock logic to create a new thread
+    // const theBigDay = new Date(1962, 6, 7, 12)
     const newThread: Thread = {
       id: Math.random(),
       title,
       author: anonymous ? 'Anonymous' : 'User',
       createdDate: new Date().toISOString().split('T')[0],
+      // createdDate: theBigDay.toISOString().split('T')[0],
       lastReplyDate: new Date().toISOString().split('T')[0],
       tags: selectedTags,
+      repliesCount: 0,
     }
     // After creation, you can close the modal and reset form fields
     onAddThread(newThread)
@@ -183,158 +363,3 @@ const CreateThreadModal: React.FC<{
     </div>
   )
 }
-
-const ForumPage: React.FC = () => {
-  const [filter, setFilter] = useState<'hot' | 'newest'>('hot')
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [threads, setThreads] = useState<Thread[]>([])
-  const [filteredThreads, setFilteredThreads] = useState<Thread[]>([])
-  const [activeTags, setActiveTags] = useState<string[]>([])
-
-  // Mock data for initial threads
-  useEffect(() => {
-    const initialThreads: Thread[] = [
-      {
-        id: 1,
-        title: 'Thread 1',
-        author: 'User 1',
-        createdDate: '2024-04-30',
-        lastReplyDate: '2024-05-01',
-        tags: ['tag1', 'tag2', 'tag3'],
-      },
-      {
-        id: 2,
-        title: 'Thread 2',
-        author: 'User 2',
-        createdDate: '2024-04-29',
-        lastReplyDate: '2024-04-30',
-        tags: ['tag4', 'tag5'],
-      },
-      // Add more mock data as needed
-    ]
-    setThreads(initialThreads)
-    setFilteredThreads(initialThreads)
-  }, [])
-
-  useEffect(() => {
-    // Apply tag filters
-    if (activeTags.length > 0) {
-      const filtered = threads.filter((thread) =>
-        activeTags.every((tag) => thread.tags.includes(tag))
-      )
-      setFilteredThreads(filtered)
-    } else {
-      // Apply sorting
-      const sortedThreads = [...threads]
-      if (filter === 'newest') {
-        sortedThreads.sort(
-          (a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
-        )
-      } else if (filter === 'hot') {
-        // Logic to sort by popularity (e.g., number of views or replies)
-        // Here, we're just reversing the order of threads for demonstration purposes
-        sortedThreads.reverse()
-      }
-      setFilteredThreads(sortedThreads)
-    }
-  }, [activeTags, filter, threads])
-
-  const handleCloseCreateModal = () => {
-    setShowCreateModal(false)
-  }
-
-  const handleAddThread = (newThread: Thread) => {
-    setThreads((prevThreads) => [...prevThreads, newThread])
-  }
-
-  const handleTagSelect = (tag: string) => {
-    setActiveTags((prevTags) => [...prevTags, tag])
-  }
-
-  const handleRemoveTag = (tag: string) => {
-    setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag !== tag))
-  }
-
-  return (
-    <div className='flex flex-col md:flex-row justify-center'>
-      {/* Thread list */}
-      <div className='w-full md:w-3/4 p-4'>
-        {filteredThreads.map((thread) => (
-          <ThreadCard
-            key={thread.id}
-            title={thread.title}
-            author={thread.author}
-            createdDate={thread.createdDate}
-            lastReplyDate={thread.lastReplyDate}
-            tags={thread.tags}
-          />
-        ))}
-      </div>
-      {/* Right sidebar */}
-      <div className='w-full md:w-1/4 p-4 border-l border-gray-200'>
-        <div className='mb-4'>
-          <input
-            type='text'
-            placeholder='Search threads'
-            className='w-full border border-gray-300 p-2 rounded'
-          />
-        </div>
-        <div className='mb-4'>
-          {activeTags.map((tag, index) => (
-            <div
-              key={index}
-              className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center'
-            >
-              <span>{tag}</span>
-              <button className='ml-2 text-xs' onClick={() => handleRemoveTag(tag)}>
-                &times;
-              </button>
-            </div>
-          ))}
-        </div>
-        <div className='mb-4'>
-          <h2 className='text-lg font-semibold mb-2'>Tags</h2>
-          <div className='flex flex-wrap'>
-            {['tag1', 'tag2', 'tag3', 'tag4', 'tag5'].map((tag, index) => (
-              <div
-                key={index}
-                className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
-                onClick={() => handleTagSelect(tag)}
-              >
-                {tag}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className='mb-4'>
-          <button
-            onClick={() => setFilter('hot')}
-            className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 ${filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            Hot Threads
-          </button>
-          <button
-            onClick={() => setFilter('newest')}
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            Newest Threads
-          </button>
-        </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className={'bg-red-500 text-white px-4 py-2 rounded block'}
-        >
-          Create new thread
-        </button>
-      </div>
-      {showCreateModal && (
-        <CreateThreadModal
-          onClose={handleCloseCreateModal}
-          onAddThread={handleAddThread}
-        />
-      )}
-    </div>
-  )
-}
-
-export default ForumPage
