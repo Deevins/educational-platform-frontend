@@ -1,7 +1,7 @@
 import Dropdown, { DropdownElem } from '@/components/Dropdown.tsx'
 import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button.tsx'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 type NavBarElem = {
   title: string
@@ -27,16 +27,7 @@ const menuItemsData: NavBarElem[] = [
   {
     title: 'Форум',
     url: '/forum',
-    submenu: [
-      {
-        title: 'Все форумы',
-        url: '/forum',
-      },
-      {
-        title: 'Избранные треды',
-        url: '/forum/favorites',
-      },
-    ],
+    submenu: [],
   },
 ]
 
@@ -44,15 +35,25 @@ export const Navbar = () => {
   const [isSearchVisible, setIsSearchVisible] = React.useState(false)
 
   const toggleSearch = () => {
-    console.log(isSearchVisible)
     setIsSearchVisible((prev) => !prev)
+    if (!isSearchVisible) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+  }
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (e.target === e.currentTarget) {
+      toggleSearch()
+    }
   }
   return (
     <>
       <nav className='desktop-nav flex flex-row'>
         <Button
           onClick={toggleSearch}
-          className='bg-gray-300 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 z-30'
+          className='bg-gray-300 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100'
         >
           Поиск
         </Button>
@@ -63,8 +64,11 @@ export const Navbar = () => {
         </ul>
       </nav>
       {isSearchVisible && (
-        <div className={'z-50'}>
-          <SearchDialog />
+        <div
+          className='fixed inset-0 bg-gray-700 bg-opacity-75 flex justify-center items-center z-10'
+          onClick={handleBackdropClick}
+        >
+          <SearchDialog onClickFunc={toggleSearch} />
         </div>
       )}
     </>
@@ -146,6 +150,7 @@ const MenuItem = ({ item }: Props) => {
 }
 
 type Person = {
+  id: number
   type: 'person'
   fullName: string
   avatar: string
@@ -153,6 +158,7 @@ type Person = {
 }
 
 type Course = {
+  id: number
   type: 'course'
   title: string
   image: string
@@ -161,67 +167,132 @@ type Course = {
 }
 
 type Thread = {
+  id: number
   type: 'thread'
   title: string
-  topic: string
+  createdDate: string
+  lastResponseDate: string
+  replyCount: number
+  lastResponder: string
 }
 
 type SearchResult = Person | Course | Thread
 
 type SearchPossibility = 'courses' | 'profiles' | 'threads'
 
+interface SearchDialogProps {
+  onClickFunc: () => void
+}
+
 const mockData: Record<SearchPossibility, SearchResult[]> = {
   courses: [
     {
+      id: 1,
       type: 'course',
       title: 'Курс 1',
-      image: '/course1.jpg',
+      image: 'https://flowbite.com/docs/images/logo.svg',
       rating: 4.5,
       enrollment: 100,
     },
     {
+      id: 2,
       type: 'course',
       title: 'Курс 2',
-      image: '/course2.jpg',
+      image: 'https://flowbite.com/docs/images/logo.svg',
       rating: 4.8,
       enrollment: 120,
     },
     {
+      id: 3,
       type: 'course',
       title: 'Курс 3',
-      image: '/course3.jpg',
+      image: 'https://flowbite.com/docs/images/logo.svg',
       rating: 4.2,
       enrollment: 80,
     },
   ],
   profiles: [
     {
+      id: 1,
       type: 'person',
       fullName: 'Иван Иванов',
-      avatar: '/avatar1.jpg',
+      avatar: 'https://flowbite.com/docs/images/logo.svg',
       nickname: '@ivan',
     },
     {
+      id: 2,
       type: 'person',
       fullName: 'Петр Петров',
-      avatar: '/avatar2.jpg',
+      avatar: 'https://flowbite.com/docs/images/logo.svg',
       nickname: '@peter',
     },
     {
+      id: 3,
       type: 'person',
       fullName: 'Анна Сидорова',
-      avatar: '/avatar3.jpg',
+      avatar: 'https://flowbite.com/docs/images/logo.svg',
       nickname: '@anna',
     },
   ],
   threads: [
-    { type: 'thread', title: 'Тред 1', topic: 'Тема треда 1' },
-    { type: 'thread', title: 'Тред 2', topic: 'Тема треда 2' },
-    { type: 'thread', title: 'Тред 3', topic: 'Тема треда 3' },
+    {
+      id: 1,
+      type: 'thread',
+      title: 'Тред 1',
+      createdDate: '2024-05-10',
+      lastResponseDate: '2024-05-15',
+      replyCount: 10,
+      lastResponder: 'someone 1',
+    },
+    {
+      id: 2,
+      type: 'thread',
+      title: 'Тред 2',
+      createdDate: '2024-05-11',
+      lastResponseDate: '2024-05-16',
+      replyCount: 8,
+      lastResponder: 'someone 2',
+    },
+    {
+      id: 3,
+      type: 'thread',
+      title: 'Тред 3',
+      createdDate: '2024-05-12',
+      lastResponseDate: '2024-05-17',
+      replyCount: 15,
+      lastResponder: 'someone 3',
+    },
+    {
+      id: 4,
+      type: 'thread',
+      title: 'Тред 4',
+      createdDate: '2024-05-10',
+      lastResponseDate: '2024-05-15',
+      replyCount: 10,
+      lastResponder: 'someone 1',
+    },
+    {
+      id: 5,
+      type: 'thread',
+      title: 'Тред 5',
+      createdDate: '2024-05-11',
+      lastResponseDate: '2024-05-16',
+      replyCount: 8,
+      lastResponder: 'someone 2',
+    },
+    {
+      id: 6,
+      type: 'thread',
+      title: 'Тред 6',
+      createdDate: '2024-05-12',
+      lastResponseDate: '2024-05-17',
+      replyCount: 15,
+      lastResponder: 'someone 3',
+    },
   ],
 }
 
-const SearchDialog = () => {
+const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
   const [searchOption, setSearchOption] = useState<SearchPossibility>('courses')
   const [searchText, setSearchText] = useState<string>('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
@@ -270,28 +341,7 @@ const SearchDialog = () => {
             value={searchText}
             onChange={handleSearchInputChange}
           />
-          <button className='ml-4 focus:outline-none'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-6 w-6 text-gray-600 hover:text-gray-900'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M15 13a4 4 0 1 1-8 0 4 4 0 0 1 8 0z'
-              />
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M17.5 15l2.5 2.5M18 9a9 9 0 1 1-9 9'
-              />
-            </svg>
-          </button>
+          <button className='ml-4 focus:outline-none'></button>
         </div>
         <div className='border-b border-gray-300' />
         <div className='flex justify-between mt-4'>
@@ -315,11 +365,26 @@ const SearchDialog = () => {
               {searchResults.map((result, index) => (
                 <div
                   key={index}
-                  className='search-result-card border border-gray-300 rounded-lg overflow-hidden'
+                  onClick={() => {
+                    onClickFunc()
+                  }}
+                  className='search-result-card border border-gray-300 rounded-lg overflow-hidden mt-4 cursor-pointer hover:bg-gray-100'
                 >
-                  {result.type === 'person' && <PersonCard person={result as Person} />}
-                  {result.type === 'course' && <CourseCard course={result as Course} />}
-                  {result.type === 'thread' && <ThreadCard thread={result as Thread} />}
+                  {result.type === 'person' && (
+                    <Link to={`/profiles/${(result as Person).id}`}>
+                      <PersonCard person={result as Person} />
+                    </Link>
+                  )}
+                  {result.type === 'course' && (
+                    <Link to={`/courses/${(result as Course).id}`}>
+                      <CourseCard course={result as Course} />
+                    </Link>
+                  )}
+                  {result.type === 'thread' && (
+                    <Link to={`/forum/threads/${(result as Thread).id}`}>
+                      <ThreadCard thread={result as Thread} />
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
@@ -366,8 +431,16 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
 const ThreadCard: React.FC<{ thread: Thread }> = ({ thread }) => {
   return (
     <div className='p-4'>
-      <h3 className='text-lg font-semibold'>{thread.title}</h3>
-      <p className='text-sm text-gray-500'>{thread.topic}</p>
+      <div className='flex justify-between'>
+        <div>
+          <h3 className='text-lg font-semibold left-auto'>{thread.title}</h3>
+          <p className='text-sm text-gray-500'>
+            Создан {thread.createdDate} | Последний ответ - {thread.lastResponseDate}{' '}
+            {thread.lastResponder}
+          </p>
+        </div>
+        <div className='text-sm text-gray-500'>Ответов: {thread.replyCount}</div>
+      </div>
     </div>
   )
 }
