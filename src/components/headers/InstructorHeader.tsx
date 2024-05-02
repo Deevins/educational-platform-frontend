@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 
-const Header = () => {
+const InstructorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
 
   const handleLogin = () => {
@@ -58,4 +58,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default InstructorHeader

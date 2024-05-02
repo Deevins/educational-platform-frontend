@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from '@/layouts/MainLayout.module.scss'
-import Header from '@/components/headers/Header.tsx'
+import StudentHeader from '@/components/headers/StudentHeader.tsx'
 import CommonFooter from '@/components/footers/CommonFooter.tsx'
 
 type PropsType = {
@@ -9,7 +9,7 @@ type PropsType = {
 const AuthLayout: React.FC<PropsType> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <Header />
+      <StudentHeader />
       <div className={'h-full z-0'}>{children}</div>
       <CommonFooter />
     </div>
