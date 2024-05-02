@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Navbar } from '@/components/Navbar.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
@@ -38,6 +37,10 @@ const StudentHeader = () => {
     setIsTeacherModeOpen(false)
   }
 
+  const handleSwitchToInstructorMode = () => {
+    // TODO: after redux fix and make logic to switch current user role
+  }
+
   return (
     <header className='bg-gray-300 text-black p-4 flex justify-between items-center'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
@@ -48,21 +51,19 @@ const StudentHeader = () => {
         <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
       </NavLink>
 
-      <div className='text-center flex justify-center space-x-4'>
-        <Navbar />
-      </div>
-
-      <div className='flex space-x-4 lg:mr-16'>
+      <div className='flex space-x-4 lg:mr-16 text-center'>
         <div
-          className='relative'
+          className='relative pb-[2px]'
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <button
-            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer hover:text-purple-700'
+            className='text-black rounded-lg pt-4 px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer hover:text-purple-700'
             onMouseEnter={openTeacherMode}
           >
-            <NavLink to={'/teaching'}>Преподаватель</NavLink>
+            <NavLink to={'/teaching'} onClick={handleSwitchToInstructorMode}>
+              Преподаватель
+            </NavLink>
           </button>
           {isHovered && isTeacherModeOpen && (
             <div
@@ -71,14 +72,15 @@ const StudentHeader = () => {
               onMouseLeave={closeTeacherMode}
               style={{ top: 'calc(20% + 10px)', left: '-30px' }}
             >
-              <div className='p-4'>
-                <p className='text-lg font-bold mb-2'>
+              <div className='p-4 flex text-center flex-col'>
+                <p className='text-mb font-bold mb-2 '>
                   Переключитесь в режим преподавателя
                 </p>
-                <p>Чтобы вернуться к созданию курсов.</p>
+                <p>Превратите свои знания в возможность и учите людей по всему миру.</p>
                 <NavLink
                   to={'/teaching'}
-                  className='block bg-black text-white rounded-lg px-4 py-2 mt-4 hover:bg-gray-800 mr-2'
+                  onClick={handleSwitchToInstructorMode}
+                  className='block bg-black text-white rounded-lg px-4 py-2 mt-4 ml-2hover:bg-gray-800 mr-1'
                 >
                   Узнать подробнее
                 </NavLink>

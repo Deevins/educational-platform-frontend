@@ -20,6 +20,7 @@ const AvatarMenu: React.FC = () => {
   const [loading, setLoading] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [theme, setTheme] = React.useState<themeState>('light')
+  const [isNearMenu, setIsNearMenu] = React.useState(false) // Состояние, отображающее, находится ли курсор рядом с меню
   const menuRef = React.useRef<HTMLDivElement>(null)
 
   const user: IUser = {
@@ -60,6 +61,41 @@ const AvatarMenu: React.FC = () => {
     }
   }
 
+  const handleMouseEnter = () => {
+    setIsOpen(true)
+  }
+
+  const handleMenuMouseEnter = () => {
+    setIsNearMenu(true) // Установить состояние, когда курсор рядом с меню
+  }
+
+  const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Проверяем, находится ли курсор внутри меню или в его близости
+    if (
+      !menuRef.current ||
+      menuRef.current.contains(event.target as Node) ||
+      isNearMenu
+    ) {
+      return // Если да, то не закрываем меню
+    }
+    setIsOpen(false)
+  }
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (menuRef.current) {
+      const rect = menuRef.current.getBoundingClientRect()
+      const mouseX = event.clientX
+      const mouseY = event.clientY
+
+      const isNear =
+        mouseX >= rect.left - 10 &&
+        mouseX <= rect.right + 10 &&
+        mouseY >= rect.top - 10 &&
+        mouseY <= rect.bottom + 10
+
+      setIsNearMenu(isNear)
+    }
+  }
+
   React.useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
@@ -81,11 +117,13 @@ const AvatarMenu: React.FC = () => {
   ]
 
   return (
-    <div className='relative' ref={menuRef}>
+    <div className='relative' ref={menuRef} onMouseMove={handleMouseMove}>
       <div className='flex items-center'>
         <Button
           className='p-1 text-gray-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring'
           onClick={() => setIsOpen(!isOpen)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           <Avatar className={'hover:scale-[135%] scale-125'}>
             <AvatarImage src={user.avatar} />
@@ -99,6 +137,7 @@ const AvatarMenu: React.FC = () => {
           role='menu'
           aria-orientation='vertical'
           aria-labelledby='user-menu'
+          onMouseEnter={handleMenuMouseEnter}
         >
           <div className='py-1'>
             {menuItems.map((item, index) =>
