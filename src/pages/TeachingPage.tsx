@@ -23,7 +23,7 @@ const ImageBlock: React.FC<ImageBlockProps> = ({ icon: Icon, title, description 
 const TeachingPage: React.FC = () => {
   return (
     <div>
-      <div className='bg-gray-200'>
+      <div className='bg-gray-400'>
         <div
           className='w-4/5 mx-auto bg-cover bg-center py-16 text-center text-gray-700'
           style={{ backgroundImage: "url('your_image_url.jpg')" }}

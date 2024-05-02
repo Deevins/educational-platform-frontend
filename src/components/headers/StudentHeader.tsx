@@ -44,7 +44,7 @@ const InstructorHeader = () => {
   }
 
   return (
-    <header className='bg-gray-300 text-black p-4 flex justify-between items-center'>
+    <header className='bg-gray-200 text-black p-4 flex justify-between items-center shadow-xl'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
         <Avatar className={'hover:scale-105'}>
           <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
@@ -64,7 +64,7 @@ const InstructorHeader = () => {
           onMouseLeave={handleMouseLeave}
         >
           <button
-            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer hover:text-purple-700'
+            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700'
             onMouseEnter={openInstructorMode}
           >
             <NavLink to={'/teaching'} onClick={handleSwitchToInstructorMode}>

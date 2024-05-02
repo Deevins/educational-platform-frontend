@@ -53,7 +53,7 @@ export const Navbar = () => {
       <nav className='desktop-nav flex flex-row'>
         <Button
           onClick={toggleSearch}
-          className='bg-gray-300 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100'
+          className='bg-gray-200 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100'
         >
           Поиск
         </Button>

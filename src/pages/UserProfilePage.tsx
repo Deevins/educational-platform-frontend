@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
+import PhoneInput from 'react-phone-input-2'
+import useModal from '@/utils/hooks/useModal.ts'
 
 export interface IUser {
   id: number
@@ -259,7 +261,8 @@ const UserPage: React.FC = () => {
   const [currentFriendsSubTab, setCurrentFriendsSubTab] =
     useState<FriendsSubTab>('friends')
   const [isOnline, setIsOnline] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const { isOpen, openModal, closeModal, ref } = useModal() // Используем наш хук для модального окна
 
   useEffect(() => {
     // Simulate fetching user data
@@ -285,11 +288,7 @@ const UserPage: React.FC = () => {
   }, [])
 
   const handleEditClick = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleModalClose = () => {
-    setIsModalOpen(false)
+    openModal()
   }
 
   const handleSave = () => {
@@ -297,7 +296,7 @@ const UserPage: React.FC = () => {
       setUser({ ...updatedUser })
       // Save updated user data (not implemented in this example)
     }
-    setIsModalOpen(false)
+    closeModal() // Закрываем модальное окно при сохранении
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -305,6 +304,16 @@ const UserPage: React.FC = () => {
       setUpdatedUser({
         ...updatedUser,
         [e.target.name]: e.target.value,
+      })
+    }
+  }
+
+  const handlePhoneChange = (value: string) => {
+    setPhoneNumber(value)
+    if (updatedUser) {
+      setUpdatedUser({
+        ...updatedUser,
+        mobile: value,
       })
     }
   }
@@ -318,8 +327,11 @@ const UserPage: React.FC = () => {
   }
 
   return (
-    <div className='flex justify-center items-center min-h-screen bg-gray-200'>
-      <div className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-11/12 lg:w-2/3 xl:w-1/2 relative p-8'>
+    <div className='flex justify-center items-center min-h-screen'>
+      <div
+        className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-0'
+        style={{ marginTop: '-180px' }}
+      >
         {user ? (
           <>
             <div className='flex items-center mb-4'>
@@ -329,16 +341,21 @@ const UserPage: React.FC = () => {
                   <AvatarFallback>{user.username}</AvatarFallback>
                 </Avatar>
                 <div
-                  className={`absolute bottom-0 right-0 w-4 h-4 rounded-full ${
-                    isOnline ? 'bg-green-500' : 'bg-gray-500'
-                  } border-2 border-white`}
+                  className={`absolute bottom-0 right-4 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-500'} border-2 border-white`}
                 />
               </div>
               <div>
                 <h2 className='text-2xl font-bold'>{user.fullName}</h2>
-                <p className='text-gray-600'>Username: {user.username}</p>
-                <p className='text-gray-600'>{user.email}</p>
-                <p className='text-gray-600'>{user.mobile}</p>
+                <p className='text-gray-600'>
+                  <b>Никнейм:</b> {user.username}
+                </p>
+                <p className='text-gray-600'>
+                  <b>e-mail:</b> {user.email}
+                </p>
+                <p className='text-gray-600'>
+                  <b>телефон: </b>
+                  {user.mobile}
+                </p>
               </div>
             </div>
             <hr className='my-4 border-t border-gray-300' />
@@ -349,64 +366,44 @@ const UserPage: React.FC = () => {
               Edit Profile
             </button>
             <div className='mt-4'>
-              <h3 className='text-xl font-bold mb-2'>About Me</h3>
+              <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
               <p className='text-gray-600'>{user.about}</p>
             </div>
             <div className='mt-8'>
               <div className='flex justify-between items-center mb-4'>
                 <button
-                  className={`px-4 py-2 rounded ${
-                    currentMainTab === 'friends'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-300 text-gray-800'
-                  }`}
+                  className={`px-4 py-2 rounded ${currentMainTab === 'friends' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
                   onClick={() => handleMainTabChange('friends')}
                 >
                   Friends
                 </button>
                 <button
-                  className={`px-4 py-2 rounded ${
-                    currentMainTab === 'courses'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-300 text-gray-800'
-                  }`}
+                  className={`px-4 py-2 rounded ${currentMainTab === 'courses' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
                   onClick={() => handleMainTabChange('courses')}
                 >
-                  Courses
+                  Курсы
                 </button>
               </div>
               {currentMainTab === 'friends' && (
                 <div className='mb-4'>
                   <div className='flex justify-between items-center'>
                     <button
-                      className={`px-4 py-2 rounded ${
-                        currentFriendsSubTab === 'friends'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
+                      className={`px-4 py-2 rounded ${currentFriendsSubTab === 'friends' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
                       onClick={() => handleFriendsSubTabChange('friends')}
                     >
-                      Friends
+                      Друзья
                     </button>
                     <button
-                      className={`px-4 py-2 rounded ${
-                        currentFriendsSubTab === 'requests'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
+                      className={`px-4 py-2 rounded ${currentFriendsSubTab === 'requests' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
                       onClick={() => handleFriendsSubTabChange('requests')}
                     >
-                      Friend Requests
+                      Запросы в друзья
                     </button>
                     <button
-                      className={`px-4 py-2 rounded ${
-                        currentFriendsSubTab === 'sentRequests'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
+                      className={`px-4 py-2 rounded ${currentFriendsSubTab === 'sentRequests' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
                       onClick={() => handleFriendsSubTabChange('sentRequests')}
                     >
-                      Sent Requests
+                      Отправленные запросы
                     </button>
                   </div>
                   {currentFriendsSubTab === 'friends' && (
@@ -424,63 +421,63 @@ const UserPage: React.FC = () => {
             </div>
           </>
         ) : (
-          <p className='p-8'>Loading...</p>
+          <p className='p-8'>Загрузка...</p>
         )}
       </div>
-      {isModalOpen && (
+      {isOpen && (
         <div className='fixed inset-0 bg-gray-700 bg-opacity-75 flex justify-center items-center'>
-          <div className='bg-white p-8 rounded shadow-lg w-11/12 sm:w-2/3 md:w-1/2 lg:w-1/3'>
-            <h2 className='text-2xl font-bold mb-4'>Edit Profile</h2>
-            {/* Форма для редактирования профиля */}
+          <div
+            ref={ref}
+            className='bg-white p-8 rounded shadow-lg w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12'
+          >
+            <h2 className='text-2xl font-bold mb-4'>Редактировать профиль</h2>
             <div className='mb-4'>
               <label htmlFor='fullName' className='block text-sm font-medium'>
-                Full Name
+                ФИО
               </label>
               <input
                 type='text'
                 id='fullName'
                 name='fullName'
-                value={updatedUser?.fullName}
                 onChange={handleChange}
-                className='w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                placeholder={'Введите ФИО'}
+                className='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black'
               />
             </div>
             <div className='mb-4'>
               <label htmlFor='email' className='block text-sm font-medium'>
-                Email
+                e-mail
               </label>
               <input
                 type='email'
                 id='email'
                 name='email'
-                value={updatedUser?.email}
                 onChange={handleChange}
-                className='w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                placeholder={'Введите ФИО'}
+                className='w-full  rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black lg:pl-2 lg:pt-4'
               />
             </div>
             <div className='mb-4'>
               <label htmlFor='mobile' className='block text-sm font-medium'>
-                Mobile
+                Мобильный телефон
               </label>
-              <input
-                type='text'
-                id='mobile'
-                name='mobile'
-                value={updatedUser?.mobile}
-                onChange={handleChange}
-                className='w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+              <PhoneInput
+                country={'ru'}
+                onChange={handlePhoneChange}
+                placeholder={'Введите ФИО'}
+                inputClass='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border lg:pl-2 lg:pt-4'
               />
             </div>
             <div className='mb-4'>
               <label htmlFor='about' className='block text-sm font-medium'>
-                About Me
+                Обо мне
               </label>
               <textarea
                 id='about'
                 name='about'
-                value={updatedUser?.about}
                 onChange={handleChange}
-                className='w-full h-24 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                placeholder={'Введите ФИО'}
+                className='w-full h-24  rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm lg:text-sm text-black border-red-300 lg:pl-4 lg:pt-1'
               />
             </div>
             <div className='flex justify-end'>
@@ -488,13 +485,13 @@ const UserPage: React.FC = () => {
                 className='bg-blue-500 text-white px-4 py-2 rounded mr-2'
                 onClick={handleSave}
               >
-                Save
+                Сохранить
               </button>
               <button
                 className='bg-gray-300 text-gray-800 px-4 py-2 rounded'
-                onClick={handleModalClose}
+                onClick={closeModal}
               >
-                Cancel
+                Отменить
               </button>
             </div>
           </div>
