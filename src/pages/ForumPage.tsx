@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
+interface ITag {
+  id: number
+  title: string
+}
+
 interface Thread {
   id: number
   title: string
   author: string
   createdDate: string
   lastReplyDate: string
-  repliesCount: number // New field for replies count
-  tags: string[]
+  repliesCount: number
+  tags: ITag[]
 }
 
 interface ThreadCardProps {
@@ -15,18 +20,29 @@ interface ThreadCardProps {
   author: string
   createdDate: string
   lastReplyDate: string
-  repliesCount: number // New prop for replies count
-  tags: string[]
+  repliesCount: number
+  tags: ITag[]
 }
 
-const ThreadCard: React.FC<ThreadCardProps> = ({
+const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }> = ({
   title,
   author,
   createdDate,
   lastReplyDate,
   repliesCount,
   tags,
+  onTagClick,
 }) => {
+  const [showTagsPopup, setShowTagsPopup] = useState(false)
+
+  const handleMouseEnter = () => {
+    setShowTagsPopup(true)
+  }
+
+  const handleMouseLeave = () => {
+    setShowTagsPopup(false)
+  }
+
   return (
     <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4'>
       <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
@@ -37,21 +53,40 @@ const ThreadCard: React.FC<ThreadCardProps> = ({
         </div>
         <div className='flex items-center'>
           {tags.slice(0, 3).map((tag, index) => (
-            <div key={index} className='bg-gray-200 text-xs rounded-full px-2 mr-1'>
-              {tag}
+            <div
+              key={index}
+              className='bg-gray-200 text-xs rounded-full px-2 mr-1 hover:cursor-pointer hover:scale-110'
+              onClick={() => onTagClick(tag)}
+            >
+              {tag.title}
             </div>
           ))}
           {tags.length > 3 && (
-            <div className='bg-gray-200 text-xs rounded-full px-2 mr-1'>
-              {tags.length - 3} more
+            <div
+              className='relative'
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className='bg-gray-200 text-xs rounded-full px-2 mr-1 cursor-pointer'>
+                {tags.length - 3} more
+              </div>
+              {showTagsPopup && (
+                <div className='absolute right-[calc(100% + 10px)] top-0 mt-2 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex flex-col'>
+                  {tags.slice(3).map((tag, index) => (
+                    <TagCard
+                      key={index}
+                      tag={tag}
+                      handleTagSelect={() => onTagClick(tag)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
       <div className='flex flex-col items-end md:items-center'>
-        <span className='text-sm text-gray-600 mb-2'>
-          Replies: {repliesCount} {/* Display replies count */}
-        </span>
+        <span className='text-sm text-gray-600 mb-2'>Replies: {repliesCount}</span>
         <span className='text-sm text-gray-600'>{lastReplyDate}</span>
       </div>
     </div>
@@ -63,7 +98,28 @@ const ForumPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [threads, setThreads] = useState<Thread[]>([])
   const [filteredThreads, setFilteredThreads] = useState<Thread[]>([])
-  const [activeTags, setActiveTags] = useState<string[]>([])
+  const [activeTags, setActiveTags] = useState<ITag[]>([])
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [tags, setTags] = useState<ITag[]>([])
+
+  const fetchTags = async (): Promise<ITag[]> => {
+    // Заглушка: имитация запроса к серверу для получения списка тегов
+    return [
+      { id: 1, title: 'tag1' },
+      { id: 2, title: 'tag2' },
+      { id: 3, title: 'tag3' },
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+    ]
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedTags = await fetchTags()
+      setTags(fetchedTags)
+    }
+    fetchData().then((r) => console.log(`success ${r}`))
+  }, [])
 
   useEffect(() => {
     const initialThreads: Thread[] = [
@@ -73,8 +129,12 @@ const ForumPage: React.FC = () => {
         author: 'User 1',
         createdDate: '2024-04-30',
         lastReplyDate: '2024-05-01',
-        repliesCount: 5, // Initial replies count
-        tags: ['tag1', 'tag2', 'tag3'],
+        repliesCount: 5,
+        tags: [
+          { id: 1, title: 'tag1' },
+          { id: 2, title: 'tag2' },
+          { id: 3, title: 'tag3' },
+        ],
       },
       {
         id: 2,
@@ -82,8 +142,15 @@ const ForumPage: React.FC = () => {
         author: 'User 2',
         createdDate: '2024-04-29',
         lastReplyDate: '2024-04-30',
-        repliesCount: 10, // Initial replies count
-        tags: ['tag4', 'tag5'],
+        repliesCount: 10,
+        tags: [
+          { id: 4, title: 'tag4' },
+          { id: 5, title: 'tag5' },
+          { id: 6, title: 'tag6' },
+          { id: 7, title: 'tag7' },
+          { id: 8, title: 'tag8' },
+          { id: 9, title: 'tag9' },
+        ],
       },
     ]
     setThreads(initialThreads)
@@ -93,7 +160,9 @@ const ForumPage: React.FC = () => {
   useEffect(() => {
     if (activeTags.length > 0) {
       const filtered = threads.filter((thread) =>
-        activeTags.every((tag) => thread.tags.includes(tag))
+        activeTags.every((tag) =>
+          thread.tags.some((threadTag) => threadTag.id === tag.id)
+        )
       )
       setFilteredThreads(filtered)
     } else {
@@ -116,6 +185,13 @@ const ForumPage: React.FC = () => {
     }
   }, [activeTags, filter, threads])
 
+  useEffect(() => {
+    const filtered = threads.filter((thread) =>
+      thread.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    setFilteredThreads(filtered)
+  }, [searchQuery, threads])
+
   const handleCloseCreateModal = () => {
     setShowCreateModal(false)
   }
@@ -123,7 +199,6 @@ const ForumPage: React.FC = () => {
   const handleAddThread = (newThread: Thread) => {
     const repliesCount = Math.floor(Math.random() * 20)
     newThread.repliesCount = repliesCount
-
     setThreads((prevThreads) => [...prevThreads, newThread])
     setFilteredThreads((prevThreads) => [...prevThreads, newThread])
 
@@ -141,17 +216,33 @@ const ForumPage: React.FC = () => {
     }
   }
 
-  const handleTagSelect = (tag: string) => {
+  const handleTagSelect = (tag: ITag) => {
     setActiveTags((prevTags) => [...prevTags, tag])
   }
 
-  const handleRemoveTag = (tag: string) => {
-    setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag !== tag))
+  const handleRemoveTag = (tag: ITag) => {
+    setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag.id !== tag.id))
+  }
+
+  const handleTagClick = (tag: ITag) => {
+    if (activeTags.some((activeTag) => activeTag.id === tag.id)) {
+      setActiveTags(activeTags.filter((item) => item.id !== tag.id))
+    } else {
+      setActiveTags([...activeTags, tag])
+    }
+    console.log(`Clicked on tag: ${tag.title}`)
   }
 
   return (
     <div className='flex flex-col md:flex-row justify-center'>
       <div className='w-full md:w-3/4 p-4'>
+        <input
+          type='text'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder='Search threads...'
+          className='w-full border border-gray-300 p-2 rounded mb-4'
+        />
         {filteredThreads.map((thread) => (
           <ThreadCard
             key={thread.id}
@@ -159,8 +250,9 @@ const ForumPage: React.FC = () => {
             author={thread.author}
             createdDate={thread.createdDate}
             lastReplyDate={thread.lastReplyDate}
-            repliesCount={thread.repliesCount} // Pass replies count to ThreadCard
+            repliesCount={thread.repliesCount}
             tags={thread.tags}
+            onTagClick={handleTagClick}
           />
         ))}
       </div>
@@ -169,10 +261,13 @@ const ForumPage: React.FC = () => {
           {activeTags.map((tag, index) => (
             <div
               key={index}
-              className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center'
+              className='bg-gray-400 text-white px-4 py-1 rounded-full mr-2 mb-2 flex items-center w-24 text-center'
             >
-              <span>{tag}</span>
-              <button className='ml-2 text-xs' onClick={() => handleRemoveTag(tag)}>
+              <span>{tag.title}</span>
+              <button
+                className='ml-2 text-xs text-right'
+                onClick={() => handleRemoveTag(tag)}
+              >
                 &times;
               </button>
             </div>
@@ -181,21 +276,15 @@ const ForumPage: React.FC = () => {
         <div className='mb-4'>
           <h2 className='text-lg font-semibold mb-2'>Tags</h2>
           <div className='flex flex-wrap'>
-            {['tag1', 'tag2', 'tag3', 'tag4', 'tag5'].map((tag, index) => (
-              <div
-                key={index}
-                className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
-                onClick={() => handleTagSelect(tag)}
-              >
-                {tag}
-              </div>
+            {tags.map((tag) => (
+              <TagCard tag={tag} handleTagSelect={() => handleTagSelect(tag)} />
             ))}
           </div>
         </div>
         <div className='mb-4'>
           <button
             onClick={() => setFilter('hot')}
-            className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 ${
+            className={`bg-blue-500 text-white px-4 py-2 rounded ${
               filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -219,6 +308,7 @@ const ForumPage: React.FC = () => {
       </div>
       {showCreateModal && (
         <CreateThreadModal
+          tags={tags}
           onClose={handleCloseCreateModal}
           onAddThread={handleAddThread}
         />
@@ -227,60 +317,56 @@ const ForumPage: React.FC = () => {
   )
 }
 
-export default ForumPage
-
-const CreateThreadModal: React.FC<{
+interface CreateThreadModalProps {
+  tags: ITag[]
   onClose: () => void
   onAddThread: (thread: Thread) => void
-}> = ({ onClose, onAddThread }) => {
+}
+
+const CreateThreadModal: React.FC<CreateThreadModalProps> = ({
+  tags,
+  onClose,
+  onAddThread,
+}) => {
   const [anonymous, setAnonymous] = useState(false)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [suggestedTags, setSuggestedTags] = useState<string[]>([])
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-
-  // Mock data for tag suggestions
-  const tagSuggestions: string[] = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5']
+  const [suggestedTags, setSuggestedTags] = useState<ITag[]>([])
+  const [selectedTags, setSelectedTags] = useState<ITag[]>([])
 
   const handleTagInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setInputValue(value)
-    // Filter tag suggestions based on input value
-    const filteredTags = tagSuggestions.filter((tag) =>
-      tag.toLowerCase().includes(value.toLowerCase())
+    const filteredTags = tags.filter((tag) =>
+      tag.title.toLowerCase().includes(value.toLowerCase())
     )
     setSuggestedTags(filteredTags)
   }
 
-  const handleTagSelect = (tag: string) => {
+  const handleTagSelect = (tag: ITag) => {
     setInputValue('')
     setSuggestedTags([])
     setSelectedTags((prevTags) => [...prevTags, tag])
   }
 
-  const handleRemoveTag = (tag: string) => {
-    setSelectedTags((prevTags) => prevTags.filter((prevTag) => prevTag !== tag))
+  const handleRemoveTag = (tag: ITag) => {
+    setSelectedTags((prevTags) => prevTags.filter((prevTag) => prevTag.id !== tag.id))
   }
 
   const handleCreateThread = async () => {
     setIsLoading(true)
-    // Simulating API request delay
     await new Promise((resolve) => setTimeout(resolve, 2000))
-    // Mock logic to create a new thread
-    // const theBigDay = new Date(1962, 6, 7, 12)
     const newThread: Thread = {
       id: Math.random(),
       title,
       author: anonymous ? 'Anonymous' : 'User',
       createdDate: new Date().toISOString().split('T')[0],
-      // createdDate: theBigDay.toISOString().split('T')[0],
       lastReplyDate: new Date().toISOString().split('T')[0],
       tags: selectedTags,
       repliesCount: 0,
     }
-    // After creation, you can close the modal and reset form fields
     onAddThread(newThread)
     onClose()
     setIsLoading(false)
@@ -319,33 +405,31 @@ const CreateThreadModal: React.FC<{
             />
             {suggestedTags.length > 0 && (
               <div className='absolute top-full bg-white border border-gray-300 shadow rounded mt-1 w-full'>
-                {suggestedTags.map((tag, index) => (
+                {suggestedTags.map((tag) => (
                   <div
-                    key={index}
+                    key={tag.id}
                     className='px-4 py-2 cursor-pointer hover:bg-gray-100'
                     onClick={() => handleTagSelect(tag)}
                   >
-                    {tag}
+                    {tag.title}
                   </div>
                 ))}
               </div>
             )}
           </div>
-          {/* Selected tags */}
           <div className='flex flex-wrap mb-2'>
-            {selectedTags.map((tag, index) => (
+            {selectedTags.map((tag) => (
               <div
-                key={index}
+                key={tag.id}
                 className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center'
               >
-                <span>{tag}</span>
+                <span>{tag.title}</span>
                 <button className='ml-2 text-xs' onClick={() => handleRemoveTag(tag)}>
                   &times;
                 </button>
               </div>
             ))}
           </div>
-          {/* Tag suggestion list */}
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -355,7 +439,9 @@ const CreateThreadModal: React.FC<{
         </div>
         <button
           onClick={handleCreateThread}
-          className={`bg-blue-500 text-white px-4 py-2 rounded ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`bg-blue-500 text-white px-4 py-2 rounded ${
+            isLoading ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
           {isLoading ? 'Creating...' : 'Create Post'}
         </button>
@@ -363,3 +449,22 @@ const CreateThreadModal: React.FC<{
     </div>
   )
 }
+
+interface ITagCardProps {
+  tag: ITag
+  handleTagSelect: (tag: ITag) => void
+}
+
+const TagCard: React.FC<ITagCardProps> = ({ tag, handleTagSelect }) => {
+  return (
+    <div
+      key={tag.id}
+      className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
+      onClick={() => handleTagSelect(tag)}
+    >
+      {tag.title}
+    </div>
+  )
+}
+
+export default ForumPage

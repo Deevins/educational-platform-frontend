@@ -3,8 +3,9 @@ import { NavLink } from 'react-router-dom'
 import { Navbar } from '@/components/Navbar.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 
-const CommonHeader = () => {
+const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
 
   const handleLogin = () => {
@@ -18,11 +19,10 @@ const CommonHeader = () => {
   return (
     <header className='bg-gray-300 text-black p-4 flex justify-between items-center'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
-        <img
-          src='https://flowbite.com/docs/images/logo.svg'
-          alt='Логотип'
-          className='h-8 mr-4'
-        />
+        <Avatar className={'hover:scale-105'}>
+          <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
+          <AvatarFallback>Логотип</AvatarFallback>
+        </Avatar>
         <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
       </NavLink>
 
@@ -58,4 +58,4 @@ const CommonHeader = () => {
   )
 }
 
-export default CommonHeader
+export default Header

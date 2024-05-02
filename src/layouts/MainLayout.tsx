@@ -2,7 +2,7 @@ import React from 'react'
 
 import styles from './MainLayout.module.scss'
 import CommonFooter from '@/components/footers/CommonFooter.tsx'
-import CommonHeader from '@/components/headers/CommonHeader.tsx'
+import Header from '@/components/headers/Header.tsx'
 
 type PropsType = {
   children: React.ReactNode
@@ -11,7 +11,7 @@ type PropsType = {
 export const MainLayout: React.FC<PropsType> = ({ children }) => {
   return (
     <div className={styles.root}>
-      <CommonHeader />
+      <Header />
       <div className={'h-screen'}>{children}</div>
       <CommonFooter />
     </div>

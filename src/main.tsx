@@ -19,7 +19,6 @@ import TermsOfServicePage from '@/pages/TermsOfServicePage.tsx'
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage.tsx'
 import CoursesSearchPage from '@/pages/CoursesSearchPage.tsx'
 import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
-import ThreadCreationPage from '@/pages/ThreadCreationPage.tsx'
 import ProfilesSearchPage from '@/pages/ProfilesSearchPage.tsx'
 import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
@@ -55,11 +54,7 @@ const router = createBrowserRouter([
         element: <ForumPage />,
         errorElement: <NotFoundPage />,
       },
-      {
-        path: '/forum/create/thread',
-        element: <ThreadCreationPage />,
-        errorElement: <NotFoundPage />,
-      },
+
       {
         path: '/profiles',
         element: <ProfilesListPage />,

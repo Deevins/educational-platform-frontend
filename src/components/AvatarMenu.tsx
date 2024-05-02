@@ -87,7 +87,7 @@ const AvatarMenu: React.FC = () => {
           className='p-1 text-gray-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring'
           onClick={() => setIsOpen(!isOpen)}
         >
-          <Avatar className={'hover:scale-105'}>
+          <Avatar className={'hover:scale-[135%] scale-125'}>
             <AvatarImage src={user.avatar} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
