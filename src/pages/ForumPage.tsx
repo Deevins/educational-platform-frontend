@@ -53,13 +53,7 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
         </div>
         <div className='flex items-center'>
           {tags.slice(0, 3).map((tag, index) => (
-            <div
-              key={index}
-              className='bg-gray-200 text-xs rounded-full px-2 mr-1 hover:cursor-pointer hover:scale-110'
-              onClick={() => onTagClick(tag)}
-            >
-              {tag.title}
-            </div>
+            <TagCard key={index} tag={tag} handleTagSelect={() => onTagClick(tag)} />
           ))}
           {tags.length > 3 && (
             <div
@@ -68,7 +62,7 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
               onMouseLeave={handleMouseLeave}
             >
               <div className='bg-gray-200 text-xs rounded-full px-2 mr-1 cursor-pointer'>
-                {tags.length - 3} more
+                + {tags.length - 3} more
               </div>
               {showTagsPopup && (
                 <div className='absolute right-[calc(100% + 10px)] top-0 mt-2 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex flex-col'>
@@ -234,8 +228,8 @@ const ForumPage: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col md:flex-row justify-center'>
-      <div className='w-full md:w-3/4 p-4'>
+    <div className='flex flex-col lg:flex-row justify-center'>
+      <div className='w-full lg:w-3/4 p-4'>
         <input
           type='text'
           value={searchQuery}
@@ -243,20 +237,32 @@ const ForumPage: React.FC = () => {
           placeholder='Search threads...'
           className='w-full border border-gray-300 p-2 rounded mb-4'
         />
-        {filteredThreads.map((thread) => (
-          <ThreadCard
-            key={thread.id}
-            title={thread.title}
-            author={thread.author}
-            createdDate={thread.createdDate}
-            lastReplyDate={thread.lastReplyDate}
-            repliesCount={thread.repliesCount}
-            tags={thread.tags}
-            onTagClick={handleTagClick}
-          />
-        ))}
+        {filteredThreads.length > 0 ? (
+          filteredThreads.map((thread) => (
+            <ThreadCard
+              key={thread.id}
+              title={thread.title}
+              author={thread.author}
+              createdDate={thread.createdDate}
+              lastReplyDate={thread.lastReplyDate}
+              repliesCount={thread.repliesCount}
+              tags={thread.tags}
+              onTagClick={handleTagClick}
+            />
+          ))
+        ) : (
+          <div className='flex flex-col items-center justify-center h-full'>
+            <p className='text-center mb-4'>No threads found.</p>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className={'bg-red-500 text-white px-4 py-2 rounded'}
+            >
+              Create new thread
+            </button>
+          </div>
+        )}
       </div>
-      <div className='w-full md:w-1/4 p-4 border-l border-gray-200'>
+      <div className='w-full lg:w-1/4 p-4 border-l border-gray-200'>
         <div className='mb-4'>
           {activeTags.map((tag, index) => (
             <div
@@ -277,7 +283,11 @@ const ForumPage: React.FC = () => {
           <h2 className='text-lg font-semibold mb-2'>Tags</h2>
           <div className='flex flex-wrap'>
             {tags.map((tag) => (
-              <TagCard tag={tag} handleTagSelect={() => handleTagSelect(tag)} />
+              <TagCard
+                key={tag.id}
+                tag={tag}
+                handleTagSelect={() => handleTagSelect(tag)}
+              />
             ))}
           </div>
         </div>
