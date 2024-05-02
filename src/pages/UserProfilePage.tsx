@@ -40,6 +40,62 @@ const friendsData: IUser[] = [
     email: 'friend2@example.com',
     avatar: 'https://github.com/shadcn.png',
   },
+  {
+    id: 2,
+    username: 'friend1',
+    fullName: 'Friend One',
+    email: 'friend1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 3,
+    username: 'friend2',
+    fullName: 'Friend Two',
+    email: 'friend2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 2,
+    username: 'friend1',
+    fullName: 'Friend One',
+    email: 'friend1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 3,
+    username: 'friend2',
+    fullName: 'Friend Two',
+    email: 'friend2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 2,
+    username: 'friend1',
+    fullName: 'Friend One',
+    email: 'friend1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 3,
+    username: 'friend2',
+    fullName: 'Friend Two',
+    email: 'friend2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 2,
+    username: 'friend1',
+    fullName: 'Friend One',
+    email: 'friend1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 3,
+    username: 'friend2',
+    fullName: 'Friend Two',
+    email: 'friend2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
 ]
 
 const requestsData: IUser[] = [
@@ -106,34 +162,46 @@ const FriendsList: React.FC<{ friends: IUser[] }> = ({ friends }) => {
     console.log(`Viewing profile of friend with id ${friendId}`)
   }
 
+  const friendsRows = friends.reduce((acc: IUser[][], friend, index) => {
+    const row = Math.floor(index / 3)
+    acc[row] = [...(acc[row] || []), friend]
+    return acc
+  }, [])
+
   return (
     <div>
-      {friends.length === 0 ? (
+      {friendsRows.length === 0 ? (
         <p className='text-gray-500 text-center'>Список пуст</p>
       ) : (
-        friends.map((friend) => (
-          <div key={friend.id} className='flex items-center mb-4'>
-            <Avatar className={'w-12 h-12 mr-4'}>
-              <AvatarImage src={friend.avatar} />
-              <AvatarFallback>{friend.username}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className='text-lg font-semibold'>{friend.fullName}</h2>
-              <p className='text-gray-600'>Username: {friend.username}</p>
-              <p className='text-gray-600'>{friend.email}</p>
-              <button
-                className='ml-2 text-red-500 hover:text-red-700'
-                onClick={() => handleRemoveFriend(friend.id)}
-              >
-                Remove
-              </button>
-              <button
-                className='ml-2 text-blue-500 hover:text-blue-700'
-                onClick={() => handleViewProfile(friend.id)}
-              >
-                View Profile
-              </button>
-            </div>
+        friendsRows.map((row, index) => (
+          <div key={index} className='flex flex-wrap -mx-2 mb-4'>
+            {row.map((friend) => (
+              <div key={friend.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
+                <div className='flex items-center'>
+                  <Avatar className={'w-12 h-12 mr-4'}>
+                    <AvatarImage src={friend.avatar} />
+                    <AvatarFallback>{friend.username}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className='text-lg font-semibold'>{friend.fullName}</h2>
+                    <p className='text-gray-600'>Username: {friend.username}</p>
+                    <p className='text-gray-600'>{friend.email}</p>
+                    <button
+                      className='ml-2 text-red-500 hover:text-red-700'
+                      onClick={() => handleRemoveFriend(friend.id)}
+                    >
+                      Remove
+                    </button>
+                    <button
+                      className='ml-2 text-blue-500 hover:text-blue-700'
+                      onClick={() => handleViewProfile(friend.id)}
+                    >
+                      View Profile
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ))
       )}
@@ -155,34 +223,46 @@ const FriendRequests: React.FC<{ requests: IUser[] }> = ({ requests }) => {
     // Реализуйте отправку запроса на сервер для отклонения запроса в друзья
   }
 
+  const requestsRows = requests.reduce((acc: IUser[][], request, index) => {
+    const row = Math.floor(index / 3)
+    acc[row] = [...(acc[row] || []), request]
+    return acc
+  }, [])
+
   return (
     <div>
-      {requests.length === 0 ? (
+      {requestsRows.length === 0 ? (
         <p className='text-gray-500 text-center'>Список пуст</p>
       ) : (
-        requests.map((request) => (
-          <div key={request.id} className='flex items-center mb-4'>
-            <Avatar className={'w-12 h-12 mr-4'}>
-              <AvatarImage src={request.avatar} />
-              <AvatarFallback>{request.username}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className='text-lg font-semibold'>{request.fullName}</h2>
-              <p className='text-gray-600'>Username: {request.username}</p>
-              <p className='text-gray-600'>{request.email}</p>
-              <button
-                className='mr-2 text-green-500 hover:text-green-700'
-                onClick={() => handleAcceptRequest(request.id)}
-              >
-                Accept
-              </button>
-              <button
-                className='mr-2 text-red-500 hover:text-red-700'
-                onClick={() => handleDeclineRequest(request.id)}
-              >
-                Decline
-              </button>
-            </div>
+        requestsRows.map((row, index) => (
+          <div key={index} className='flex flex-wrap -mx-2 mb-4'>
+            {row.map((request) => (
+              <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
+                <div className='flex items-center'>
+                  <Avatar className={'w-12 h-12 mr-4'}>
+                    <AvatarImage src={request.avatar} />
+                    <AvatarFallback>{request.username}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className='text-lg font-semibold'>{request.fullName}</h2>
+                    <p className='text-gray-600'>Username: {request.username}</p>
+                    <p className='text-gray-600'>{request.email}</p>
+                    <button
+                      className='mr-2 text-green-500 hover:text-green-700'
+                      onClick={() => handleAcceptRequest(request.id)}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className='mr-2 text-red-500 hover:text-red-700'
+                      onClick={() => handleDeclineRequest(request.id)}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ))
       )}
@@ -197,28 +277,40 @@ const SentRequests: React.FC<{ sentRequests: IUser[] }> = ({ sentRequests }) => 
     console.log(`Canceling friend request with id ${requestId}`)
   }
 
+  const sentRequestsRows = sentRequests.reduce((acc: IUser[][], request, index) => {
+    const row = Math.floor(index / 3)
+    acc[row] = [...(acc[row] || []), request]
+    return acc
+  }, [])
+
   return (
     <div>
-      {sentRequests.length === 0 ? (
+      {sentRequestsRows.length === 0 ? (
         <p className='text-gray-500 text-center'>Список пуст</p>
       ) : (
-        sentRequests.map((request) => (
-          <div key={request.id} className='flex items-center mb-4'>
-            <Avatar className={'w-12 h-12 mr-4'}>
-              <AvatarImage src={request.avatar} />
-              <AvatarFallback>{request.username}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className='text-lg font-semibold'>{request.fullName}</h2>
-              <p className='text-gray-600'>Username: {request.username}</p>
-              <p className='text-gray-600'>{request.email}</p>
-              <button
-                className='text-red-500 hover:text-red-700'
-                onClick={() => handleCancelRequest(request.id)}
-              >
-                Cancel Request
-              </button>
-            </div>
+        sentRequestsRows.map((row, index) => (
+          <div key={index} className='flex flex-wrap -mx-2 mb-4'>
+            {row.map((request) => (
+              <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
+                <div className='flex items-center'>
+                  <Avatar className={'w-12 h-12 mr-4'}>
+                    <AvatarImage src={request.avatar} />
+                    <AvatarFallback>{request.username}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className='text-lg font-semibold'>{request.fullName}</h2>
+                    <p className='text-gray-600'>Username: {request.username}</p>
+                    <p className='text-gray-600'>{request.email}</p>
+                    <button
+                      className='text-red-500 hover:text-red-700'
+                      onClick={() => handleCancelRequest(request.id)}
+                    >
+                      Cancel Request
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ))
       )}
@@ -261,7 +353,7 @@ const UserPage: React.FC = () => {
   const [currentFriendsSubTab, setCurrentFriendsSubTab] =
     useState<FriendsSubTab>('friends')
   const [isOnline, setIsOnline] = useState(false)
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [, setPhoneNumber] = useState('')
   const { isOpen, openModal, closeModal, ref } = useModal() // Используем наш хук для модального окна
 
   useEffect(() => {
