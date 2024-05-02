@@ -1,13 +1,12 @@
 import { useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Navbar } from '@/components/Navbar.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 
 const InstructorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
-  const [isInstructorModeOpen, setIsInstructorModeOpen] = useState(false)
+  const [isTeacherModeOpen, setIsTeacherModeOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
 
@@ -19,14 +18,14 @@ const InstructorHeader = () => {
     setIsAuthenticated(false)
   }
 
-  const openStudentMode = () => {
+  const openTeacherMode = () => {
     setIsHovered(true)
-    setIsInstructorModeOpen(true)
+    setIsTeacherModeOpen(true)
   }
 
-  const closeStudentMode = () => {
+  const closeTeacherMode = () => {
     setIsHovered(false)
-    setIsInstructorModeOpen(false)
+    setIsTeacherModeOpen(false)
   }
 
   const handleMouseEnter = () => {
@@ -35,11 +34,12 @@ const InstructorHeader = () => {
 
   const handleMouseLeave = () => {
     setIsHovered(false)
-    setIsInstructorModeOpen(false)
+    setIsTeacherModeOpen(false)
   }
 
   const handleSwitchToStudentMode = () => {
     // TODO: after redux fix and make logic to switch current user role
+    console.log('successfully switched to student')
   }
 
   return (
@@ -52,41 +52,33 @@ const InstructorHeader = () => {
         <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
       </NavLink>
 
-      <div className='text-center flex justify-center space-x-4'>
-        <Navbar />
-      </div>
-
-      <div className='flex space-x-4 lg:mr-16'>
+      <div className='flex space-x-4 lg:mr-16 text-center'>
         <div
-          className='relative'
+          className='relative pb-[2px]'
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <button
-            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer hover:text-purple-700'
-            onMouseEnter={openStudentMode}
+            className='text-black rounded-lg pt-4 px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer hover:text-purple-700'
+            onMouseEnter={openTeacherMode}
           >
-            <NavLink to={'/teaching'} onClick={handleSwitchToStudentMode}>
-              Преподаватель
+            <NavLink
+              to={'/teaching'}
+              // onClick={handleSwitchToInstructorMode}
+            >
+              Студент
             </NavLink>
           </button>
-          {isHovered && isInstructorModeOpen && (
+          {isHovered && isTeacherModeOpen && (
             <div
               ref={dialogRef}
               className='absolute left-0 mt-8 w-full lg:w-64 bg-white border border-gray-300 rounded-lg shadow-lg'
-              onMouseLeave={closeStudentMode}
-              style={{ top: 'calc(20% + 10px)', left: '-30px' }}
+              onMouseLeave={closeTeacherMode}
+              style={{ top: 'calc(20% + 20px)', left: '-70%' }}
             >
               <div className='p-4'>
-                <p className='text-lg font-bold mb-2'>Переключитесь в режим студента</p>
-                <p>Чтобы вернуться к созданию курсов.</p>
-                <NavLink
-                  to={'/'}
-                  onClick={handleSwitchToStudentMode}
-                  className='block bg-black text-white rounded-lg px-4 py-2 mt-4 hover:bg-gray-800 mr-2'
-                >
-                  Узнать подробнее
-                </NavLink>
+                <p>Переключитесь в режим студента, чтобы вернуться к изучению курсов</p>
+                <NavLink to={'/'} onClick={handleSwitchToStudentMode}></NavLink>
               </div>
             </div>
           )}

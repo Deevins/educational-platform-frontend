@@ -35,7 +35,7 @@ const AvatarMenu: React.FC = () => {
     try {
       setLoading(true)
       // TODO: after backend registration fix
-      await axios.post('/api/logout').then((r) => console.log(`xyi ${r.status}`))
+      await axios.post('/api/logout').then((r) => console.log(`ddd ${r.status}`))
 
       localStorage.removeItem('accessToken')
     } catch (error) {
@@ -80,22 +80,6 @@ const AvatarMenu: React.FC = () => {
     }
     setIsOpen(false)
   }
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (menuRef.current) {
-      const rect = menuRef.current.getBoundingClientRect()
-      const mouseX = event.clientX
-      const mouseY = event.clientY
-
-      const isNear =
-        mouseX >= rect.left - 10 &&
-        mouseX <= rect.right + 10 &&
-        mouseY >= rect.top - 10 &&
-        mouseY <= rect.bottom + 10
-
-      setIsNearMenu(isNear)
-    }
-  }
-
   React.useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
@@ -104,20 +88,20 @@ const AvatarMenu: React.FC = () => {
   }, [])
 
   const menuItems: MenuItem[] = [
-    { label: 'Моя страница', to: `/profiles/${user.id}` },
-    { label: 'Курсы', to: '/courses' },
-    { label: 'Избранное', to: '/favorites' },
-    { label: 'Настройки', to: '/settings' },
-    { label: 'Выйти', to: '/auth/logout', onClick: handleLogout },
+    { label: 'Моя страница', to: `/users/${user.id}` },
+    { label: 'Курсы', to: `/users/${user.id}/courses` },
+    { label: 'Избранное', to: `/users/${user.id}/favorites` },
+    { label: 'Настройки', to: `/users/${user.id}/settings` },
     {
       label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,
       onClick: handleThemeSwitch,
       to: '',
     },
+    { label: 'Выйти', to: '/auth/logout', onClick: handleLogout },
   ]
 
   return (
-    <div className='relative' ref={menuRef} onMouseMove={handleMouseMove}>
+    <div className='relative' ref={menuRef}>
       <div className='flex items-center'>
         <Button
           className='p-1 text-gray-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring'
@@ -151,14 +135,16 @@ const AvatarMenu: React.FC = () => {
                   {item.label}
                 </Button>
               ) : (
-                <Button
-                  key={index}
-                  onClick={item.onClick}
-                  className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 active:bg-gray-200 active:text-gray-900 transform active:scale-95 w-full text-left'
-                  role='menuitem'
-                >
-                  <NavLink to={item.to}>{item.label}</NavLink>
-                </Button>
+                <NavLink to={item.to}>
+                  <Button
+                    key={index}
+                    onClick={item.onClick}
+                    className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900 active:bg-gray-200 active:text-gray-900 transform active:scale-95 w-full text-left'
+                    role='menuitem'
+                  >
+                    {item.label}
+                  </Button>
+                </NavLink>
               )
             )}
           </div>

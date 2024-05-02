@@ -19,9 +19,9 @@ import TermsOfServicePage from '@/pages/TermsOfServicePage.tsx'
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage.tsx'
 import CoursesSearchPage from '@/pages/CoursesSearchPage.tsx'
 import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
-import ProfilesSearchPage from '@/pages/ProfilesSearchPage.tsx'
 import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
+import TeachingPage from '@/pages/TeachingPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -54,18 +54,11 @@ const router = createBrowserRouter([
         element: <ForumPage />,
         errorElement: <NotFoundPage />,
       },
-
       {
-        path: '/profiles',
+        path: '/users',
         element: <ProfilesListPage />,
         errorElement: <NotFoundPage />,
       },
-      {
-        path: '/profiles/search',
-        element: <ProfilesSearchPage />,
-        errorElement: <NotFoundPage />,
-      },
-
       {
         path: '/terms-of-service',
         element: <TermsOfServicePage />,
@@ -76,9 +69,8 @@ const router = createBrowserRouter([
         element: <PrivacyPolicyPage />,
         errorElement: <NotFoundPage />,
       },
-
       {
-        path: '/profiles/:profileID',
+        path: '/users/:userID',
         element: <UserProfilePage />,
         errorElement: <NotFoundPage />,
       },
@@ -92,6 +84,7 @@ const router = createBrowserRouter([
         element: <CoursePage />,
         errorElement: <NotFoundPage />,
       },
+      { path: '/teaching', element: <TeachingPage />, errorElement: <NotFoundPage /> },
     ],
   },
   {
