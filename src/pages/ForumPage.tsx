@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 
 interface ITag {
   id: number
@@ -156,7 +157,10 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
   }
 
   return (
-    <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4'>
+    <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4 -z-10'>
+      <Helmet>
+        <title>Форум</title>
+      </Helmet>
       <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
         <h2 className='text-lg font-semibold mb-2'>{title}</h2>
         <div className='flex items-center mb-2'>
@@ -173,11 +177,11 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <div className='bg-gray-200 text-xs rounded-full px-2 mr-1 cursor-pointer'>
+              <div className='bg-gray-200 text-xs px-2 mr-1 cursor-pointer'>
                 + {tags.length - 3} more
               </div>
               {showTagsPopup && (
-                <div className='absolute right-[calc(100% + 10px)] top-0 mt-2 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex flex-col'>
+                <div className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex flex-col z-50'>
                   {tags.slice(3).map((tag, index) => (
                     <TagCard
                       key={index}
@@ -383,7 +387,7 @@ const ForumPage: React.FC = () => {
         <div className='mb-4'>
           <button
             onClick={() => setFilter('hot')}
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${
+            className={`bg-blue-500 text-white px-4 py-2 mr-3  ${
               filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -391,7 +395,7 @@ const ForumPage: React.FC = () => {
           </button>
           <button
             onClick={() => setFilter('newest')}
-            className={`bg-blue-500 text-white px-4 py-2 rounded ${
+            className={`bg-blue-500 text-white px-4 py-2  ${
               filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -554,12 +558,11 @@ interface ITagCardProps {
   handleTagSelect: (tag: ITag) => void
 }
 
-// TODO: починить, если выбираем тег - убирать из активного
 const TagCard: React.FC<ITagCardProps> = ({ tag, handleTagSelect }) => {
   return (
     <div
       key={tag.id}
-      className='bg-gray-100 text-black px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
+      className='bg-gray-200 text-xs px-2 mr-1 cursor-pointer'
       onClick={() => handleTagSelect(tag)}
     >
       {tag.title}

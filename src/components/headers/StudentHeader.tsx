@@ -76,7 +76,7 @@ const InstructorHeader = () => {
               <div
                 className='absolute left-0 mt-8 w-full lg:w-64 bg-white border border-gray-300 rounded-lg shadow-lg'
                 onMouseLeave={closeStudentMode}
-                style={{ top: 'calc(20% + 10px)', left: '-30px' }}
+                style={{ top: 'calc(20% + 8px)', left: '-30px' }}
               >
                 <div className='p-4 flex text-center flex-col'>
                   <p className='text-mb font-bold mb-2 '>

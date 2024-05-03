@@ -39,7 +39,7 @@ const settings: Settings = {
 
 const SliderWithImageAndText: React.FC = () => {
   return (
-    <Slider {...settings}>
+    <Slider {...settings} className={'-z-50'}>
       {items.map((item, idx) => (
         <CarouselItem key={idx} image={item.image} title={item.title} text={item.text} />
       ))}
