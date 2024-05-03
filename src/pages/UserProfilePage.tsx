@@ -3,6 +3,10 @@ import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import PhoneInput from 'react-phone-input-2'
 import useModal from '@/utils/hooks/useModal.ts'
+import Pagination from '@/components/Pagination.tsx'
+
+const ITEMS_PER_PAGE = 6
+const ITEMS_PER_ROW = 3
 
 export interface IUser {
   id: number
@@ -130,6 +134,48 @@ const sentRequestsData: IUser[] = [
     email: 'sentRequest2@example.com',
     avatar: 'https://github.com/shadcn.png',
   },
+  {
+    id: 6,
+    username: 'sentRequest1',
+    fullName: 'Sent Request One',
+    email: 'sentRequest1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 6,
+    username: 'sentRequest1',
+    fullName: 'Sent Request One',
+    email: 'sentRequest1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 7,
+    username: 'sentRequest2',
+    fullName: 'Sent Request Two',
+    email: 'sentRequest2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 7,
+    username: 'sentRequest2',
+    fullName: 'Sent Request Two',
+    email: 'sentRequest2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 6,
+    username: 'sentRequest1',
+    fullName: 'Sent Request One',
+    email: 'sentRequest1@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
+  {
+    id: 7,
+    username: 'sentRequest2',
+    fullName: 'Sent Request Two',
+    email: 'sentRequest2@example.com',
+    avatar: 'https://github.com/shadcn.png',
+  },
   // Добавьте другие отправленные запросы по аналогии
 ]
 
@@ -149,185 +195,258 @@ const courses: Course[] = [
     title: 'title 3',
     description: 'description 3',
   },
+  {
+    id: 1,
+    title: 'title 1',
+    description: 'description 1',
+  },
+  {
+    id: 2,
+    title: 'title 2',
+    description: 'description 2',
+  },
+  {
+    id: 3,
+    title: 'title 3',
+    description: 'description 3',
+  },
+  {
+    id: 1,
+    title: 'title 1',
+    description: 'description 1',
+  },
+  {
+    id: 2,
+    title: 'title 2',
+    description: 'description 2',
+  },
+  {
+    id: 3,
+    title: 'title 3',
+    description: 'description 3',
+  },
 ]
 
+const renderItemsPerPage = (items: IUser[] | Course[], currentPage: number) => {
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, items.length)
+  return items.slice(startIndex, endIndex)
+}
+
+const renderItemsInRows = (items: IUser[] | Course[]) => {
+  const rows = []
+  for (let i = 0; i < items.length; i += ITEMS_PER_ROW) {
+    rows.push(items.slice(i, i + ITEMS_PER_ROW))
+  }
+  return rows
+}
+
 const FriendsList: React.FC<{ friends: IUser[] }> = ({ friends }) => {
-  const handleRemoveFriend = (friendId: number) => {
-    // Здесь должен быть запрос на сервер для удаления друга
-    console.log(`Removing friend with id ${friendId}`)
-  }
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const handleViewProfile = (friendId: number) => {
-    // Здесь можно написать код для перехода на страницу профиля друга
-    console.log(`Viewing profile of friend with id ${friendId}`)
-  }
+  const paginatedFriends = renderItemsPerPage(friends, currentPage)
+  const friendsRows = renderItemsInRows(paginatedFriends)
 
-  const friendsRows = friends.reduce((acc: IUser[][], friend, index) => {
-    const row = Math.floor(index / 3)
-    acc[row] = [...(acc[row] || []), friend]
-    return acc
-  }, [])
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
 
   return (
     <div>
-      {friendsRows.length === 0 ? (
-        <p className='text-gray-500 text-center'>Список пуст</p>
-      ) : (
-        friendsRows.map((row, index) => (
-          <div key={index} className='flex flex-wrap -mx-2 mb-4'>
-            {row.map((friend) => (
-              <div key={friend.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
-                <div className='flex items-center'>
-                  <Avatar className={'w-12 h-12 mr-4'}>
-                    <AvatarImage src={friend.avatar} />
-                    <AvatarFallback>{friend.username}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className='text-lg font-semibold'>{friend.fullName}</h2>
-                    <p className='text-gray-600'>Username: {friend.username}</p>
-                    <p className='text-gray-600'>{friend.email}</p>
-                    <button
-                      className='ml-2 text-red-500 hover:text-red-700'
-                      onClick={() => handleRemoveFriend(friend.id)}
-                    >
-                      Remove
-                    </button>
-                    <button
-                      className='ml-2 text-blue-500 hover:text-blue-700'
-                      onClick={() => handleViewProfile(friend.id)}
-                    >
-                      View Profile
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))
-      )}
+      {friendsRows.map((row, index) => (
+        <div key={index} className='flex flex-wrap -mx-2 mb-4'>
+          {row.map((friend) => (
+            <div key={friend.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
+              <FriendCard friend={friend as IUser} />
+            </div>
+          ))}
+        </div>
+      ))}
+      <Pagination
+        currentPage={currentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={friends.length}
+        onClick={handleClick}
+      />
     </div>
   )
 }
 
-// FriendRequests.tsx
+interface FriendCardProps {
+  friend: IUser
+}
+
+const FriendCard: React.FC<FriendCardProps> = ({ friend }) => {
+  const handleRemoveFriend = () => {
+    console.log(`Removing friend with id ${friend.id}`)
+  }
+
+  return (
+    <div className='flex items-center'>
+      <Avatar className={'w-12 h-12 mr-4'}>
+        <AvatarImage src={friend.avatar} />
+        <AvatarFallback>{friend.username}</AvatarFallback>
+      </Avatar>
+      <div>
+        <h2 className='text-lg font-semibold'>{friend.fullName}</h2>
+        <p className='text-gray-600'>
+          <b>Username: </b> {friend.username}
+        </p>
+        <p className='text-gray-600'>{friend.email}</p>
+        <NavLink to={`/users/${friend.id}`}>
+          <button className='ml-2 text-blue-500 hover:text-blue-700'>View Profile</button>
+        </NavLink>
+        <button
+          className='ml-2 text-red-500 hover:text-red-700'
+          onClick={handleRemoveFriend}
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  )
+}
+
 const FriendRequests: React.FC<{ requests: IUser[] }> = ({ requests }) => {
-  const handleAcceptRequest = (requestId: number) => {
-    // Здесь должен быть запрос на сервер для принятия запроса в друзья
-    console.log(`Accepting friend request with id ${requestId}`)
-    // Реализуйте отправку запроса на сервер для принятия запроса в друзья
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
   }
 
-  const handleDeclineRequest = (requestId: number) => {
-    // Здесь должен быть запрос на сервер для отклонения запроса в друзья
-    console.log(`Declining friend request with id ${requestId}`)
-    // Реализуйте отправку запроса на сервер для отклонения запроса в друзья
-  }
-
-  const requestsRows = requests.reduce((acc: IUser[][], request, index) => {
-    const row = Math.floor(index / 3)
-    acc[row] = [...(acc[row] || []), request]
-    return acc
-  }, [])
+  const paginatedRequests = renderItemsPerPage(requests, currentPage)
+  const requestsRows = renderItemsInRows(paginatedRequests)
 
   return (
     <div>
-      {requestsRows.length === 0 ? (
-        <p className='text-gray-500 text-center'>Список пуст</p>
-      ) : (
-        requestsRows.map((row, index) => (
-          <div key={index} className='flex flex-wrap -mx-2 mb-4'>
-            {row.map((request) => (
-              <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
-                <div className='flex items-center'>
-                  <Avatar className={'w-12 h-12 mr-4'}>
-                    <AvatarImage src={request.avatar} />
-                    <AvatarFallback>{request.username}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className='text-lg font-semibold'>{request.fullName}</h2>
-                    <p className='text-gray-600'>Username: {request.username}</p>
-                    <p className='text-gray-600'>{request.email}</p>
-                    <button
-                      className='mr-2 text-green-500 hover:text-green-700'
-                      onClick={() => handleAcceptRequest(request.id)}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className='mr-2 text-red-500 hover:text-red-700'
-                      onClick={() => handleDeclineRequest(request.id)}
-                    >
-                      Decline
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))
-      )}
+      {requestsRows.map((row, index) => (
+        <div key={index} className='flex flex-wrap -mx-2 mb-4'>
+          {row.map((request) => (
+            <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
+              <FriendRequestCard request={request as IUser} />
+            </div>
+          ))}
+        </div>
+      ))}
+      <Pagination
+        currentPage={currentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={requests.length}
+        onClick={handleClick}
+      />
     </div>
   )
 }
 
-// SentRequests.tsx
+const FriendRequestCard: React.FC<{ request: IUser }> = ({ request }) => {
+  const handleAcceptRequest = () => {
+    console.log(`Accepting friend request with id ${request.id}`)
+    // Здесь можно добавить логику для принятия запроса
+  }
+
+  const handleDeclineRequest = () => {
+    console.log(`Declining friend request with id ${request.id}`)
+    // Здесь можно добавить логику для отклонения запроса
+  }
+
+  return (
+    <div className='flex items-center'>
+      <Avatar className={'w-12 h-12 mr-4'}>
+        <AvatarImage src={request.avatar} />
+        <AvatarFallback>{request.username}</AvatarFallback>
+      </Avatar>
+      <div>
+        <h2 className='text-lg font-semibold'>{request.fullName}</h2>
+        <p className='text-gray-600'>Username: {request.username}</p>
+        <p className='text-gray-600'>{request.email}</p>
+        <button
+          className='mr-2 text-green-500 hover:text-green-700'
+          onClick={handleAcceptRequest}
+        >
+          Accept
+        </button>
+        <button
+          className='mr-2 text-red-500 hover:text-red-700'
+          onClick={handleDeclineRequest}
+        >
+          Decline
+        </button>
+      </div>
+    </div>
+  )
+}
+
 const SentRequests: React.FC<{ sentRequests: IUser[] }> = ({ sentRequests }) => {
-  const handleCancelRequest = (requestId: number) => {
-    // Здесь должен быть запрос на сервер для отмены отправленного запроса в друзья
-    console.log(`Canceling friend request with id ${requestId}`)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
   }
 
-  const sentRequestsRows = sentRequests.reduce((acc: IUser[][], request, index) => {
-    const row = Math.floor(index / 3)
-    acc[row] = [...(acc[row] || []), request]
-    return acc
-  }, [])
+  const paginatedSentRequests = renderItemsPerPage(sentRequests, currentPage)
+  const sentRequestsRows = renderItemsInRows(paginatedSentRequests) as IUser[][]
 
   return (
     <div>
-      {sentRequestsRows.length === 0 ? (
-        <p className='text-gray-500 text-center'>Список пуст</p>
-      ) : (
-        sentRequestsRows.map((row, index) => (
-          <div key={index} className='flex flex-wrap -mx-2 mb-4'>
-            {row.map((request) => (
-              <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
-                <div className='flex items-center'>
-                  <Avatar className={'w-12 h-12 mr-4'}>
-                    <AvatarImage src={request.avatar} />
-                    <AvatarFallback>{request.username}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h2 className='text-lg font-semibold'>{request.fullName}</h2>
-                    <p className='text-gray-600'>Username: {request.username}</p>
-                    <p className='text-gray-600'>{request.email}</p>
-                    <button
-                      className='text-red-500 hover:text-red-700'
-                      onClick={() => handleCancelRequest(request.id)}
-                    >
-                      Cancel Request
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))
-      )}
+      {sentRequestsRows.map((row, index) => (
+        <div key={index} className='flex flex-wrap -mx-2 mb-4'>
+          {row.map((request) => (
+            <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
+              <SentRequestCard request={request} />
+            </div>
+          ))}
+        </div>
+      ))}
+      <Pagination
+        currentPage={currentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={sentRequests.length}
+        onClick={handleClick}
+      />
     </div>
   )
 }
 
-// CoursesList.tsx
+const SentRequestCard: React.FC<{ request: IUser }> = ({ request }) => {
+  const handleCancelRequest = () => {
+    console.log(`Canceling friend request with id ${request.id}`)
+    // Здесь можно добавить логику для отмены запроса
+  }
+
+  return (
+    <div className='flex items-center'>
+      <Avatar className={'w-12 h-12 mr-4'}>
+        <AvatarImage src={request.avatar} />
+        <AvatarFallback>{request.username}</AvatarFallback>
+      </Avatar>
+      <div>
+        <h2 className='text-lg font-semibold'>{request.fullName}</h2>
+        <p className='text-gray-600'>Username: {request.username}</p>
+        <p className='text-gray-600'>{request.email}</p>
+        <button className='text-red-500 hover:text-red-700' onClick={handleCancelRequest}>
+          Cancel Request
+        </button>
+      </div>
+    </div>
+  )
+}
+
 const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const paginatedCourses = renderItemsPerPage(courses, currentPage) as Course[]
+
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
+
   return (
     <div>
       <h3 className='text-xl font-bold mb-4'>Enrolled Courses</h3>
-      {courses.length === 0 ? (
+      {paginatedCourses.length === 0 ? (
         <p className='text-gray-500 text-center'>Список курсов пуст</p>
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {courses.map((course) => (
+          {paginatedCourses.map((course) => (
             <div key={course.id} className='bg-white p-4 rounded-lg shadow-md'>
               <h4 className='text-lg font-semibold'>{course.title}</h4>
               <p className='text-gray-600'>{course.description}</p>
@@ -341,6 +460,12 @@ const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
           ))}
         </div>
       )}
+      <Pagination
+        currentPage={currentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={courses.length}
+        onClick={handleClick}
+      />
     </div>
   )
 }
@@ -348,7 +473,6 @@ const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
 const UserPage: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null)
   const [updatedUser, setUpdatedUser] = useState<IUser | null>(null)
-  // const [courses, setCourses] = useState<Course[]>([])
   const [currentMainTab, setCurrentMainTab] = useState<MainTab>('friends')
   const [currentFriendsSubTab, setCurrentFriendsSubTab] =
     useState<FriendsSubTab>('friends')
@@ -419,11 +543,8 @@ const UserPage: React.FC = () => {
   }
 
   return (
-    <div className='flex justify-center items-center min-h-screen'>
-      <div
-        className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-0'
-        style={{ marginTop: '-180px' }}
-      >
+    <div className='flex flex-col min-h-screen'>
+      <div className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
         {user ? (
           <>
             <div className='flex items-center mb-4'>
@@ -433,7 +554,9 @@ const UserPage: React.FC = () => {
                   <AvatarFallback>{user.username}</AvatarFallback>
                 </Avatar>
                 <div
-                  className={`absolute bottom-0 right-4 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-500'} border-2 border-white`}
+                  className={`absolute bottom-0 right-4 w-4 h-4 rounded-full ${
+                    isOnline ? 'bg-green-500' : 'bg-gray-500'
+                  } border-2 border-white`}
                 />
               </div>
               <div>
@@ -459,18 +582,26 @@ const UserPage: React.FC = () => {
             </button>
             <div className='mt-4'>
               <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
-              <p className='text-gray-600'>{user.about}</p>
+              <p className='text-black mb-4'>{user.about}</p>
             </div>
             <div className='mt-8'>
               <div className='flex justify-between items-center mb-4'>
                 <button
-                  className={`px-4 py-2 rounded ${currentMainTab === 'friends' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                  className={`px-4 py-2 rounded ${
+                    currentMainTab === 'friends'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-300 text-gray-800'
+                  }`}
                   onClick={() => handleMainTabChange('friends')}
                 >
-                  Friends
+                  Друзья
                 </button>
                 <button
-                  className={`px-4 py-2 rounded ${currentMainTab === 'courses' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                  className={`px-4 py-2 rounded ${
+                    currentMainTab === 'courses'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-300 text-gray-800'
+                  }`}
                   onClick={() => handleMainTabChange('courses')}
                 >
                   Курсы
@@ -478,21 +609,33 @@ const UserPage: React.FC = () => {
               </div>
               {currentMainTab === 'friends' && (
                 <div className='mb-4'>
-                  <div className='flex justify-between items-center'>
+                  <div className='flex justify-between items-center mb-20 '>
                     <button
-                      className={`px-4 py-2 rounded ${currentFriendsSubTab === 'friends' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                      className={`px-4 py-2 rounded ${
+                        currentFriendsSubTab === 'friends'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-300 text-gray-800'
+                      }`}
                       onClick={() => handleFriendsSubTabChange('friends')}
                     >
                       Друзья
                     </button>
                     <button
-                      className={`px-4 py-2 rounded ${currentFriendsSubTab === 'requests' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                      className={`px-4 py-2 rounded ${
+                        currentFriendsSubTab === 'requests'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-300 text-gray-800'
+                      }`}
                       onClick={() => handleFriendsSubTabChange('requests')}
                     >
                       Запросы в друзья
                     </button>
                     <button
-                      className={`px-4 py-2 rounded ${currentFriendsSubTab === 'sentRequests' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'}`}
+                      className={`px-4 py-2 rounded ${
+                        currentFriendsSubTab === 'sentRequests'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-300 text-gray-800'
+                      }`}
                       onClick={() => handleFriendsSubTabChange('sentRequests')}
                     >
                       Отправленные запросы
@@ -516,6 +659,7 @@ const UserPage: React.FC = () => {
           <p className='p-8'>Загрузка...</p>
         )}
       </div>
+
       {isOpen && (
         <div className='fixed inset-0 bg-gray-700 bg-opacity-75 flex justify-center items-center'>
           <div
@@ -546,7 +690,7 @@ const UserPage: React.FC = () => {
                 name='email'
                 onChange={handleChange}
                 placeholder={'Введите ФИО'}
-                className='w-full  rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black lg:pl-2 lg:pt-4'
+                className='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black lg:pl-2 lg:pt-4'
               />
             </div>
             <div className='mb-4'>
