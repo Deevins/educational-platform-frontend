@@ -5,7 +5,6 @@ import './index.css'
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { NotFoundPage } from '@/pages/404.tsx'
-import { IndexPage } from '@/pages'
 import CoursesPage from '@/pages/CoursesPage.tsx'
 import ForumPage from '@/pages/ForumPage.tsx'
 import ProfilesListPage from '@/pages/ProfilesListPage.tsx'
@@ -22,6 +21,8 @@ import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
 import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
 import FirstTimeInstructorPage from '@/pages/FirstTimeInstructorPage.tsx'
+import { IndexPage } from '@/pages'
+import InstructorOnboarding from '@/pages/InstructorOnboarding.tsx'
 
 const router = createBrowserRouter([
   {
@@ -122,6 +123,11 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
     ],
+  },
+  {
+    path: '/teaching/onboarding/teaching-experience',
+    element: <InstructorOnboarding />,
+    errorElement: <NotFoundPage />,
   },
 ])
 // { label: 'Моя страница', to: '/my-page' },
