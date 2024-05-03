@@ -43,7 +43,7 @@ const InstructorHeader = () => {
   }
 
   return (
-    <header className='bg-gray-300 text-black p-4 flex justify-between items-center'>
+    <header className='bg-gray-200 text-black p-4 flex justify-between items-center'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
         <Avatar className={'hover:scale-105'}>
           <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />

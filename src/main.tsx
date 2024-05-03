@@ -89,6 +89,16 @@ const router = createBrowserRouter([
         element: <FirstTimeInstructorPage />,
         errorElement: <NotFoundPage />,
       },
+      {
+        path: '/instructor/:instructorID/courses',
+        element: <div>Курсы преподавателя</div>,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/instructor/:instructorID/course/:courseID/manage', // после manage различные разделы редактирования курса
+        element: <div>редактирование курса преподавателя</div>,
+        errorElement: <NotFoundPage />,
+      },
     ],
   },
   {

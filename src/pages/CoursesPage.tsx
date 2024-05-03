@@ -102,9 +102,9 @@ const coursesData: ICourse[] = [
 
 const CoursesPage: React.FC = () => {
   return (
-    <div className={'min-h-screen'}>
+    <>
       <CoursesList courses={coursesData} />;
-    </div>
+    </>
   )
 }
 

@@ -337,7 +337,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
           <input
             type='text'
             placeholder='Поиск...'
-            className='border border-gray-300 px-4 py-2 w-full rounded-lg focus:outline-none focus:border-blue-500'
+            className='border border-gray-300 px-4 py-2 w-full rounded-full focus:outline-none focus:border-blue-500'
             value={searchText}
             onChange={handleSearchInputChange}
           />

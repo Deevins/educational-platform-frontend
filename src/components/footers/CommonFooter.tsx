@@ -3,7 +3,7 @@ import React from 'react'
 
 const CommonFooter: React.FC = () => {
   return (
-    <footer className='bg-gray-800 text-gray-300 py-4 w-full'>
+    <footer className='bg-gray-800 text-gray-300 w-full max-w-screen p-4 md:flex '>
       <hr className='border-gray-700 my-4' />
       <div className='container mx-auto text-center'>
         <div className='flex flex-col md:flex-row justify-between'>

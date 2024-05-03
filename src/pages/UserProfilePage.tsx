@@ -543,7 +543,7 @@ const UserPage: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col min-h-screen'>
+    <>
       <div className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
         {user ? (
           <>
@@ -733,7 +733,7 @@ const UserPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
 

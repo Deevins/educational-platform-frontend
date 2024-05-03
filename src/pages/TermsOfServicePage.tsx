@@ -2,7 +2,7 @@ import React from 'react'
 
 const TermsOfServicePage = () => {
   return (
-    <div className='min-h-screen mx-36 flex flex-col mb-32 mt-10'>
+    <div className='mx-36 flex flex-col mb-32 mt-10'>
       <hr className='border-t border-gray-400 mb-4 opacity-75' />
       <div className='flex items-center text-center justify-center my-12'>
         <p className='mr-4 text-ellipsis text-lg'>ProdigyPath Education</p>

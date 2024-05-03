@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 const LogOutPage = () => {
   return (
-    <div className='flex justify-center items-center min-h-screen'>
+    <div className='flex justify-center items-center'>
       <div className='text-center'>
         <h2 className='text-2xl font-bold mb-4'>Вы успешно вышли</h2>
         <p className='mb-8'>

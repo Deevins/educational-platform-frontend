@@ -24,6 +24,118 @@ interface ThreadCardProps {
   tags: ITag[]
 }
 
+const initialThreads: Thread[] = [
+  {
+    id: 1,
+    title: 'Thread 1',
+    author: 'User 1',
+    createdDate: '2024-04-30',
+    lastReplyDate: '2024-05-01',
+    repliesCount: 5,
+    tags: [
+      { id: 1, title: 'tag1' },
+      { id: 2, title: 'tag2' },
+      { id: 3, title: 'tag3' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Thread 2',
+    author: 'User 2',
+    createdDate: '2024-04-29',
+    lastReplyDate: '2024-04-30',
+    repliesCount: 10,
+    tags: [
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+      { id: 6, title: 'tag6' },
+      { id: 7, title: 'tag7' },
+      { id: 8, title: 'tag8' },
+      { id: 9, title: 'tag9' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Thread 2',
+    author: 'User 2',
+    createdDate: '2024-04-29',
+    lastReplyDate: '2024-04-30',
+    repliesCount: 10,
+    tags: [
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+      { id: 6, title: 'tag6' },
+      { id: 7, title: 'tag7' },
+      { id: 8, title: 'tag8' },
+      { id: 9, title: 'tag9' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Thread 2',
+    author: 'User 2',
+    createdDate: '2024-04-29',
+    lastReplyDate: '2024-04-30',
+    repliesCount: 10,
+    tags: [
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+      { id: 6, title: 'tag6' },
+      { id: 7, title: 'tag7' },
+      { id: 8, title: 'tag8' },
+      { id: 9, title: 'tag9' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Thread 2',
+    author: 'User 2',
+    createdDate: '2024-04-29',
+    lastReplyDate: '2024-04-30',
+    repliesCount: 10,
+    tags: [
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+      { id: 6, title: 'tag6' },
+      { id: 7, title: 'tag7' },
+      { id: 8, title: 'tag8' },
+      { id: 9, title: 'tag9' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Thread 2',
+    author: 'User 2',
+    createdDate: '2024-04-29',
+    lastReplyDate: '2024-04-30',
+    repliesCount: 10,
+    tags: [
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+      { id: 6, title: 'tag6' },
+      { id: 7, title: 'tag7' },
+      { id: 8, title: 'tag8' },
+      { id: 9, title: 'tag9' },
+    ],
+  },
+  {
+    id: 2,
+    title: 'Thread 2',
+    author: 'User 2',
+    createdDate: '2024-04-29',
+    lastReplyDate: '2024-04-30',
+    repliesCount: 10,
+    tags: [
+      { id: 4, title: 'tag4' },
+      { id: 5, title: 'tag5' },
+      { id: 6, title: 'tag6' },
+      { id: 7, title: 'tag7' },
+      { id: 8, title: 'tag8' },
+      { id: 9, title: 'tag9' },
+    ],
+  },
+]
+
 const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }> = ({
   title,
   author,
@@ -113,40 +225,7 @@ const ForumPage: React.FC = () => {
       setTags(fetchedTags)
     }
     fetchData().then((r) => console.log(`success ${r}`))
-  }, [])
 
-  useEffect(() => {
-    const initialThreads: Thread[] = [
-      {
-        id: 1,
-        title: 'Thread 1',
-        author: 'User 1',
-        createdDate: '2024-04-30',
-        lastReplyDate: '2024-05-01',
-        repliesCount: 5,
-        tags: [
-          { id: 1, title: 'tag1' },
-          { id: 2, title: 'tag2' },
-          { id: 3, title: 'tag3' },
-        ],
-      },
-      {
-        id: 2,
-        title: 'Thread 2',
-        author: 'User 2',
-        createdDate: '2024-04-29',
-        lastReplyDate: '2024-04-30',
-        repliesCount: 10,
-        tags: [
-          { id: 4, title: 'tag4' },
-          { id: 5, title: 'tag5' },
-          { id: 6, title: 'tag6' },
-          { id: 7, title: 'tag7' },
-          { id: 8, title: 'tag8' },
-          { id: 9, title: 'tag9' },
-        ],
-      },
-    ]
     setThreads(initialThreads)
     setFilteredThreads(initialThreads)
   }, [])
@@ -191,8 +270,7 @@ const ForumPage: React.FC = () => {
   }
 
   const handleAddThread = (newThread: Thread) => {
-    const repliesCount = Math.floor(Math.random() * 20)
-    newThread.repliesCount = repliesCount
+    newThread.repliesCount = Math.floor(Math.random() * 20)
     setThreads((prevThreads) => [...prevThreads, newThread])
     setFilteredThreads((prevThreads) => [...prevThreads, newThread])
 
@@ -212,6 +290,7 @@ const ForumPage: React.FC = () => {
 
   const handleTagSelect = (tag: ITag) => {
     setActiveTags((prevTags) => [...prevTags, tag])
+    setTags(tags.filter((t) => t.id !== tag.id))
   }
 
   const handleRemoveTag = (tag: ITag) => {
@@ -228,7 +307,7 @@ const ForumPage: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col lg:flex-row justify-center'>
+    <div className='flex flex-col lg:flex-row justify-center min-h-screen'>
       <div className='w-full lg:w-3/4 p-4'>
         <input
           type='text'
@@ -264,20 +343,30 @@ const ForumPage: React.FC = () => {
       </div>
       <div className='w-full lg:w-1/4 p-4 border-l border-gray-200'>
         <div className='mb-4'>
-          {activeTags.map((tag, index) => (
-            <div
-              key={index}
-              className='bg-gray-400 text-white px-4 py-1 rounded-full mr-2 mb-2 flex items-center w-24 text-center'
-            >
-              <span>{tag.title}</span>
+          {activeTags.length > 0 && (
+            <div className={'flex'}>
+              {activeTags.map((tag, index) => (
+                <div
+                  key={index}
+                  className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-20 text-center'
+                >
+                  <span>{tag.title}</span>
+                  <button
+                    className='ml-2 text-xl text-right text-white'
+                    onClick={() => handleRemoveTag(tag)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
               <button
-                className='ml-2 text-xs text-right'
-                onClick={() => handleRemoveTag(tag)}
+                className={'py-1 px-2 bg-black text-white rounded-full'}
+                onClick={() => setActiveTags([])}
               >
-                &times;
+                Очистить теги
               </button>
             </div>
-          ))}
+          )}
         </div>
         <div className='mb-4'>
           <h2 className='text-lg font-semibold mb-2'>Tags</h2>
@@ -465,11 +554,12 @@ interface ITagCardProps {
   handleTagSelect: (tag: ITag) => void
 }
 
+// TODO: починить, если выбираем тег - убирать из активного
 const TagCard: React.FC<ITagCardProps> = ({ tag, handleTagSelect }) => {
   return (
     <div
       key={tag.id}
-      className='bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
+      className='bg-gray-100 text-black px-2 py-1 rounded-full mr-2 mb-2 cursor-pointer'
       onClick={() => handleTagSelect(tag)}
     >
       {tag.title}

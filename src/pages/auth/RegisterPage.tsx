@@ -82,7 +82,7 @@ const RegisterPage: React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen flex flex-col'>
+    <div className=' flex flex-col'>
       <div className='flex-grow flex flex-col items-center justify-center bg-gray-200'>
         <div className='absolute inset-0 bg-white' />
         <div className='relative bg-white p-8 sm:p-12 rounded-lg border border-black shadow-lg'>

@@ -64,7 +64,7 @@ const InstructorHeader = () => {
           onMouseLeave={handleMouseLeave}
         >
           <button
-            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700'
+            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
             onMouseEnter={openInstructorMode}
           >
             <NavLink to={'/teaching'} onClick={handleSwitchToInstructorMode}>
