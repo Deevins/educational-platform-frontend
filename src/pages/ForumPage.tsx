@@ -56,7 +56,7 @@ const initialThreads: Thread[] = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     title: 'Thread 2',
     author: 'User 2',
     createdDate: '2024-04-29',
@@ -72,7 +72,7 @@ const initialThreads: Thread[] = [
     ],
   },
   {
-    id: 2,
+    id: 4,
     title: 'Thread 2',
     author: 'User 2',
     createdDate: '2024-04-29',
@@ -88,7 +88,7 @@ const initialThreads: Thread[] = [
     ],
   },
   {
-    id: 2,
+    id: 5,
     title: 'Thread 2',
     author: 'User 2',
     createdDate: '2024-04-29',
@@ -104,7 +104,7 @@ const initialThreads: Thread[] = [
     ],
   },
   {
-    id: 2,
+    id: 6,
     title: 'Thread 2',
     author: 'User 2',
     createdDate: '2024-04-29',
@@ -120,7 +120,7 @@ const initialThreads: Thread[] = [
     ],
   },
   {
-    id: 2,
+    id: 7,
     title: 'Thread 2',
     author: 'User 2',
     createdDate: '2024-04-29',
@@ -132,7 +132,7 @@ const initialThreads: Thread[] = [
       { id: 6, title: 'tag6' },
       { id: 7, title: 'tag7' },
       { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag9' },
+      { id: 9, title: 'tag2' },
     ],
   },
 ]
@@ -177,11 +177,14 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <div className='bg-gray-200 text-xs px-2 mr-1 cursor-pointer'>
+              <div className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'>
                 + {tags.length - 3} more
               </div>
               {showTagsPopup && (
-                <div className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex flex-col z-50'>
+                <div
+                  className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex z-50'
+                  onClick={() => setShowTagsPopup(false)}
+                >
                   {tags.slice(3).map((tag, index) => (
                     <TagCard
                       key={index}
@@ -562,7 +565,7 @@ const TagCard: React.FC<ITagCardProps> = ({ tag, handleTagSelect }) => {
   return (
     <div
       key={tag.id}
-      className='bg-gray-200 text-xs px-2 mr-1 cursor-pointer'
+      className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'
       onClick={() => handleTagSelect(tag)}
     >
       {tag.title}
