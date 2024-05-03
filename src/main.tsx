@@ -21,7 +21,7 @@ import CoursesSearchPage from '@/pages/CoursesSearchPage.tsx'
 import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
 import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
-import TeachingPage from '@/pages/TeachingPage.tsx'
+import FirstTimeInstructorPage from '@/pages/FirstTimeInstructorPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -84,7 +84,11 @@ const router = createBrowserRouter([
         element: <CoursePage />,
         errorElement: <NotFoundPage />,
       },
-      { path: '/teaching', element: <TeachingPage />, errorElement: <NotFoundPage /> },
+      {
+        path: '/teaching',
+        element: <FirstTimeInstructorPage />,
+        errorElement: <NotFoundPage />,
+      },
     ],
   },
   {
