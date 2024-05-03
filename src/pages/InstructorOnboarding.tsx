@@ -6,7 +6,6 @@ const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
   return <h2 className='text-lg font-bold'>{title}</h2>
 }
 
-// Компонент текста
 const SectionText: React.FC<{ text: string }> = ({ text }) => {
   return <p>{text}</p>
 }
@@ -17,7 +16,7 @@ const CheckBoxes: React.FC<{
   onChange: (option: string) => void
 }> = ({ options, selectedOption, onChange }) => {
   return (
-    <div className='w-1/3'>
+    <div className='w-full md:w-1/3'>
       {options.map((option, index) => (
         <div
           key={index}
@@ -44,15 +43,15 @@ const CheckBoxes: React.FC<{
   )
 }
 
-// Компонент изображения
 const SectionImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
-  return <img src={src} alt={alt} />
+  return <img src={src} alt={alt} className={'hidden md:block'} />
 }
 
 const InstructorOnboarding: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [selectedOption, setSelectedOption] = useState<string>('')
   const [isCheckboxSelected, setIsCheckboxSelected] = useState<boolean>(false)
+
   const handleContinue = () => {
     setCurrentStep((prevStep) => prevStep + 1)
     setSelectedOption('')
@@ -73,22 +72,24 @@ const InstructorOnboarding: React.FC = () => {
   return (
     <div className='flex flex-col h-screen'>
       {/* Хэдер */}
-      <header className='flex items-center justify-between bg-gray-800 text-white p-4'>
+      <header className='bg-gray-800 text-white p-4 shadow-md'>
         {/* Логотип и текущий шаг */}
-        <div className='flex items-center'>
-          <span className='text-lg font-bold'>ProdigyPath</span>
-          <span className='mx-2'>|</span>
-          <span>Шаг {currentStep} из 3</span>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center'>
+            <span className='text-lg font-bold'>ProdigyPath</span>
+            <span className='mx-2'>|</span>
+            <span>Шаг {currentStep} из 3</span>
+          </div>
+          {/* Кнопка Выйти */}
+          <button className='hover:underline'>Выйти</button>
         </div>
-        {/* Кнопка Выйти */}
-        <button className='hover:underline'>Выйти</button>
       </header>
       {/* Основное содержимое страницы */}
-      <main className='flex-grow flex items-center justify-center'>
+      <main className='flex-grow flex flex-col items-center justify-center'>
         {/* Секция 1 */}
         {currentStep === 1 && (
-          <div className='flex w-full justify-between'>
-            <div className='w-1/3'>
+          <div className='flex flex-col md:flex-row w-full md:w-auto justify-between'>
+            <div className='w-full md:w-1/3'>
               <SectionTitle title='Заголовок секции 1' />
               <SectionText text='Курсы Udemy — это обучение на основе видеоматериалов, которые помогают студентам приобрести практические навыки. Вне зависимости от того, какой опыт преподавания у вас есть, мы поможем вам организовать ваши материалы в виде онлайн-курса, чтобы студентам было интересно и полезно их изучать.' />
               <CheckBoxes
@@ -97,7 +98,7 @@ const InstructorOnboarding: React.FC = () => {
                 onChange={handleOptionChange}
               />
             </div>
-            <div className='w-2/3 ml-4'>
+            <div className='w-full md:w-2/3 md:ml-4'>
               <SectionImage
                 src='https://s.udemycdn.com/instructor/onboarding/share.jpg'
                 alt='Изображение'
@@ -105,19 +106,26 @@ const InstructorOnboarding: React.FC = () => {
             </div>
           </div>
         )}
+        {/* Другие секции */}
+        {/* Добавьте здесь содержимое для остальных секций */}
       </main>
-      <footer className='bg-gray-800 text-white p-4 flex justify-between'>
+      {/* Футер */}
+      <footer className='bg-gray-800 text-white p-4 shadow-md flex justify-between'>
+        {/* Кнопка Продолжить или Готово */}
         {currentStep < 3 ? (
           <button
             onClick={handleContinue}
             disabled={isContinueDisabled}
-            className={`bg-red-500 px-4 py-2 rounded-md ${isCheckboxSelected ? 'hover:bg-red-600' : 'cursor-not-allowed'}`}
+            className={`bg-red-500 px-4 py-2 rounded-md ${
+              isCheckboxSelected ? 'hover:bg-red-600' : 'cursor-not-allowed'
+            }`}
           >
             Продолжить
           </button>
         ) : (
           <NavLink to='/'>Готово</NavLink>
         )}
+        {/* Кнопка Назад */}
         {currentStep > 1 && <button onClick={handleBack}>Назад</button>}
       </footer>
     </div>
