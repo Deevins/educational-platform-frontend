@@ -46,7 +46,7 @@ const CommonFooter: React.FC = () => {
           </div>
         </div>
       </div>
-      <p className={'text-right mt-40 pr-12'}>© 2024 ProdigyPath, Inc.</p>
+      <p className={'text-right mt-40 pr-12 opacity-60'}>© 2024 ProdigyPath, Inc.</p>
     </footer>
   )
 }

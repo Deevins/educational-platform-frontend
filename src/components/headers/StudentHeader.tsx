@@ -5,7 +5,7 @@ import AvatarMenu from '@/components/AvatarMenu.tsx'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import { Navbar } from '@/components/Navbar.tsx'
 
-const InstructorHeader = () => {
+const StudentHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
   const [isInstructorModeOpen, setIsInstructorModeOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -121,4 +121,4 @@ const InstructorHeader = () => {
     </header>
   )
 }
-export default InstructorHeader
+export default StudentHeader

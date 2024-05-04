@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 
 const InstructorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
@@ -43,15 +42,9 @@ const InstructorHeader = () => {
   }
 
   return (
-    <header className='bg-gray-200 text-black p-4 flex justify-between items-center shadow-xl'>
-      <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
-        <Avatar className={'hover:scale-105'}>
-          <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
-          <AvatarFallback>Логотип</AvatarFallback>
-        </Avatar>
-        <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
-      </NavLink>
-
+    <header className='bg-gray-200 text-black p-4 flex justify-end items-center shadow-xl'>
+      {' '}
+      {/* Заменяем justify-between на justify-end */}
       <div className='flex space-x-4 lg:mr-16 text-center'>
         <div
           className='relative pb-[2px]'

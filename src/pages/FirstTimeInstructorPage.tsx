@@ -44,13 +44,12 @@ const ImageBlock: React.FC<ImageBlockProps> = ({ icon: Icon, title, description 
 
 const StartBlock: React.FC = () => {
   const [activeBlockIndex, setActiveBlockIndex] = useState(0)
-  const buttonWidth = 100 / 3 // Ширина каждой кнопки
 
   const handleBlockClick = (index: number) => {
     setActiveBlockIndex(index)
   }
 
-  // Вычисляем левый отступ для активной кнопки
+  const buttonWidth = 100 / 3
   const activeButtonLeft = activeBlockIndex * buttonWidth * 3
 
   return (
@@ -193,7 +192,7 @@ const FirstTimeInstructorPage = () => {
           <p className='text-lg mb-8 text-gray-700'>
             Станьте преподавателем и меняйте жизни к лучшему — включая свою
           </p>
-          <NavLink to='/'>
+          <NavLink to='/teaching/onboarding/teaching-experience'>
             <button className='bg-black text-white px-16 py-4 hover:bg-gray-800'>
               Начать
             </button>
@@ -240,7 +239,7 @@ const FirstTimeInstructorPage = () => {
           <p className='text-lg mb-8 text-gray-700'>
             Присоединяйтесь к нашей образовательной онлайн-платформе в мире!
           </p>
-          <NavLink to='/'>
+          <NavLink to='/teaching/onboarding/teaching-experience'>
             <button className='bg-black text-white px-16 py-4 hover:bg-gray-800'>
               Начать действовать
             </button>

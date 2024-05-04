@@ -97,7 +97,7 @@ const InstructorOnboarding: React.FC = () => {
             <span className='mx-2 h-full absolute top-0 bottom-0 left-36 border-l border-white' />
             <span className={`ml-16`}>Шаг {currentStep} из 3</span>
           </div>
-          <button className='hover:underline mr-4 border-black px-4 py-2 border-2'>
+          <button className=' mr-4 border-black px-4 py-2 border-2 hover:bg-gray-50'>
             Выйти
           </button>
         </div>
@@ -155,24 +155,27 @@ const InstructorOnboarding: React.FC = () => {
           />
         )}
       </main>
-      <footer className='border-t-2 text-black border-black p-4 shadow-md flex justify-between'>
+      <footer className='border-t-2 text-white border-black p-4 shadow-md flex justify-between'>
         {currentStep < 3 ? (
           <button
             onClick={handleContinue}
             disabled={isContinueDisabled}
             className={`bg-black px-4 py-2 rounded-md ${
-              isCheckboxSelected ? 'hover:bg-gray-600' : 'cursor-not-allowed bg-gray-300'
+              isCheckboxSelected ? 'hover:bg-gray-600' : 'cursor-not-allowed bg-gray-500'
             }`}
           >
             Продолжить
           </button>
         ) : (
-          <button className={'border-black px-4 py-2 border-2'}>
+          <button className={'border-black px-4 py-2 border-2 bg-black'}>
             <NavLink to='/instructor/${instructorID}/courses'>Готово</NavLink>
           </button>
         )}
         {currentStep > 1 && (
-          <button onClick={handleBack} className={'border-black px-4 py-2 border-2'}>
+          <button
+            onClick={handleBack}
+            className={'border-black px-4 py-2 border-2 bg-black'}
+          >
             Назад
           </button>
         )}

@@ -6,11 +6,11 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { NotFoundPage } from '@/pages/404.tsx'
 import CoursesPage from '@/pages/CoursesPage.tsx'
-import ForumPage from '@/pages/ForumPage.tsx'
+import ForumPage from '@/pages/forum/ForumPage.tsx'
 import ProfilesListPage from '@/pages/ProfilesListPage.tsx'
 import MainPage from '@/pages/MainPage.tsx'
 import CoursePage from '@/pages/CoursePage.tsx'
-import ThreadPage from '@/pages/ThreadPage.tsx'
+import ThreadPage from '@/pages/forum/ThreadPage.tsx'
 import RegisterPage from '@/pages/auth/RegisterPage.tsx'
 import LoginPage from '@/pages/auth/LoginPage.tsx'
 import AuthPage from '@/pages/auth/AuthPage.tsx'
@@ -22,7 +22,9 @@ import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
 import FirstTimeInstructorPage from '@/pages/FirstTimeInstructorPage.tsx'
 import { IndexPage } from '@/pages'
-import InstructorOnboarding from '@/pages/InstructorOnboarding.tsx'
+import InstructorOnboarding from '@/pages/instructor/InstructorOnboarding.tsx'
+import InstructorCoursesPage from '@/pages/instructor/InstructorCoursesPage.tsx'
+import IndexInstructorPage from '@/pages/instructor/IndexInstructorPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -71,17 +73,17 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/users/:userID',
+        path: '/users/user/:userID',
         element: <UserProfilePage />,
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/forum/threads/:threadID',
+        path: '/forum/threads/thread/:threadID',
         element: <ThreadPage />,
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/courses/:courseID',
+        path: '/courses/course/:courseID',
         element: <CoursePage />,
         errorElement: <NotFoundPage />,
       },
@@ -90,13 +92,25 @@ const router = createBrowserRouter([
         element: <FirstTimeInstructorPage />,
         errorElement: <NotFoundPage />,
       },
+    ],
+  },
+  {
+    path: '/teaching/onboarding/teaching-experience',
+    element: <InstructorOnboarding />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: '/instructor/',
+    element: <IndexInstructorPage />,
+    errorElement: <NotFoundPage />,
+    children: [
       {
-        path: '/instructor/:instructorID/courses',
-        element: <div>Курсы преподавателя</div>,
+        path: 'courses',
+        element: <InstructorCoursesPage />,
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/instructor/:instructorID/course/:courseID/manage', // после manage различные разделы редактирования курса
+        path: 'courses/course/:courseID/manage', // после manage различные разделы редактирования курса
         element: <div>редактирование курса преподавателя</div>,
         errorElement: <NotFoundPage />,
       },
@@ -123,11 +137,6 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
     ],
-  },
-  {
-    path: '/teaching/onboarding/teaching-experience',
-    element: <InstructorOnboarding />,
-    errorElement: <NotFoundPage />,
   },
 ])
 // { label: 'Моя страница', to: '/my-page' },
