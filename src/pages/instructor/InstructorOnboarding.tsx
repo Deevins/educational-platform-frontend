@@ -168,7 +168,7 @@ const InstructorOnboarding: React.FC = () => {
           </button>
         ) : (
           <button className={'border-black px-4 py-2 border-2 bg-black'}>
-            <NavLink to='/instructor/${instructorID}/courses'>Готово</NavLink>
+            <NavLink to={`/instructor/courses`}>Готово</NavLink>
           </button>
         )}
         {currentStep > 1 && (
