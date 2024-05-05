@@ -56,7 +56,7 @@ type OnboardingResponses = {
   [key in step]: string
 }
 
-const InstructorOnboarding: React.FC = () => {
+const InstructorOnboardingPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [selectedOption, setSelectedOption] = useState<string>('')
   const [isCheckboxSelected, setIsCheckboxSelected] = useState<boolean>(false)
@@ -97,9 +97,11 @@ const InstructorOnboarding: React.FC = () => {
             <span className='mx-2 h-full absolute top-0 bottom-0 left-36 border-l border-white' />
             <span className={`ml-16`}>Шаг {currentStep} из 3</span>
           </div>
-          <button className=' mr-4 border-black px-4 py-2 border-2 hover:bg-gray-50'>
-            Выйти
-          </button>
+          <NavLink to={'/'}>
+            <button className=' mr-4 border-black px-4 py-2 border-2 hover:bg-gray-50'>
+              Выйти
+            </button>
+          </NavLink>
         </div>
       </header>
       <main className='flex-grow flex flex-col items-center '>
@@ -221,4 +223,4 @@ const PageSection: React.FC<PageSectionProps> = ({
     </div>
   )
 }
-export default InstructorOnboarding
+export default InstructorOnboardingPage

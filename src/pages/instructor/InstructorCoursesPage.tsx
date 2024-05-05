@@ -1,22 +1,99 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
-// TODO: after button clicked, redirect to /course/create and
-//  after 4 steps create course draft on backend and fetch after button 'Create course'
-//  clicked redirect to new course create page and info adding(instructor/course/5957360/manage/goals/) 5957360 - course id. this course is set as draft in status
 const InstructorCoursesPage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [sortBy, setSortBy] = useState<string>('date') // Default sorting by date
+
+  // Обработчик для изменения значения поиска
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(event.target.value)
+  }
+
+  // Обработчик для изменения опции сортировки
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    setSortBy(event.target.value)
+    setSearchTerm('')
+  }
+
+  // Пример тестовых данных для курсов
+  const courses = [
+    {
+      id: 1,
+      title: 'Курс 1',
+      imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
+      isDraft: true,
+      isPublic: false,
+      progress: 30,
+    },
+    {
+      id: 2,
+      title: 'Курс 2',
+      imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
+      isDraft: false,
+      isPublic: true,
+      progress: 70,
+    },
+    // Добавьте больше курсов при необходимости
+  ]
   return (
     <div className='relative flex'>
       {/* Main Content */}
       <div className='flex-1 flex flex-col items-center pl-20 md:pl-30'>
-        <div className='shadow-xl border-2 border-gray-100 lg:w-8/12 h-32 flex justify-between items-center mt-20 px-10'>
-          <h1 className='text-xl pr-16 lg:pr-32 py-32'>Перейти к созданию курса</h1>
-          <button className='hover:bg-blue-600 text-white font-bold lg:px-20 py-4 px-10 bg-black'>
-            <NavLink to='/create-course'>Создать курс</NavLink>
-            {/* // TODO: check comment on top of page */}
-          </button>
+        {courses.length === 0 ? (
+          <div className='shadow-xl border-2 border-gray-100 lg:w-8/12 h-32 flex justify-between items-center mt-20 px-10'>
+            <h1 className='text-xl pr-16 lg:pr-32 py-32'>Перейти к созданию курса</h1>
+            <button className='hover:bg-gray-700 text-white font-bold lg:px-20 py-4 px-10 bg-black'>
+              <NavLink to='/instructor/course/create'>Создать курс</NavLink>
+              {/* // TODO: check comment on top of page */}
+            </button>
+          </div>
+        ) : (
+          <div className='w-full border-gray-200 p-4 flex justify-between mt-20 lg:w-8/12'>
+            <div className='flex items-center'>
+              {/* Поиск */}
+              <input
+                type='text'
+                placeholder='Поиск'
+                className='border border-black rounded-md px-3 py-1 mr-4'
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              {/* Выпадающий список для сортировки */}
+              <select
+                className='border border-gray-300 rounded-md px-3 py-1'
+                value={sortBy}
+                onChange={handleSortChange}
+              >
+                <option value='date'>Дата</option>
+                <option value='name'>Название</option>
+                {/* Добавьте другие варианты сортировки, если нужно */}
+              </select>
+            </div>
+            {/* Кнопка для создания нового курса */}
+            <NavLink to='/instructor/course/create'>
+              <button className='hover:bg-gray-700 text-white font-bold px-4 py-2 bg-black'>
+                Новый курс
+              </button>
+            </NavLink>
+          </div>
+        )}
+        <div className='relative flex flex-col items-center lg:w-8/12'>
+          <div className='flex-1 flex flex-col items-center lg:w-full'>
+            {/* Отображение карточек курсов */}
+            {courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                id={course.id}
+                title={course.title}
+                imageSrc={course.imageSrc}
+                isDraft={course.isDraft}
+                isPublic={course.isPublic}
+                progress={course.progress}
+              />
+            ))}
+          </div>
         </div>
-
         <div className='my-10'>
           <p className='text-center'>
             Исходя из вашего опыта, предлагаем вам ознакомиться со следующими ресурсами.
@@ -111,20 +188,6 @@ const InstructorCoursesPage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/*<div className='bg-gray-200 p-4 my-4'>*/}
-          {/*  <p>Текст блока 2</p>*/}
-          {/*  <button className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded'>*/}
-          {/*    Кнопка 2*/}
-          {/*  </button>*/}
-          {/*</div>*/}
-
-          {/*<div className='bg-gray-200 p-4 my-4'>*/}
-          {/*  <p>Текст блока 3</p>*/}
-          {/*  <button className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded'>*/}
-          {/*    Кнопка 3*/}
-          {/*  </button>*/}
-          {/*</div>*/}
         </div>
       </div>
     </div>
@@ -132,3 +195,54 @@ const InstructorCoursesPage: React.FC = () => {
 }
 
 export default InstructorCoursesPage
+
+interface CourseCardProps {
+  id: number
+  imageSrc: string
+  title: string
+  isDraft: boolean
+  isPublic: boolean
+  progress: number
+}
+
+const CourseCard: React.FC<CourseCardProps> = ({
+  id,
+  imageSrc,
+  title,
+  isDraft,
+  isPublic,
+  progress,
+}) => {
+  return (
+    <div className='shadow-xl border-2 border-gray-100 flex flex-row items-stretch w-[100vh] lg:w-[100vh] md:w-[100vh] 2xl:w-full my-4 relative group h-40'>
+      <NavLink
+        to={`instructor/course/${id}/manage/goals/`}
+        className='w-full h-full absolute inset-0 z-10 opacity-0 group-hover:opacity-100 bg-black bg-opacity-50 transition-opacity flex items-center justify-center'
+      >
+        <span className='text-white font-bold text-center'>
+          Изменить / Дополнить курс
+        </span>
+      </NavLink>
+      <img
+        src={imageSrc}
+        alt={title}
+        className='object-contain h-full lg:w-1/3 flex-none'
+      />
+      <div className='flex-grow flex flex-col justify-between p-4 lg:w-2/3'>
+        <div>
+          <h1 className='text-center mb-4 font-medium'>{title}</h1>
+          <div className='mb-4'>
+            <p>{isDraft ? 'Черновик' : 'Рабочий курс'}</p>
+            <p>{isPublic ? 'Доступен всем' : 'Не доступен всем'}</p>
+          </div>
+        </div>
+        <div className='w-full bg-gray-200 rounded-full mb-4'>
+          <div
+            className='h-2 bg-fuchsia-500 rounded-full'
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      </div>
+    </div>
+  )
+}

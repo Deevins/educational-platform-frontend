@@ -42,9 +42,7 @@ const InstructorHeader = () => {
   }
 
   return (
-    <header className='bg-gray-200 text-black p-4 flex justify-end items-center shadow-xl'>
-      {' '}
-      {/* Заменяем justify-between на justify-end */}
+    <header className='bg-gray-200 text-black p-4 flex justify-end items-center shadow-xl w-screen'>
       <div className='flex space-x-4 lg:mr-16 text-center'>
         <div
           className='relative pb-[2px]'

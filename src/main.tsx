@@ -22,9 +22,10 @@ import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
 import FirstTimeInstructorPage from '@/pages/FirstTimeInstructorPage.tsx'
 import { IndexPage } from '@/pages'
-import InstructorOnboarding from '@/pages/instructor/InstructorOnboarding.tsx'
+import InstructorOnboardingPage from '@/pages/instructor/InstructorOnboardingPage.tsx'
 import InstructorCoursesPage from '@/pages/instructor/InstructorCoursesPage.tsx'
 import IndexInstructorPage from '@/pages/instructor/IndexInstructorPage.tsx'
+import CourseBaseCreationPage from '@/pages/instructor/CourseBaseCreationPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -96,7 +97,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/teaching/onboarding/teaching-experience',
-    element: <InstructorOnboarding />,
+    element: <InstructorOnboardingPage />,
     errorElement: <NotFoundPage />,
   },
   {
@@ -109,12 +110,17 @@ const router = createBrowserRouter([
         element: <InstructorCoursesPage />,
         errorElement: <NotFoundPage />,
       },
-      {
-        path: 'courses/course/:courseID/manage', // после manage различные разделы редактирования курса
-        element: <div>редактирование курса преподавателя</div>,
-        errorElement: <NotFoundPage />,
-      },
     ],
+  },
+  {
+    path: 'course/create',
+    element: <CourseBaseCreationPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: 'instructor/courses/course/:courseID/manage', // после manage различные разделы редактирования курса
+    element: <div>редактирование курса преподавателя</div>,
+    errorElement: <NotFoundPage />,
   },
   {
     path: '/auth/',
