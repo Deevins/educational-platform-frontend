@@ -102,7 +102,7 @@ const CourseBaseCreationPage: React.FC = () => {
 
   interface ServerResponse {
     status: number
-    data: any
+    data: { message: string; courseID: number }
   }
 
   // Функция для замоканного запроса на сервер
@@ -120,7 +120,7 @@ const CourseBaseCreationPage: React.FC = () => {
       // Замоканный запрос на сервер (можно заменить на реальный endpoint)
       const mockedResponse: ServerResponse = {
         status: 200, // Измените на 500, чтобы проверить обработку ошибки
-        data: { message: 'Success' },
+        data: { message: 'Success', courseID: 523233 },
       }
 
       // Моковый запрос, который заменяет реальный запрос
@@ -128,7 +128,7 @@ const CourseBaseCreationPage: React.FC = () => {
 
       if (response.status === 200) {
         // Редирект на нужную страницу
-        navigate('/instructor/courses/course/1/manage')
+        navigate(`/instructor/courses/course/${response.data.courseID}/manage`)
       } else {
         // Обработка других кодов ответа
         console.error('Unexpected response:', response)
@@ -331,10 +331,10 @@ const TextInputSection: React.FC<{
         placeholder={placeholder}
         value={inputValue}
         onChange={handleChange}
-        className='w-8/12 px-4 py-2 border-2 border-black'
+        className='w-full px-4 py-2 border-2 border-black'
       />
-      <div className='absolute inset-y-0 right-44 flex items-center text-gray-400'>
-        {inputValue.length}/60
+      <div className='absolute inset-y-0 right-4 flex items-center text-gray-400'>
+        {60 - inputValue.length}
       </div>
     </div>
   )

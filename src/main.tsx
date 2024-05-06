@@ -26,6 +26,8 @@ import InstructorOnboardingPage from '@/pages/instructor/InstructorOnboardingPag
 import InstructorCoursesPage from '@/pages/instructor/InstructorCoursesPage.tsx'
 import IndexInstructorPage from '@/pages/instructor/IndexInstructorPage.tsx'
 import CourseBaseCreationPage from '@/pages/instructor/CourseBaseCreationPage.tsx'
+import CourseEnhanceWithInfoPage from '@/pages/instructor/CourseEnhanceWithInfoPage.tsx'
+import IndexCourseEnhancePage from '@/pages/instructor/IndexCourseEnhancePage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -113,14 +115,22 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: 'course/create',
+    path: '/instructor/course/create',
     element: <CourseBaseCreationPage />,
     errorElement: <NotFoundPage />,
   },
+
   {
-    path: 'instructor/courses/course/:courseID/manage', // после manage различные разделы редактирования курса
-    element: <div>редактирование курса преподавателя</div>,
+    path: '/instructor/courses/course/:courseID/', // после manage различные разделы редактирования курса
+    element: <IndexCourseEnhancePage />,
     errorElement: <NotFoundPage />,
+    children: [
+      {
+        path: '/instructor/courses/course/:courseID/manage', // после manage различные разделы редактирования курса
+        element: <CourseEnhanceWithInfoPage />,
+        errorElement: <NotFoundPage />,
+      },
+    ],
   },
   {
     path: '/auth/',

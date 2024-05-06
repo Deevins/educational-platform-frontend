@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import axios from 'axios'
@@ -55,12 +55,6 @@ const AvatarMenu: React.FC = () => {
     setTheme(newTheme)
   }
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      setIsOpen(false)
-    }
-  }
-
   const handleMouseEnter = () => {
     setIsOpen(true)
   }
@@ -80,7 +74,14 @@ const AvatarMenu: React.FC = () => {
     }
     setIsOpen(false)
   }
-  React.useEffect(() => {
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
@@ -101,7 +102,7 @@ const AvatarMenu: React.FC = () => {
   ]
 
   return (
-    <div className='relative' ref={menuRef}>
+    <div className='relative z-50' ref={menuRef}>
       <div className='flex items-center'>
         <Button
           className='p-1 text-gray-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring'

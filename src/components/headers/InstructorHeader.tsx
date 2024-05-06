@@ -58,7 +58,7 @@ const InstructorHeader = () => {
           {isHovered && isTeacherModeOpen && (
             <div
               ref={dialogRef}
-              className='absolute left-0 mt-8 w-full lg:w-64 bg-white border border-gray-300 rounded-lg shadow-lg'
+              className='absolute left-0 mt-8 w-full lg:w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-50'
               onMouseLeave={closeTeacherMode}
               style={{ top: 'calc(20% + 20px)', left: '-70%' }}
             >
