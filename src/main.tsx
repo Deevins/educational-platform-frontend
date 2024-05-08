@@ -33,6 +33,7 @@ import VideoSetupPage from '@/pages/course-creation/VideoSetupPage.tsx'
 import FilmPage from '@/pages/course-creation/FilmPage.tsx'
 import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
 import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
+import CourseMessagesPage from '@/pages/course-creation/CourseMessagesPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -172,7 +173,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'messages', // Сообщения курса
-        element: <div>dasd</div>,
+        element: <CourseMessagesPage />,
         errorElement: <NotFoundPage />,
       },
     ],
