@@ -128,7 +128,7 @@ const CourseBaseCreationPage: React.FC = () => {
 
       if (response.status === 200) {
         // Редирект на нужную страницу
-        navigate(`/instructor/courses/course/${response.data.courseID}/manage`)
+        navigate(`/instructor/courses/course/${response.data.courseID}/manage/goals`)
       } else {
         // Обработка других кодов ответа
         console.error('Unexpected response:', response)

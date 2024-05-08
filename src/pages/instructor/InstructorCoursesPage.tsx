@@ -180,7 +180,7 @@ const InstructorCoursesPage: React.FC = () => {
                 </div>
               </div>
               <div className='flex justify-center mt-auto'>
-                <NavLink to={''}>
+                <NavLink to={'/teaching/onboarding/teaching-experience'}>
                   <button className='font-bold py-2 px-4 text-black hover:underline'>
                     Приступите к работе
                   </button>
@@ -216,7 +216,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   return (
     <div className='shadow-xl border-2 border-gray-100 flex flex-row items-stretch w-[100vh] lg:w-[100vh] md:w-[100vh] 2xl:w-full my-4 relative group h-40'>
       <NavLink
-        to={`instructor/course/${id}/manage/goals/`}
+        to={`/instructor/courses/course/${id}/manage/goals`}
         className='w-full h-full absolute inset-0 z-10 opacity-0 group-hover:opacity-100 bg-black bg-opacity-50 transition-opacity flex items-center justify-center'
       >
         <span className='text-white font-bold text-center'>

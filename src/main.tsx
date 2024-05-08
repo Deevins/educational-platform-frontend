@@ -26,8 +26,13 @@ import InstructorOnboardingPage from '@/pages/instructor/InstructorOnboardingPag
 import InstructorCoursesPage from '@/pages/instructor/InstructorCoursesPage.tsx'
 import IndexInstructorPage from '@/pages/instructor/IndexInstructorPage.tsx'
 import CourseBaseCreationPage from '@/pages/instructor/CourseBaseCreationPage.tsx'
-import CourseEnhanceWithInfoPage from '@/pages/instructor/CourseEnhanceWithInfoPage.tsx'
-import IndexCourseEnhancePage from '@/pages/instructor/IndexCourseEnhancePage.tsx'
+import CourseEnhanceWithInfoPage from '@/pages/course-creation/CourseEnhanceWithInfoPage.tsx'
+import IndexCourseEnhancePage from '@/pages/course-creation/IndexCourseEnhancePage.tsx'
+import CourseStructurePage from '@/pages/instructor/CourseStructurePage.tsx'
+import VideoSetupPage from '@/pages/course-creation/VideoSetupPage.tsx'
+import FilmPage from '@/pages/course-creation/FilmPage.tsx'
+import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
+import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -95,6 +100,11 @@ const router = createBrowserRouter([
         element: <FirstTimeInstructorPage />,
         errorElement: <NotFoundPage />,
       },
+      {
+        path: '/course-creation/learning-objectives', // TODO: optional, mb forum for instructors
+        element: <PrivacyPolicyPage />,
+        errorElement: <NotFoundPage />,
+      },
     ],
   },
   {
@@ -121,16 +131,56 @@ const router = createBrowserRouter([
   },
 
   {
-    path: '/instructor/courses/course/:courseID/', // после manage различные разделы редактирования курса
+    path: '/instructor/courses/course/:courseID/manage/', // после manage различные разделы редактирования курса
     element: <IndexCourseEnhancePage />,
     errorElement: <NotFoundPage />,
     children: [
       {
-        path: '/instructor/courses/course/:courseID/manage', // после manage различные разделы редактирования курса
+        path: 'goals', // после manage различные разделы редактирования курса
         element: <CourseEnhanceWithInfoPage />,
         errorElement: <NotFoundPage />,
       },
+      {
+        path: 'course-structure', // после manage различные разделы редактирования курса
+        element: <CourseStructurePage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'video-setup', // после manage различные разделы редактирования курса
+        element: <VideoSetupPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'film', // после manage различные разделы редактирования курса
+        element: <FilmPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'curriculum', // после manage различные разделы редактирования курса
+        element: <div>dasd</div>,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'accessibility', // после manage различные разделы редактирования курса
+        element: <AccessibilityPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'basics', // после manage различные разделы редактирования курса
+        element: <BasicsPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'messages', // Сообщения курса
+        element: <div>dasd</div>,
+        errorElement: <NotFoundPage />,
+      },
     ],
+  },
+  {
+    path: '/teaching/test-video',
+    element: <div>test video</div>,
+    errorElement: <NotFoundPage />,
   },
   {
     path: '/auth/',
