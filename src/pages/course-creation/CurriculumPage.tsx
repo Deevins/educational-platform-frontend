@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { IoIosArrowDown, IoMdAdd, IoMdClose } from 'react-icons/io'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ImCross } from 'react-icons/im'
 import { FaCheckCircle, FaPlus, FaTrash } from 'react-icons/fa'
 import { MdModeEdit } from 'react-icons/md'
@@ -180,11 +180,21 @@ const Section = () => {
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
 
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [lecture, setLecture] = useState({ title: '', description: '' })
+  console.log(lecture)
   const handleAddComponent = () => {
     setIsComponentAdditionActive(!isComponentAdditionActive)
   }
 
+  const handleAddLecture = (title: string, description: string) => {
+    setLecture({ title, description })
+    setIsModalOpen(false)
+    console.log('Lecture added:', title, description)
+  }
+
   return (
+    // захуярить модалку на все изменения. похуй на приколы юдемича
     <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2 '}>
       <div
         className={'flex mb-8 w-full'}
@@ -214,6 +224,7 @@ const Section = () => {
                 className={
                   'flex items-center ml-2 text-indigo-400 hover:text-indigo-800 mr-4'
                 }
+                onClick={() => setIsModalOpen(true)}
               >
                 <FaPlus className={'mr-1'} />
                 <span className={'font-semibold'}>Лекция</span>
@@ -224,7 +235,7 @@ const Section = () => {
                 }
               >
                 <FaPlus className={'mr-1'} />
-                <span className={'font-semibold'}>Лекция</span>
+                <span className={'font-semibold'}>Тест</span>
               </button>
               <button
                 className={
@@ -232,9 +243,18 @@ const Section = () => {
                 }
               >
                 <FaPlus className={'mr-1'} />
-                <span className={'font-semibold'}>Лекция</span>
+                <span className={'font-semibold'}>Задание</span>
               </button>
             </div>
+            {isModalOpen && (
+              <Modal
+                title=''
+                description=''
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onAddLecture={handleAddLecture}
+              />
+            )}
           </div>
         </div>
       ) : (
@@ -380,6 +400,138 @@ const AssignmentComponent: React.FC = () => {
           <p className='pb-0.5'>содержимое</p>
         </button>
         <IoIosArrowDown className={'ml-4 mr-4'} />
+      </div>
+    </div>
+  )
+}
+
+interface ModalProps {
+  title: string
+  description: string
+  isOpen: boolean
+  onClose: () => void
+  onAddLecture: (title: string, description: string) => void
+}
+
+const Modal: React.FC<ModalProps> = ({
+  title,
+  description,
+  isOpen,
+  onClose,
+  onAddLecture,
+}) => {
+  const [localTitle, setLocalTitle] = useState(title)
+  const [localDescription, setLocalDescription] = useState(description)
+  const [titleError, setTitleError] = useState('')
+  const [descriptionError, setDescriptionError] = useState('')
+
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset'
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
+  const handleAddClick = () => {
+    if (!validateFields()) return
+    onAddLecture(localTitle, localDescription)
+    onClose()
+  }
+
+  const validateFields = () => {
+    let isValid = true
+    if (!localTitle || localTitle.length > 80) {
+      setTitleError('Название должно быть заполнено и не длиннее 80 символов')
+      isValid = false
+    } else {
+      setTitleError('')
+    }
+
+    if (!localDescription || localDescription.length > 200) {
+      setDescriptionError('Описание должно быть заполнено и не длиннее 200 символов')
+      isValid = false
+    } else {
+      setDescriptionError('')
+    }
+
+    return isValid
+  }
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalTitle(e.target.value)
+    if (!e.target.value || e.target.value.length > 80) {
+      setTitleError('Название должно быть заполнено и не длиннее 80 символов')
+    } else {
+      setTitleError('')
+    }
+  }
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setLocalDescription(e.target.value)
+    if (!e.target.value || e.target.value.length > 200) {
+      setDescriptionError('Описание должно быть заполнено и не длиннее 200 символов')
+    } else {
+      setDescriptionError('')
+    }
+  }
+
+  return (
+    <div
+      className='fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center'
+      onClick={onClose}
+    >
+      <div
+        className='bg-white p-4 rounded-lg shadow-lg max-w-lg w-full mx-4'
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className='text-xl font-semibold mb-2'>Добавление лекции</h2>
+        <div className='mb-4'>
+          <label className='block'>
+            Название:
+            <input
+              type='text'
+              className='mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+              value={localTitle}
+              onChange={handleTitleChange}
+              maxLength={80}
+            />
+            <p className='text-xs text-gray-600'>
+              {80 - localTitle.length} символов осталось
+            </p>
+            {titleError && <p className='text-red-500 text-xs mt-1'>{titleError}</p>}
+          </label>
+        </div>
+        <div className='mb-6'>
+          <label className='block'>
+            Описание:
+            <textarea
+              className='mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+              value={localDescription}
+              onChange={handleDescriptionChange}
+              maxLength={200}
+            />
+            <p className='text-xs text-gray-600'>
+              {200 - localDescription.length} символов осталось
+            </p>
+            {descriptionError && (
+              <p className='text-red-500 text-xs mt-1'>{descriptionError}</p>
+            )}
+          </label>
+        </div>
+        <div className='flex justify-end space-x-2'>
+          <button
+            className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700'
+            onClick={onClose}
+          >
+            Отменить
+          </button>
+          <button
+            className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700'
+            onClick={handleAddClick}
+          >
+            Добавить лекцию
+          </button>
+        </div>
       </div>
     </div>
   )
