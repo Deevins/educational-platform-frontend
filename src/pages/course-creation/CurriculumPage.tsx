@@ -5,50 +5,123 @@ import { ImCross } from 'react-icons/im'
 import { FaCheckCircle, FaPlus, FaTrash } from 'react-icons/fa'
 import { MdModeEdit } from 'react-icons/md'
 
-// Types for lection
+type TestQuestion = {
+  question: string
+  answers: TestAnswer[]
+}
 
-// type SectionLectionFillType = string
+type TestAnswer = {
+  answer: string
+  answerIsCorrect: boolean
+  answerDescription: string
+}
 
-// type SectionLectionFillType = 'video' | 'text' | 'code'
-//
-//
-// type SectionLection = {
-//   title: string
-//   fill: string
-// }
+type SectionTest = {
+  componentSerial: number
+  type: SectionComponentType
+  title: string
+  description: string
+  questions: TestQuestion[]
+}
+type SectionAssignment = {
+  componentSerial: number
+  type: SectionComponentType
+  title: string
+  description: string
+}
+type SectionLecture = {
+  componentSerial: number
+  type: SectionComponentType
+  title: string
+  description: string
+}
 
-// Types for test
+type Section = {
+  sectionNum: number
+  title: string
+  description: string
+  lectures: SectionLecture[]
+  tests: SectionTest[]
+  assignments: SectionAssignment[]
+}
 
-// Types for lection
+const sections: Section[] = [
+  {
+    sectionNum: 1,
+    title: 'Введение',
+    description: 'Введение в курс',
+    lectures: [
+      {
+        componentSerial: 1,
+        type: 'lecture',
+        title: 'Лекция 1',
+        description: 'lecture1  desc',
+      },
+      {
+        componentSerial: 2,
+        type: 'lecture',
+        title: 'Лекция 2',
+        description: 'lecture1  desc',
+      },
+    ],
+    tests: [
+      {
+        componentSerial: 1,
+        type: 'test',
+        title: 'Тест 1',
+        description: 'test1 desc',
+        questions: [
+          {
+            question: 'Вопрос 1',
+            answers: [
+              {
+                answer: 'Ответ 1',
+                answerDescription: 'Описание ответа 1',
+                answerIsCorrect: true,
+              },
+              {
+                answer: 'Ответ 2',
+                answerDescription: 'Описание ответа 2',
+                answerIsCorrect: false,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    assignments: [
+      {
+        componentSerial: 1,
+        type: 'assignment',
+        title: 'Задание 1',
+        description: 'assignment1 desc',
+      },
+    ],
+  },
+]
 
-// type SectionTest = {
-//   title: string
-// }
-// type SectionAssignment = {
-//   title: string
-// }
-// type Section = {
-//   title: string
-//   description: string
-//   lections: SectionLection[]
-//   tests: SectionTest[]
-//   assignments: SectionAssignment[]
-// }
-// type SectionComponents = SectionAssignment | SectionLection | SectionTest
-
-// interface Course {
-//   title: string
-//   description: string
-//   sections: Section[]
-// }
-//
-// interface Section {
-//   title: string
-//   lectures: Lecture[]
-// }
+type SectionComponentType = 'lecture' | 'test' | 'assignment'
 
 const CurriculumPage = () => {
   const [isSectionCreationActive, setIsSectionCreationActive] = React.useState(false)
+  const [stateSections, setStateSections] = React.useState<Section[]>(sections)
+
+  const handleSectionCreate = (title: string, description: string) => {
+    setStateSections((prev) => [
+      ...prev,
+      {
+        sectionNum: prev.length + 1,
+        title: title,
+        description: description,
+        lectures: [],
+        tests: [],
+        assignments: [],
+      },
+    ])
+
+    setIsSectionCreationActive(!isSectionCreationActive)
+  }
+
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl w-full'>
       <h1 className='text-2xl font-bold mb-4'>Учебный план</h1>
@@ -75,7 +148,17 @@ const CurriculumPage = () => {
         </Link>{' '}
         для выстраивания структуры материалов и понятной маркировки разделов и лекций.
       </p>
-      <Section />
+      {stateSections.map((section, index) => (
+        <Section
+          key={index}
+          description={section.description}
+          sectionNum={section.sectionNum}
+          title={section.title}
+          lectures={section.lectures}
+          tests={section.tests}
+          assignments={section.assignments}
+        />
+      ))}
 
       <div
         className={
@@ -103,8 +186,7 @@ const CurriculumPage = () => {
       {isSectionCreationActive && (
         <NewSectionBlock
           onSave={(title: string, description: string) => {
-            console.log(title, description)
-            setIsSectionCreationActive(false)
+            handleSectionCreate(title, description)
           }}
           onCancel={() => setIsSectionCreationActive(false)}
         />
@@ -176,33 +258,116 @@ const NewSectionBlock: React.FC<NewSectionModalProps> = ({ onSave, onCancel }) =
 
 export default CurriculumPage
 
-const Section = () => {
+// type Section = {
+//   title: string
+//   description: string
+//   lectures: SectionLecture[]
+//   tests: SectionTest[]
+//   assignments: SectionAssignment[]
+// }
+
+const Section: React.FC<Section> = ({
+  sectionNum,
+  title,
+  assignments,
+  lectures,
+  tests,
+}) => {
+  const [items, setItems] = React.useState<
+    SectionLecture[] | SectionTest[] | SectionAssignment[]
+  >([...lectures, ...tests, ...assignments])
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [lecture, setLecture] = useState({ title: '', description: '' })
-  console.log(lecture)
+  const [modalType, setModalType] = useState<SectionComponentType>('lecture') // "lecture", "test", "task"
   const handleAddComponent = () => {
     setIsComponentAdditionActive(!isComponentAdditionActive)
   }
 
-  const handleAddLecture = (title: string, description: string) => {
-    setLecture({ title, description })
-    setIsModalOpen(false)
-    console.log('Lecture added:', title, description)
+  const handleCreateComponent = (title: string, description: string) => {
+    console.log(title, description)
+
+    createComponentAndReturn(sectionNum, { title, description }, modalType)
+      .then((newItem) => {
+        if (newItem) {
+          console.log(`${modalType} added:`, newItem)
+        }
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        setIsModalOpen(false)
+        setIsComponentAdditionActive(false)
+      })
   }
 
+  const handleOpenModal = (type: SectionComponentType) => {
+    setModalType(type)
+    setIsModalOpen(true)
+  }
+
+  const createComponentAndReturn = async (
+    sectionNum: number,
+    component: {
+      title: string
+      description: string
+    },
+    componentType: SectionComponentType
+  ): Promise<SectionLecture | SectionTest | SectionAssignment> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const section = sections.find((section) => section.sectionNum === sectionNum)
+        if (!section) {
+          return
+        }
+
+        let newItem: SectionLecture | SectionTest | SectionAssignment
+        switch (componentType) {
+          case 'lecture':
+            newItem = {
+              componentSerial: section.lectures.length + 1,
+              type: componentType,
+              title: component.title,
+              description: component.description,
+            }
+            setItems((prevItems) => [...prevItems, newItem]) // Update items state
+            break
+          case 'assignment':
+            newItem = {
+              componentSerial: section.assignments.length + 1,
+              type: componentType,
+              title: component.title,
+              description: component.description,
+            }
+            setItems((prevItems) => [...prevItems, newItem]) // Update items state
+            break
+          case 'test':
+            newItem = {
+              componentSerial: section.tests.length + 1,
+              type: componentType,
+              title: component.title,
+              description: component.description,
+              questions: [],
+            }
+            setItems((prevItems) => [...prevItems, newItem]) // Update items state
+            break
+        }
+        console.log(`update with ${componentType}:`, newItem)
+        // Update state with a new array
+        setItems([...items, newItem]) // Assuming `items` holds a flat list of all items
+        resolve(newItem)
+      }, 500)
+    })
+  }
   return (
-    // захуярить модалку на все изменения. похуй на приколы юдемича
     <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2 '}>
       <div
         className={'flex mb-8 w-full'}
         onMouseEnter={() => setIsTitleButtonsShown(true)}
         onMouseLeave={() => setIsTitleButtonsShown(false)}
       >
-        <h1 className={'font-bold mr-2'}>Часть 1:</h1>
-        <p>Введение</p>
+        <h1 className={'font-bold mr-2'}>Часть {sectionNum}:</h1>
+        <p>{title}</p>
         <span
           className={`flex scale-90 items-center ml-2 ${isTitleButtonsShown ? 'visible' : 'hidden'} `}
         >
@@ -210,9 +375,26 @@ const Section = () => {
           <FaTrash className={'mr-4 hover:cursor-pointer'} />
         </span>
       </div>
-      <SectionComponent sectionType={'lection'} />
-      <SectionComponent sectionType={'test'} />
-      <SectionComponent sectionType={'lection'} />
+
+      {items.map((item, index) => (
+        <SectionComponent
+          key={index}
+          sectionType={item.type}
+          lectureData={item as SectionLecture}
+          assignmentData={item as SectionAssignment}
+          testData={item as SectionTest}
+        />
+      ))}
+
+      {/*{lectures.map((lecture, index) => (*/}
+      {/*  <LectureComponent key={index} lectureData={lecture} />*/}
+      {/*))}*/}
+      {/*{tests.map((test, index) => (*/}
+      {/*  <TestComponent key={index} testData={test} />*/}
+      {/*))}*/}
+      {/*{assignments.map((assignment, index) => (*/}
+      {/*  <AssignmentComponent key={index} assignmentData={assignment} />*/}
+      {/*))}*/}
       {isComponentAdditionActive ? (
         <div>
           <button className={'pl-8'} onClick={handleAddComponent}>
@@ -224,7 +406,7 @@ const Section = () => {
                 className={
                   'flex items-center ml-2 text-indigo-400 hover:text-indigo-800 mr-4'
                 }
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => handleOpenModal('lecture')}
               >
                 <FaPlus className={'mr-1'} />
                 <span className={'font-semibold'}>Лекция</span>
@@ -233,6 +415,7 @@ const Section = () => {
                 className={
                   'flex items-center ml-2 text-indigo-400 hover:text-indigo-800 mr-4'
                 }
+                onClick={() => handleOpenModal('test')}
               >
                 <FaPlus className={'mr-1'} />
                 <span className={'font-semibold'}>Тест</span>
@@ -241,6 +424,7 @@ const Section = () => {
                 className={
                   'flex items-center ml-2 text-indigo-400 hover:text-indigo-800 mr-4'
                 }
+                onClick={() => handleOpenModal('assignment')}
               >
                 <FaPlus className={'mr-1'} />
                 <span className={'font-semibold'}>Задание</span>
@@ -248,11 +432,10 @@ const Section = () => {
             </div>
             {isModalOpen && (
               <Modal
-                title=''
-                description=''
+                modalType={modalType}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onAddLecture={handleAddLecture}
+                onAddComponent={handleCreateComponent}
               />
             )}
           </div>
@@ -274,100 +457,65 @@ const Section = () => {
   )
 }
 
-type SectionComponentType = 'lection' | 'test' | 'assignment'
-
 interface SectionComponentProps {
   sectionType: SectionComponentType
+  lectureData?: SectionLecture
+  testData?: SectionTest
+  assignmentData?: SectionAssignment
 }
 
-const SectionComponent: React.FC<SectionComponentProps> = ({ sectionType }) => {
-  // switch over types of component - lection, test, assignment
+const SectionComponent: React.FC<SectionComponentProps> = ({
+  sectionType,
+  lectureData,
+  testData,
+  assignmentData,
+}) => {
+  // switch over types of component - lecture, test, assignment
 
   switch (sectionType) {
-    case 'lection':
-      return <LectionComponent />
+    case 'lecture':
+      if (lectureData) {
+        return <LectureComponent lectureData={lectureData} />
+      }
+      break
     case 'test':
-      return <TestComponent />
+      if (testData) {
+        return <TestComponent testData={testData} />
+      }
+      break
     case 'assignment':
-      return <AssignmentComponent />
+      if (assignmentData) {
+        return <AssignmentComponent assignmentData={assignmentData} />
+      }
+      break
   }
 }
 
-const LectionComponent = () => {
-  return (
-    <div className='bg-white border-black border-2 flex items-center justify-between min-h-12 ml-16 py-1.5 mb-6 self-end'>
-      <div className='flex items-center'>
-        <FaCheckCircle className='ml-2 mr-1' />
-        <p className='mr-2'>Лекция 1:</p>
-        <p>Описание</p>
-      </div>
-      <div className={'flex items-center justify-center hover:cursor-pointer'}>
-        <button className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300 '>
-          <IoMdAdd />
-          <p className='pb-0.5'>содержимое</p>
-        </button>
-        <IoIosArrowDown className={'ml-4 mr-4'} />
-      </div>
-    </div>
-  )
+type LectureComponentProps = {
+  lectureData: SectionLecture
 }
 
-type TestData = {
-  title: string
-  description: string
-  questions: TestQuestion[]
-}
-
-type TestQuestion = {
-  question: string
-  answers: TestAnswer[]
-}
-
-type TestAnswer = {
-  answer: string
-  answerIsCorrect: boolean
-  answerDescription: string
-}
-const testData: TestData[] = [
-  {
-    title: 'Тест 1',
-    description: 'Тест по теме "Введение"',
-    questions: [
-      {
-        question: 'Вопрос 1',
-        answers: [
-          {
-            answer: 'Ответ 1',
-            answerDescription: 'Описание ответа 1',
-            answerIsCorrect: true,
-          },
-        ],
-      },
-    ],
-  },
-]
-
-const TestComponent: React.FC = () => {
+const LectureComponent: React.FC<LectureComponentProps> = ({ lectureData }) => {
   const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
   // here will be request to fetch component data
-  React.useEffect(() => {
-    console.log('TestComponent mounted')
-    return () => {
-      console.log('TestComponent unmounted')
-    }
-  }, [])
+  // React.useEffect(() => {
+  //   console.log('TestComponent mounted')
+  //   return () => {
+  //     console.log('TestComponent unmounted')
+  //   }
+  // }, [])
+  console.log(`lectureData: ${lectureData.title}`)
 
-  return testData.map((test, index) => (
+  return (
     <div
-      key={index}
       className='bg-white border-black border-2 flex items-center justify-between min-h-12 ml-16 py-1.5 mb-6 self-end'
       onMouseEnter={() => setIsEditButtonsVisible(true)}
       onMouseLeave={() => setIsEditButtonsVisible(false)}
     >
       <div className='flex items-center'>
         <FaCheckCircle className='ml-2 mr-1' />
-        <p className='mr-2'>{test.title}:</p>
-        <p>{test.description}</p>
+        <p className='mr-2'>Лекция {lectureData.componentSerial}:</p>
+        <p>{lectureData.title}</p>
         <span
           className={`flex scale-90 items-center ml-2 ${editButtonsVisible ? 'visible' : 'hidden'} `}
         >
@@ -383,16 +531,80 @@ const TestComponent: React.FC = () => {
         <IoIosArrowDown className={'ml-4 mr-4'} />
       </div>
     </div>
-  ))
+  )
 }
-// TODO: implement AssignmentComponent if have time( im dying)
-const AssignmentComponent: React.FC = () => {
+
+type TestComponentProps = {
+  testData: SectionTest
+}
+
+const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
+  const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
+  // here will be request to fetch component data
+  // React.useEffect(() => {
+  //   console.log('TestComponent mounted')
+  //   return () => {
+  //     console.log('TestComponent unmounted')
+  //   }
+  // }, [])
+
   return (
-    <div className='bg-white border-black border-2 flex items-center justify-between min-h-12 ml-16 py-1.5 mb-6 self-end'>
+    <div
+      className='bg-white border-black border-2 flex items-center justify-between min-h-12 ml-16 py-1.5 mb-6 self-end'
+      onMouseEnter={() => setIsEditButtonsVisible(true)}
+      onMouseLeave={() => setIsEditButtonsVisible(false)}
+    >
       <div className='flex items-center'>
         <FaCheckCircle className='ml-2 mr-1' />
-        <p className='mr-2'>Задание 1:</p>
-        <p>Описание</p>
+        <p className='mr-2'>Тест {testData.componentSerial}</p>
+        <p>{testData.title}</p>
+        <span
+          className={`flex scale-90 items-center ml-2 ${editButtonsVisible ? 'visible' : 'hidden'} `}
+        >
+          <MdModeEdit className={'mr-4 hover:cursor-pointer'} />
+          <FaTrash className={'mr-4 hover:cursor-pointer'} />
+        </span>
+      </div>
+      <div className={'flex items-center justify-center hover:cursor-pointer'}>
+        <button className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300 '>
+          <IoMdAdd />
+          <p className='pb-0.5'>Вопросы</p>
+        </button>
+        <IoIosArrowDown className={'ml-4 mr-4'} />
+      </div>
+    </div>
+  )
+}
+
+type AssignmentComponentProps = {
+  assignmentData: SectionAssignment
+}
+// TODO: implement AssignmentComponent if have time( im dying)
+const AssignmentComponent: React.FC<AssignmentComponentProps> = ({ assignmentData }) => {
+  const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
+  // here will be request to fetch component data
+  // React.useEffect(() => {
+  //   console.log('TestComponent mounted')
+  //   return () => {
+  //     console.log('TestComponent unmounted')
+  //   }
+  // }, [])
+  return (
+    <div
+      className='bg-white border-black border-2 flex items-center justify-between min-h-12 ml-16 py-1.5 mb-6 self-end'
+      onMouseEnter={() => setIsEditButtonsVisible(true)}
+      onMouseLeave={() => setIsEditButtonsVisible(false)}
+    >
+      <div className='flex items-center'>
+        <FaCheckCircle className='ml-2 mr-1' />
+        <p className='mr-2'>Задание {assignmentData.componentSerial}:</p>
+        <p>{assignmentData.title}</p>
+        <span
+          className={`flex scale-90 items-center ml-2 ${editButtonsVisible ? 'visible' : 'hidden'} `}
+        >
+          <MdModeEdit className={'mr-4 hover:cursor-pointer'} />
+          <FaTrash className={'mr-4 hover:cursor-pointer'} />
+        </span>
       </div>
       <div className={'flex items-center justify-center hover:cursor-pointer'}>
         <button className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300 '>
@@ -406,25 +618,19 @@ const AssignmentComponent: React.FC = () => {
 }
 
 interface ModalProps {
-  title: string
-  description: string
+  modalType: SectionComponentType
   isOpen: boolean
   onClose: () => void
-  onAddLecture: (title: string, description: string) => void
+  onAddComponent: (title: string, description: string) => void
 }
 
-const Modal: React.FC<ModalProps> = ({
-  title,
-  description,
-  isOpen,
-  onClose,
-  onAddLecture,
-}) => {
-  const [localTitle, setLocalTitle] = useState(title)
-  const [localDescription, setLocalDescription] = useState(description)
+const Modal: React.FC<ModalProps> = ({ modalType, isOpen, onClose, onAddComponent }) => {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
   const [titleError, setTitleError] = useState('')
   const [descriptionError, setDescriptionError] = useState('')
 
+  // Валидация и обработка блокировки скроллинга
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset'
     return () => {
@@ -432,22 +638,17 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [isOpen])
 
-  const handleAddClick = () => {
-    if (!validateFields()) return
-    onAddLecture(localTitle, localDescription)
-    onClose()
-  }
-
+  // Валидация полей перед добавлением
   const validateFields = () => {
     let isValid = true
-    if (!localTitle || localTitle.length > 80) {
+    if (!title || title.length > 80) {
       setTitleError('Название должно быть заполнено и не длиннее 80 символов')
       isValid = false
     } else {
       setTitleError('')
     }
 
-    if (!localDescription || localDescription.length > 200) {
+    if (!title || (title.length > 80 && (!description || description.length > 200))) {
       setDescriptionError('Описание должно быть заполнено и не длиннее 200 символов')
       isValid = false
     } else {
@@ -457,79 +658,70 @@ const Modal: React.FC<ModalProps> = ({
     return isValid
   }
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalTitle(e.target.value)
-    if (!e.target.value || e.target.value.length > 80) {
-      setTitleError('Название должно быть заполнено и не длиннее 80 символов')
-    } else {
-      setTitleError('')
-    }
+  // Обработчик добавления контента
+  const addContent = () => {
+    if (!validateFields()) return
+    onAddComponent(title, description)
+    setTitle('')
+    setDescription('')
+    onClose() // Закрыть модальное окно после добавления
   }
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setLocalDescription(e.target.value)
-    if (!e.target.value || e.target.value.length > 200) {
-      setDescriptionError('Описание должно быть заполнено и не длиннее 200 символов')
-    } else {
-      setDescriptionError('')
-    }
-  }
+  if (!isOpen) return null
 
   return (
     <div
       className='fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center'
-      onClick={onClose}
+      onClick={() => onClose()}
     >
       <div
         className='bg-white p-4 rounded-lg shadow-lg max-w-lg w-full mx-4'
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className='text-xl font-semibold mb-2'>Добавление лекции</h2>
-        <div className='mb-4'>
-          <label className='block'>
-            Название:
-            <input
-              type='text'
-              className='mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-              value={localTitle}
-              onChange={handleTitleChange}
-              maxLength={80}
-            />
-            <p className='text-xs text-gray-600'>
-              {80 - localTitle.length} символов осталось
-            </p>
-            {titleError && <p className='text-red-500 text-xs mt-1'>{titleError}</p>}
-          </label>
+        <h2 className='text-xl font-semibold mb-2'>
+          {modalType === 'lecture'
+            ? 'Добавить лекцию'
+            : modalType === 'test'
+              ? 'Добавить тест'
+              : 'Добавить задание'}
+        </h2>
+        <input
+          type='text'
+          placeholder='Название'
+          className='mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        {titleError && <p className='text-red-500 text-xs mt-1'>{titleError}</p>}
+        <p className='text-xs text-gray-600'>{80 - title.length} символов осталось</p>
+
+        <div>
+          <textarea
+            placeholder='Описание'
+            className='mt-2 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          {descriptionError && (
+            <p className='text-red-500 text-xs mt-1'>{descriptionError}</p>
+          )}
+          <p className='text-xs text-gray-600'>
+            {200 - description.length} символов осталось
+          </p>
         </div>
-        <div className='mb-6'>
-          <label className='block'>
-            Описание:
-            <textarea
-              className='mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
-              value={localDescription}
-              onChange={handleDescriptionChange}
-              maxLength={200}
-            />
-            <p className='text-xs text-gray-600'>
-              {200 - localDescription.length} символов осталось
-            </p>
-            {descriptionError && (
-              <p className='text-red-500 text-xs mt-1'>{descriptionError}</p>
-            )}
-          </label>
-        </div>
-        <div className='flex justify-end space-x-2'>
+
+        <div className='flex justify-end space-x-2 mt-4'>
           <button
-            className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700'
+            className='px-4 py-2 bg-white rounded hover:bg-gray-100 border-black border-2 text-black'
             onClick={onClose}
           >
             Отменить
           </button>
           <button
-            className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700'
-            onClick={handleAddClick}
+            className='px-4 py-2 bg-black text-white rounded hover:bg-gray-600'
+            onClick={addContent}
           >
-            Добавить лекцию
+            Добавить
           </button>
         </div>
       </div>
