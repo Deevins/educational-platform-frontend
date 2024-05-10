@@ -33,7 +33,7 @@ import FilmPage from '@/pages/course-creation/FilmPage.tsx'
 import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
 import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
 import CourseMessagesPage from '@/pages/course-creation/CourseMessagesPage.tsx'
-import CurriculumPage from '@/pages/course-creation/CurriculumPage.tsx'
+import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
 
 const router = createBrowserRouter([
   {
