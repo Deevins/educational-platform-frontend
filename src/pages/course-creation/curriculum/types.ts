@@ -1,13 +1,14 @@
 export type SectionComponentType = 'lecture' | 'test' | 'assignment'
-export type TestQuestion = {
-  question: string
-  answers: TestAnswer[]
-}
 
 export type TestAnswer = {
   answer: string
   answerIsCorrect: boolean
   answerDescription: string
+}
+
+export type TestQuestion = {
+  question: string
+  answers: TestAnswer[]
 }
 
 export type SectionTest = {
