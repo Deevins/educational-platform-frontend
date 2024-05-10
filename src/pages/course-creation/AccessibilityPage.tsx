@@ -31,7 +31,7 @@ const AccessibilityPage = () => {
   }
 
   return (
-    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow'>
+    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-2xl font-bold mb-6'>Доступность</h1>
       <div className='flex items-start mb-6'>
         <div className={'px-4 py-2 border-2 border-gray-200'}>

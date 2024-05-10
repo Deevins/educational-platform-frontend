@@ -9,7 +9,7 @@ const CourseMessagesPage: React.FC = () => {
   console.log(greeting, congratulation)
 
   return (
-    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow'>
+    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-2xl font-bold mb-6'>Сообщения курса</h1>
       <p className='mb-4'>
         Чтобы привлечь студентов к работе с материалами курса, напишите сообщения

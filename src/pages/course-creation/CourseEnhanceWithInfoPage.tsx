@@ -104,7 +104,7 @@ const CourseDetails: React.FC = () => {
   }
 
   return (
-    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow'>
+    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-xl font-bold mb-4'>Целевые учащиеся</h1>
       <hr className={'border-1 bg-black w-full'} />
       <p className={'pt-4 pb-2 text-sm'}>

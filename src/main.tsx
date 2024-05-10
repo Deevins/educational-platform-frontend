@@ -25,15 +25,16 @@ import { IndexPage } from '@/pages'
 import InstructorOnboardingPage from '@/pages/instructor/InstructorOnboardingPage.tsx'
 import InstructorCoursesPage from '@/pages/instructor/InstructorCoursesPage.tsx'
 import IndexInstructorPage from '@/pages/instructor/IndexInstructorPage.tsx'
-import CourseBaseCreationPage from '@/pages/instructor/CourseBaseCreationPage.tsx'
+import CourseBaseCreationPage from '@/pages/course-creation/CourseBaseCreationPage.tsx'
 import CourseEnhanceWithInfoPage from '@/pages/course-creation/CourseEnhanceWithInfoPage.tsx'
 import IndexCourseEnhancePage from '@/pages/course-creation/IndexCourseEnhancePage.tsx'
-import CourseStructurePage from '@/pages/instructor/CourseStructurePage.tsx'
+import CourseStructurePage from '@/pages/course-creation/CourseStructurePage.tsx'
 import VideoSetupPage from '@/pages/course-creation/VideoSetupPage.tsx'
 import FilmPage from '@/pages/course-creation/FilmPage.tsx'
 import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
 import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
 import CourseMessagesPage from '@/pages/course-creation/CourseMessagesPage.tsx'
+import CurriculumPage from '@/pages/course-creation/CurriculumPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -158,7 +159,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'curriculum', // после manage различные разделы редактирования курса
-        element: <div>dasd</div>,
+        element: <CurriculumPage />,
         errorElement: <NotFoundPage />,
       },
       {

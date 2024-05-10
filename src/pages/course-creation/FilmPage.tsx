@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const FilmPage: React.FC = () => {
   return (
-    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow'>
+    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <div className='flex-1'>
         <h1 className='text-2xl font-bold mb-8 p-2 pl-8'>Съемка видео и монтаж</h1>
         <hr />

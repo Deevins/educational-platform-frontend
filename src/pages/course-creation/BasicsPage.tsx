@@ -85,7 +85,7 @@ const BasicsPage: React.FC = () => {
   }
 
   return (
-    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow'>
+    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-2xl font-bold mb-4'>Целевая страница курса</h1>
       <InputField
         label='Заголовок курса'
