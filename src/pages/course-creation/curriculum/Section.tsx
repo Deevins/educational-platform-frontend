@@ -209,7 +209,7 @@ const Section: React.FC<SectionType> = ({
       ) : (
         <button
           className={
-            'bg-white border-[1px] border-black flex items-center ml-16 mt-6 py-1 px-4 hover:bg-gray-300 w-6/12'
+            'bg-white border-[1px] border-black flex items-center ml-16 mt-6 py-1 pl-4 hover:bg-gray-300 w-6/12'
           }
           onClick={handleAddComponent}
         >

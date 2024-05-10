@@ -20,7 +20,7 @@ const CourseEditHeader: React.FC = () => {
         <p className='ml-2'>Загружено {videoMaterialCount} мин видеоматериалов</p>
       </div>
       <div>
-        <NavLink to={`/instructor/course/${courseId}/manage/settings`}>
+        <NavLink to={`/instructor/courses/course/${courseId}/manage/settings`}>
           <button className='bg-transparent text-white font-semibold hover:text-white py-2 px-4 hover:border-transparent rounded'>
             <PiGear className='h-6 w-6' />
           </button>

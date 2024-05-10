@@ -34,6 +34,8 @@ import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
 import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
 import CourseMessagesPage from '@/pages/course-creation/CourseMessagesPage.tsx'
 import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
+import SettingsPage from '@/pages/course-creation/SettingsPage.tsx'
+import { NotificationProvider } from '@/utils/contexts/notificationContext.tsx'
 
 const router = createBrowserRouter([
   {
@@ -176,6 +178,11 @@ const router = createBrowserRouter([
         element: <CourseMessagesPage />,
         errorElement: <NotFoundPage />,
       },
+      {
+        path: 'settings', // Сообщения курса
+        element: <SettingsPage />,
+        errorElement: <NotFoundPage />,
+      },
     ],
   },
   {
@@ -214,5 +221,7 @@ const router = createBrowserRouter([
 // { label: 'Сообщения', to: '/messages' },
 // { label: 'Выйти', to: '/auth/logout', onClick: logout },
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <RouterProvider router={router} />
+  <NotificationProvider>
+    <RouterProvider router={router} />
+  </NotificationProvider>
 )

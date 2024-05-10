@@ -43,10 +43,16 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
     const updatedQuestions = questions.filter((_, i) => i !== index)
     setQuestions(updatedQuestions)
     setData({ ...data, questions: updatedQuestions })
+    if (updatedQuestions.length === 0) {
+      setIsQuestionsVisible(false)
+    }
   }
 
   const toggleQuestionsVisibility = () => {
-    if (questions.length === 0) return
+    if (questions.length === 0) {
+      setIsQuestionsVisible(false)
+      return
+    }
     setIsQuestionsVisible(!isQuestionsVisible)
   }
 
@@ -70,17 +76,19 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
           </span>
         </div>
         <div className={'flex items-center justify-center hover:cursor-pointer'}>
-          <button
-            className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300'
-            onClick={(e) => {
-              e.stopPropagation() // Prevents the questions visibility from toggling
-              setIsQuestionModalOpen(true)
-              setSelectedQuestionIndex(null)
-            }}
-          >
-            <IoMdAdd />
-            <p className='pb-0.5'>Вопросы</p>
-          </button>
+          {questions.length === 0 && (
+            <button
+              className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300'
+              onClick={(e) => {
+                e.stopPropagation() // Prevents the questions visibility from toggling
+                setIsQuestionModalOpen(true)
+                setSelectedQuestionIndex(null)
+              }}
+            >
+              <IoMdAdd />
+              <p className='pb-0.5'>Вопросы</p>
+            </button>
+          )}
           {!isQuestionsVisible ? (
             <IoIosArrowDown className={'ml-4 mr-4'} onClick={toggleQuestionsVisibility} />
           ) : (
@@ -237,14 +245,20 @@ const QuestionModal: React.FC<{
   }
 
   const handleSubmit = () => {
+    // Проверяем, что все обязательные поля заполнены
     if (!question || answers.some((a) => !a.answer)) {
-      alert('Please fill in all required fields.')
+      alert('Пожалуйста заполните все необходимые поля.')
       return
     }
+    // Проверяем, что хотя бы один ответ отмечен как правильный
+    if (!answers.some((a) => a.answerIsCorrect)) {
+      alert('Пожалуйста выберите хотя бы один правильный ответ.')
+      return
+    }
+    // Сохраняем вопрос и ответы
     onSave({ question, answers })
     onClose()
   }
-
   if (!isOpen) return null
 
   return (
