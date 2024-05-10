@@ -34,21 +34,21 @@ const sections: SectionType[] = [
         title: 'Тест 1',
         description: 'test1 desc',
         questions: [
-          {
-            question: 'Вопрос 1',
-            answers: [
-              {
-                answer: 'Ответ 1',
-                answerDescription: 'Описание ответа 1',
-                answerIsCorrect: true,
-              },
-              {
-                answer: 'Ответ 2',
-                answerDescription: 'Описание ответа 2',
-                answerIsCorrect: false,
-              },
-            ],
-          },
+          // {
+          //   question: 'Вопрос 1',
+          //   answers: [
+          //     {
+          //       answer: 'Ответ 1',
+          //       answerDescription: 'Описание ответа 1',
+          //       answerIsCorrect: true,
+          //     },
+          //     {
+          //       answer: 'Ответ 2',
+          //       answerDescription: 'Описание ответа 2',
+          //       answerIsCorrect: false,
+          //     },
+          //   ],
+          // },
         ],
       },
     ],

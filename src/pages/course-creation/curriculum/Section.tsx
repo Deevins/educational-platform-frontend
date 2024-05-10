@@ -136,7 +136,7 @@ const Section: React.FC<SectionType> = ({
     })
   }
   return (
-    <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2 '}>
+    <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2'}>
       <div
         className={'flex mb-8 w-full'}
         onMouseEnter={() => setIsTitleButtonsShown(true)}
@@ -161,16 +161,6 @@ const Section: React.FC<SectionType> = ({
           testData={item as SectionTest}
         />
       ))}
-
-      {/*{lectures.map((lecture, index) => (*/}
-      {/*  <LectureComponent key={index} lectureData={lecture} />*/}
-      {/*))}*/}
-      {/*{tests.map((test, index) => (*/}
-      {/*  <TestComponent key={index} testData={test} />*/}
-      {/*))}*/}
-      {/*{assignments.map((assignment, index) => (*/}
-      {/*  <AssignmentComponent key={index} assignmentData={assignment} />*/}
-      {/*))}*/}
       {isComponentAdditionActive ? (
         <div>
           <button className={'pl-8'} onClick={handleAddComponent}>
