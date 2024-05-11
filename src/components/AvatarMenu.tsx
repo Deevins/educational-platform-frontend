@@ -91,7 +91,6 @@ const AvatarMenu: React.FC = () => {
   const menuItems: MenuItem[] = [
     { label: 'Моя страница', to: `/users/${user.id}` },
     { label: 'Курсы', to: `/users/${user.id}/courses` },
-    { label: 'Избранное', to: `/users/${user.id}/favorites` },
     { label: 'Настройки', to: `/users/${user.id}/settings` },
     {
       label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,

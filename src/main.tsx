@@ -84,7 +84,7 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/users/user/:userID',
+        path: '/users/user/:userID/profile',
         element: <UserProfilePage />,
         errorElement: <NotFoundPage />,
       },
@@ -213,6 +213,7 @@ const router = createBrowserRouter([
     ],
   },
 ])
+// TODO: mb implement
 // { label: 'Моя страница', to: '/my-page' },
 // { label: 'Настройки', to: '/settings' },
 // { label: 'Подписки', to: '/subscriptions' },

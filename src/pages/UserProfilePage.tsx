@@ -451,7 +451,7 @@ const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
               <h4 className='text-lg font-semibold'>{course.title}</h4>
               <p className='text-gray-600'>{course.description}</p>
               <NavLink
-                to={`/courses/${course.id}`}
+                to={`/courses/course/${course.id}`}
                 className='mt-2 inline-block text-blue-500 hover:text-blue-700'
               >
                 View Course
