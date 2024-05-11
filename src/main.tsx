@@ -126,12 +126,12 @@ const router = createBrowserRouter([
         element: <CoursesSearchByCategory />,
         errorElement: <NotFoundPage />,
       },
-      {
-        path: '/courses/course/:courseID/learn/',
-        element: <CourseActivePage />,
-        errorElement: <NotFoundPage />,
-      },
     ],
+  },
+  {
+    path: '/courses/course/:courseID/learn/',
+    element: <CourseActivePage />,
+    errorElement: <NotFoundPage />,
   },
   {
     path: '/teaching/onboarding/teaching-experience',

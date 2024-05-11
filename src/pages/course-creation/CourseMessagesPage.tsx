@@ -6,7 +6,7 @@ const CourseMessagesPage: React.FC = () => {
   const [greeting, setGreeting] = useState('')
   const [congratulation, setCongratulation] = useState('')
 
-  console.log(greeting, congratulation)
+  // console.log(greeting, congratulation)
 
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
