@@ -36,7 +36,7 @@ import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.ts
 import SettingsPage from '@/pages/course-creation/SettingsPage.tsx'
 import { NotificationProvider } from '@/utils/contexts/notificationContext.tsx'
 import CoursesSearchByCategory from '@/pages/CoursesSearchByCategory.tsx'
-import UnregisteredCoursePage from '@/pages/UnregisteredCoursePage.tsx'
+import UnregisteredCoursePage from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 import InstructorNewcomerPage from '@/pages/instructor/InstructorNewcomerPage.tsx'
 
 const router = createBrowserRouter([

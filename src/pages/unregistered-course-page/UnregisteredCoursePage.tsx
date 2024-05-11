@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
-import video from '../../public/videovideo.mp4'
+import video from '../../../public/videovideo.mp4'
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { GoVideo } from 'react-icons/go'
-import { NavLink } from 'react-router-dom'
-import { AiOutlineCheck } from 'react-icons/ai'
+import { Link, NavLink } from 'react-router-dom'
+import { LearnComponent } from '@/pages/unregistered-course-page/LearnComponent.tsx'
+import { MaterialsComponent } from '@/pages/unregistered-course-page/MaterialsComponent.tsx'
+import { ReviewsComponent } from '@/pages/unregistered-course-page/ReviewsComponent.tsx'
+import { InstructorComponent } from '@/pages/unregistered-course-page/InstructorComponent.tsx'
 
 const instructorObject = {
   id: 1,
@@ -21,6 +24,7 @@ const UnregisteredCoursePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('learn')
   const studentsCount = 6453
   const instuctorUrl = ''
+  const isStudentRegistered = false
 
   const renderContent = () => {
     switch (activeSection) {
@@ -31,7 +35,17 @@ const UnregisteredCoursePage: React.FC = () => {
       case 'reviews':
         return <ReviewsComponent />
       case 'instructor':
-        return <InstructorComponent />
+        return (
+          <InstructorComponent
+            name='Евгений Волосатов'
+            title='Магистр математики и информатики, C#, Java, PHP программист'
+            rating={4.4}
+            reviewCount={859}
+            studentCount={9420}
+            courseCount={13}
+            description='Я — Игромистр. Моё призвание — показать понятный процесс создания игровых и прикладных программ, с нуля до результата.'
+          />
+        )
       default:
         return <LearnComponent />
     }
@@ -75,19 +89,33 @@ const UnregisteredCoursePage: React.FC = () => {
                   </NavLink>
                 </p>
               </div>
-              <button
-                className={
-                  'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
-                }
-                onClick={handleRegisterOnCourse}
-              >
-                Зарегистрироваться
-              </button>
+              {isStudentRegistered ? (
+                <Link to={''}>
+                  <button
+                    className={
+                      'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
+                    }
+                    onClick={handleRegisterOnCourse}
+                  >
+                    Перейти к курсу
+                  </button>
+                </Link>
+              ) : (
+                <Link to={'/courses/course/:courseID/learn/lecture/15154208'}>
+                  <button
+                    className={
+                      'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
+                    }
+                  >
+                    Перейти к курсу
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
       </div>
-      <div className='ml-[17%] w-[68%] px-6 flex flex-col  mb-8'>
+      <div className='ml-[17%] w-[68%] px-6 flex flex-col  mb-8 '>
         <div className={'flex border-b-2 mb-4'}>
           <button
             className={`px-4 py-2 ${activeSection === 'learn' ? 'text-black border-b-2 border-black' : ''}`}
@@ -122,73 +150,6 @@ const UnregisteredCoursePage: React.FC = () => {
 }
 
 export default UnregisteredCoursePage
-
-const LearnComponent: React.FC = () => {
-  // TODO: fix after connect api
-  return (
-    <div className='max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md'>
-      <h2 className='text-lg font-bold'>В конце этого курса вы сможете:</h2>
-      <ul className={'flex flex-col'}>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>Frontend</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>Backend</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>HTML</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>CSS</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>JavaScript</p>
-        </li>
-      </ul>
-    </div>
-  )
-}
-
-const MaterialsComponent: React.FC = () => {
-  return (
-    <div className='max-w-4xl mx-auto  p-6 bg-white rounded-xl shadow-md mb-8'>
-      <h2 className='text-xl font-bold'>Требования</h2>
-      <ul className='list-disc pl-5'>
-        <li>Иметь понятие о Web-технологиях</li>
-      </ul>
-
-      <h2 className='text-xl font-bold mt-6'>Описание</h2>
-      <p>
-        Обзор 5 технологий по созданию динамических Web-сайтов: HTML, CSS, JavaScript,
-        PHP, MySQL.
-      </p>
-      <p>
-        На этом видеокурсе мы написали очень простой Web-сайт с целью прояснить
-        взаимодействие Web-технологий...
-      </p>
-      <p>Курс состоит из 3 разделов:</p>
-      <ol className='list-decimal pl-5'>
-        <li>Frontend - клиентская часть с технологиями HTML + CSS + JavaScript.</li>
-        <li>Backend - серверная часть с технологиями PHP + MySQL.</li>
-        <li>
-          Видеокурс состоит из 9 коротких уроков, на каждом из которых мы рассматриваем
-          отдельную технологию...
-        </li>
-      </ol>
-
-      <h2 className='text-xl font-bold mt-6'>Для кого этот курс:</h2>
-      <ul className='list-disc pl-5 mb-6'>
-        <li>Начинающие web-мастера</li>
-        <li>Начинающие программисты</li>
-      </ul>
-    </div>
-  )
-}
 
 interface CourseProps {
   courseId: string // Unique identifier for each course
@@ -357,7 +318,7 @@ const InstructorCourses: React.FC = () => {
 
   return (
     <div>
-      <h1 className={'border-b-2 border-black pb-4 font-semibold'}>
+      <h1 className={'border-b-2 border-black pb-4 font-semibold mt-16'}>
         Другие курсы от{' '}
         <NavLink
           to={`/users/user/${instructorID}`}
@@ -382,27 +343,6 @@ const InstructorCourses: React.FC = () => {
           </button>
         ))}
       </div>
-    </div>
-  )
-}
-const ReviewsComponent: React.FC = () => {
-  return (
-    <div>
-      <h2 className='text-lg font-semibold'>Отзывы</h2>
-      <p className='mt-1 text-gray-600'>
-        Отзывы студентов о курсе, их опыт и обратная связь.
-      </p>
-    </div>
-  )
-}
-
-const InstructorComponent: React.FC = () => {
-  return (
-    <div>
-      <h2 className='text-lg font-semibold'>Преподаватель</h2>
-      <p className='mt-1 text-gray-600'>
-        Информация о преподавателе, его опыт и квалификации.
-      </p>
     </div>
   )
 }
