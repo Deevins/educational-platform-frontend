@@ -3,12 +3,14 @@ import video from '../../../public/videovideo.mp4'
 import ReactPlayer from 'react-player'
 
 interface CourseSection {
+  id: number
   title: string
   duration: string
   items: CourseItem[]
 }
 
 interface CourseItem {
+  id: number
   title: string
   type: 'Lecture' | 'Test'
   duration: string
@@ -17,16 +19,19 @@ interface CourseItem {
 
 const courseData: CourseSection[] = [
   {
+    id: 1,
     title: 'Chapter 1: Writing Your Framework',
     duration: '4h 14m',
     items: [
       {
+        id: 123,
         title: 'Part 1: Basic Framework Writing',
         type: 'Lecture',
         duration: '1h 34m',
         videoUrl: video,
       },
       {
+        id: 321,
         title: 'Part 2: User Interface Development',
         type: 'Lecture',
         duration: '2h 40m',
@@ -34,6 +39,301 @@ const courseData: CourseSection[] = [
       },
     ],
   },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    items: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        type: 'Lecture',
+        duration: '1h 34m',
+        videoUrl: video,
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        type: 'Lecture',
+        duration: '2h 40m',
+        videoUrl: video,
+      },
+    ],
+  },
+
   // More chapters...
 ]
 
@@ -44,12 +344,13 @@ const CourseActivePage: React.FC = () => {
 
   const toggleSection = (index: number) => {
     setSelectedSectionIndex(index === selectedSectionIndex ? null : index)
-    setSelectedItemIndex(null)
+    setSelectedItemIndex(null) // Reset item index when switching sections
   }
 
   const selectItem = (index: number) => {
     setSelectedItemIndex(index)
   }
+
   return (
     <div className='flex h-screen'>
       <SectionList
@@ -59,57 +360,58 @@ const CourseActivePage: React.FC = () => {
         selectedSectionIndex={selectedSectionIndex}
       />
       <div className='flex-1 p-5 flex flex-col'>
-        {selectedSectionIndex !== null && selectedItemIndex !== null && (
+        {selectedSectionIndex !== null && selectedItemIndex !== null ? (
           <>
-            <DetailContent
-              title={courseData[selectedSectionIndex].items[selectedItemIndex].title}
-              type={courseData[selectedSectionIndex].items[selectedItemIndex].type}
-              duration={
-                courseData[selectedSectionIndex].items[selectedItemIndex].duration
-              }
-              activeTab={activeTab}
-            />
             <VideoPlayer
               url={courseData[selectedSectionIndex].items[selectedItemIndex].videoUrl}
             />
-            <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+            <div>
+              <h1 className='text-2xl font-bold'>
+                {courseData[selectedSectionIndex].items[selectedItemIndex].title}
+              </h1>
+              <p>
+                Type: {courseData[selectedSectionIndex].items[selectedItemIndex].type}
+              </p>
+              <p>
+                Duration:{' '}
+                {courseData[selectedSectionIndex].items[selectedItemIndex].duration}
+              </p>
+            </div>
           </>
+        ) : (
+          <div className={'flex justify-center my-auto'}>
+            <h1 className='text-xl font-bold'>
+              Please select a lecture or test from the list on the left.
+            </h1>
+          </div>
         )}
+        <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <DetailContent activeTab={activeTab} />
       </div>
     </div>
   )
 }
-
 export default CourseActivePage
 
 interface DetailContentProps {
-  title: string
-  type: string
-  duration: string
   activeTab: string
 }
 
-const DetailContent: React.FC<DetailContentProps> = ({
-  title,
-  type,
-  duration,
-  activeTab,
-}) => {
+const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
   return (
     <div>
-      <h1 className='text-2xl font-bold'>{title}</h1>
-      <p>Type: {type}</p>
-      <p>Duration: {duration}</p>
-      {activeTab === 'Overview' && (
-        <div className='mt-4'>
-          <h2 className='text-xl'>Course Overview:</h2>
-          <p>
-            This section provides detailed information about the course, including
-            objectives, content outline, and more.
-          </p>
-          {/* Dynamic content based on the activeTab */}
-        </div>
-      )}
+      {
+        activeTab === 'Overview' && (
+          <div className='mt-4'>
+            <h2 className='text-xl'>Course Overview:</h2>
+            <p>
+              This section provides detailed information about the course, including
+              objectives, content outline, and more.
+            </p>
+          </div>
+        )
+        // Добавьте дополнительные условия для отображения информации для других вкладок
+      }
     </div>
   )
 }
@@ -128,7 +430,7 @@ const SectionList: React.FC<SectionListProps> = ({
   selectedSectionIndex,
 }) => {
   return (
-    <div className='w-80 bg-gray-800 text-white p-5 overflow-y-auto'>
+    <div className='w-2/12 bg-gray-800 text-white p-5 overflow-y-auto'>
       {sections.map((section, idx) => (
         <div key={idx}>
           <h3
@@ -161,7 +463,7 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
-  return <ReactPlayer url={url} width='100%' controls={true} />
+  return <ReactPlayer url={url} width='60%' height={'50%'} controls={true} />
 }
 
 interface NavbarProps {
@@ -173,12 +475,24 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   return (
     <div className='flex border-b'>
       <button
-        className={`p-2 ${activeTab === 'Overview' ? 'font-bold' : ''}`}
+        className={`p-2 ${activeTab === 'Overview' ? 'font-bold border-b-black border-b-2' : ''}`}
         onClick={() => setActiveTab('Overview')}
       >
         Overview
       </button>
-      {/* Add more buttons as needed */}
+      <button
+        className={`p-2 ${activeTab === 'Details' ? 'font-bold border-b-black border-b-2' : ''}`}
+        onClick={() => setActiveTab('Details')}
+      >
+        Details
+      </button>
+      <button
+        className={`p-2 ${activeTab === 'Tests' ? 'font-bold border-b-black border-b-2' : ''}`}
+        onClick={() => setActiveTab('Tests')}
+      >
+        Tests
+      </button>
+      {/* Добавьте дополнительные кнопки по необходимости */}
     </div>
   )
 }

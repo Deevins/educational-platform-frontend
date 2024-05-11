@@ -38,7 +38,6 @@ import { NotificationProvider } from '@/utils/contexts/notificationContext.tsx'
 import CoursesSearchByCategory from '@/pages/CoursesSearchByCategory.tsx'
 import UnregisteredCoursePage from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 import InstructorNewcomerPage from '@/pages/instructor/InstructorNewcomerPage.tsx'
-import CourseRedirectPage from '@/pages/course-learning/CourseRedirectPage.tsx'
 import CourseActivePage from '@/pages/course-learning/CourseActivePage.tsx'
 
 const router = createBrowserRouter([
@@ -125,6 +124,11 @@ const router = createBrowserRouter([
       {
         path: '/courses/:categoryID/:subcategoryID',
         element: <CoursesSearchByCategory />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/courses/course/:courseID/learn/',
+        element: <CourseActivePage />,
         errorElement: <NotFoundPage />,
       },
     ],
@@ -236,22 +240,19 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: '/courses/course/:courseID/learn/',
-    element: <CourseRedirectPage />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: '/courses/course/:courseID/learn/lecture/:lectureID',
-    element: <CourseActivePage />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: '/courses/course/:courseID/learn/quiz/:quizID',
-    element: <CourseActivePage />,
-    errorElement: <NotFoundPage />,
-  },
+
+  // {
+  //   path: '/courses/course/:courseID/learn/:elementType/:elementID',
+  //   element: <CourseActivePage />,
+  //   errorElement: <NotFoundPage />,
+  // },
+  // {
+  //   path: '/courses/course/:courseID/learn/quiz/:quizID',
+  //   element: <CourseActivePage />,
+  //   errorElement: <NotFoundPage />,
+  // },
 ])
+
 // TODO: mb implement
 // { label: 'Моя страница', to: '/my-page' },
 // { label: 'Настройки', to: '/settings' },
