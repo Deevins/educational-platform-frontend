@@ -132,6 +132,7 @@ interface Category {
   subcategories: { label: string; url: string }[]
 }
 
+// TODO: stub, replace with real data from API
 const categories: Category[] = [
   {
     label: 'Web Development',
@@ -178,7 +179,7 @@ const Dropdown: React.FC = () => {
   }
 
   return (
-    <div ref={dropdownRef} className='relative'>
+    <div ref={dropdownRef} className='relative z-50'>
       <button
         onMouseOver={handleMouseEnter}
         onMouseOut={handleMouseLeave}

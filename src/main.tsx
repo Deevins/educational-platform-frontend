@@ -8,7 +8,6 @@ import CoursesPage from '@/pages/CoursesPage.tsx'
 import ForumPage from '@/pages/forum/ForumPage.tsx'
 import ProfilesListPage from '@/pages/ProfilesListPage.tsx'
 import MainPage from '@/pages/MainPage.tsx'
-import CoursePage from '@/pages/CoursePage.tsx'
 import ThreadPage from '@/pages/forum/ThreadPage.tsx'
 import RegisterPage from '@/pages/auth/RegisterPage.tsx'
 import LoginPage from '@/pages/auth/LoginPage.tsx'
@@ -36,6 +35,9 @@ import CourseMessagesPage from '@/pages/course-creation/CourseMessagesPage.tsx'
 import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
 import SettingsPage from '@/pages/course-creation/SettingsPage.tsx'
 import { NotificationProvider } from '@/utils/contexts/notificationContext.tsx'
+import CoursesSearchByCategory from '@/pages/CoursesSearchByCategory.tsx'
+import UnregisteredCoursePage from '@/pages/UnregisteredCoursePage.tsx'
+import InstructorNewcomerPage from '@/pages/instructor/InstructorNewcomerPage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -95,7 +97,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/courses/course/:courseID',
-        element: <CoursePage />,
+        element: <UnregisteredCoursePage />,
         errorElement: <NotFoundPage />,
       },
       {
@@ -106,6 +108,21 @@ const router = createBrowserRouter([
       {
         path: '/course-creation/learning-objectives', // TODO: optional, mb forum for instructors
         element: <PrivacyPolicyPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/courses/:categoryID',
+        element: <CoursesSearchByCategory />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/courses/:categoryID/:subcategoryID',
+        element: <CoursesSearchByCategory />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: '/courses/:categoryID/:subcategoryID',
+        element: <CoursesSearchByCategory />,
         errorElement: <NotFoundPage />,
       },
     ],
@@ -123,6 +140,11 @@ const router = createBrowserRouter([
       {
         path: 'courses',
         element: <InstructorCoursesPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'newcomer',
+        element: <InstructorNewcomerPage />,
         errorElement: <NotFoundPage />,
       },
     ],

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import CommonFooter from '@/components/footers/CommonFooter.tsx'
 import InstructorHeader from '@/components/headers/InstructorHeader.tsx'
-import { FiBook, FiCalendar, FiHome, FiSettings, FiUsers } from 'react-icons/fi'
+import { FiHome, FiSettings } from 'react-icons/fi'
+import { NavLink } from 'react-router-dom'
 
 type PropsType = {
   children: React.ReactNode
@@ -88,41 +89,45 @@ const InstructorLayout: React.FC<PropsType> = ({ children }) => {
         >
           {/* Menu items */}
           <div className='py-4'>
-            <MenuNavItem
-              title='Курсы'
-              icon={<FiHome size={20} />}
-              isActive={activeItem === 1}
-              onItemClick={() => handleItemClick(1)}
-              isVisible={isMenuOpen}
-            />
-            <MenuNavItem
-              title='Взаимодействие'
-              icon={<FiSettings size={20} />}
-              isActive={activeItem === 2}
-              onItemClick={() => handleItemClick(2)}
-              isVisible={isMenuOpen}
-            />
-            <MenuNavItem
-              title='Успеваемость'
-              icon={<FiBook size={20} />}
-              isActive={activeItem === 3}
-              onItemClick={() => handleItemClick(3)}
-              isVisible={isMenuOpen}
-            />
-            <MenuNavItem
-              title='Инструменты'
-              icon={<FiUsers size={20} />}
-              isActive={activeItem === 4}
-              onItemClick={() => handleItemClick(4)}
-              isVisible={isMenuOpen}
-            />
-            <MenuNavItem
-              title='Ресурсы'
-              icon={<FiCalendar size={20} />}
-              isActive={activeItem === 5}
-              onItemClick={() => handleItemClick(5)}
-              isVisible={isMenuOpen}
-            />
+            <NavLink to={'/instructor/courses'}>
+              <MenuNavItem
+                title='Курсы'
+                icon={<FiHome size={20} />}
+                isActive={activeItem === 1}
+                onItemClick={() => handleItemClick(1)}
+                isVisible={isMenuOpen}
+              />
+            </NavLink>
+            <NavLink to={'/instructor/communication'}>
+              <MenuNavItem
+                title='Взаимодействие'
+                icon={<FiSettings size={20} />}
+                isActive={activeItem === 2}
+                onItemClick={() => handleItemClick(2)}
+                isVisible={isMenuOpen}
+              />
+            </NavLink>
+            {/*<MenuNavItem*/}
+            {/*  title='Успеваемость'*/}
+            {/*  icon={<FiBook size={20} />}*/}
+            {/*  isActive={activeItem === 3}*/}
+            {/*  onItemClick={() => handleItemClick(3)}*/}
+            {/*  isVisible={isMenuOpen}*/}
+            {/*/>*/}
+            {/*<MenuNavItem*/}
+            {/*  title='Инструменты'*/}
+            {/*  icon={<FiUsers size={20} />}*/}
+            {/*  isActive={activeItem === 4}*/}
+            {/*  onItemClick={() => handleItemClick(4)}*/}
+            {/*  isVisible={isMenuOpen}*/}
+            {/*/>*/}
+            {/*<MenuNavItem*/}
+            {/*  title='Ресурсы'*/}
+            {/*  icon={<FiCalendar size={20} />}*/}
+            {/*  isActive={activeItem === 5}*/}
+            {/*  onItemClick={() => handleItemClick(5)}*/}
+            {/*  isVisible={isMenuOpen}*/}
+            {/*/>*/}
           </div>
         </div>
       </div>

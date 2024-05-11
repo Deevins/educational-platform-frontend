@@ -51,7 +51,7 @@ const initialQuestions: QA[] = [
   },
   {
     id: 3,
-    question: 'Что студенты будут изучать в вашем курсе?',
+    question: 'Для кого предназначен этот курс?',
     description:
       'Составьте подробное описание целевых учащихся вашего курса, которым были бы полезны ваши материалы.\n' +
       'Это поможет вам привлечь правильную аудиторию для курса.',
@@ -155,7 +155,7 @@ const QuestionBlock: React.FC<Props> = ({
 }) => {
   return (
     <div className='mb-4'>
-      <h3 className='text-lg font-semibold py-2'>{question}</h3>
+      <h3 className='text-xl font-bold py-2'>{question}</h3>
       <p>{description}</p>
       {answers.map((item, index) => (
         <div key={index} className='relative group mt-2'>

@@ -55,13 +55,13 @@ const InstructorCoursesPage: React.FC = () => {
               <input
                 type='text'
                 placeholder='Поиск'
-                className='border border-black rounded-md px-3 py-1 mr-4'
+                className='border border-black  px-3 py-1 mr-4'
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
               {/* Выпадающий список для сортировки */}
               <select
-                className='border border-gray-300 rounded-md px-3 py-1'
+                className='border border-gray-300 px-3 py-1'
                 value={sortBy}
                 onChange={handleSortChange}
               >
@@ -185,6 +185,35 @@ const InstructorCoursesPage: React.FC = () => {
                     Приступите к работе
                   </button>
                 </NavLink>
+              </div>
+            </div>
+          </div>
+          <div className={'flex justify-center w-[92%] ml-28 lg:ml-0'}>
+            <div className='shadow-xl border-2 border-gray-100 pt-4 pl-4 pb-4 pr-2 my-4 mr-32 relative flex flex-col  w-[80%]'>
+              <div className='flex flex-col lg:flex-row justify-center'>
+                <div className='flex-shrink-0 lg:order-1 pr-8'>
+                  <img
+                    src='https://s.udemycdn.com/instructor/dashboard/newcomer-challenge.jpg'
+                    alt='asd'
+                    className='hidden lg:block h-[80%] float-right'
+                  />
+                </div>
+                <div className='ml-4 w-[50%]'>
+                  <h1 className='text-center mb-4 font-medium'>
+                    Создайте привлекательный курс
+                  </h1>
+                  <p>
+                    Вне зависимости от вашего опыта в преподавании вы можете сделать свой
+                    курс увлекательным. Мы подготовили подборку ресурсов и передовых
+                    методик, которые помогут вам достичь новых высот и выйти на новый
+                    уровень.
+                  </p>
+                </div>
+              </div>
+              <div className='flex justify-center mt-auto'>
+                <button className='font-bold py-2 px-4 text-black hover:underline'>
+                  <NavLink to={'/instructor/newcomer'}>Приступите к работе</NavLink>
+                </button>
               </div>
             </div>
           </div>
