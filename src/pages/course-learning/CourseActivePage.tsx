@@ -17,6 +17,7 @@ interface Lecture {
   id: number
   title: string
   duration: string
+  description?: string
   videoUrl: string
 }
 
@@ -47,12 +48,16 @@ const courseData: CourseSection[] = [
         title: 'Part 1: Basic Framework Writing',
         duration: '1h 34m',
         videoUrl: 'https://youtu.be/6wbckQjhA4Y',
+        description:
+          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
       },
       {
         id: 321,
         title: 'Part 2: User Interface Development',
         duration: '2h 40m',
         videoUrl: video,
+        description:
+          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
       },
     ],
     tests: [
@@ -392,14 +397,34 @@ interface LectureComponentProps {
 }
 
 const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
+  const [isHovering, setIsHovering] = useState(false)
+
+  const handleMouseOver = () => setIsHovering(true)
+  const handleMouseOut = () => setIsHovering(false)
+
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md p-5'>
       <h1 className='text-3xl font-bold'>{lecture.title}</h1>
       <p>Duration: {lecture.duration}</p>
       <VideoPlayer url={lecture.videoUrl} />
-      <div className='flex items-start flex-col w-full'>
+      <div className='flex items-start flex-col truncate max-w-7xl max-h-7xl mx-16'>
         <p className='text-xl'>Lecture Details:</p>
-        {/* Add additional details or components related to the lecture here */}
+        <p
+          className='truncate overflow-hidden text-justify'
+          style={{ maxHeight: '96px', lineHeight: '24px' }}
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+        >
+          {lecture.description}
+        </p>
+        {isHovering && (
+          <div
+            className='absolute bg-white border border-gray-300 p-2 rounded shadow-lg z-50'
+            style={{ maxHeight: '200px', overflowY: 'auto' }}
+          >
+            {lecture.description}
+          </div>
+        )}
       </div>
     </div>
   )

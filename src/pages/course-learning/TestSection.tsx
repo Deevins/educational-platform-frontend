@@ -18,17 +18,21 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1)
-      setSelectedAnswer(null) // Reset selection for the next question
+      setSelectedAnswer(userAnswers[currentQuestionIndex + 1] || null) // Maintain or reset selection for the next question
     } else {
-      setTestCompleted(true) // Finish the test if it was the last question
+      handleSubmitResults() // Automatically submit results on last question
     }
   }
 
-  const handleRetakeTest = () => {
-    setTestCompleted(false)
-    setCurrentQuestionIndex(0)
-    setUserAnswers({})
-    setSelectedAnswer(null)
+  const handlePreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+      setSelectedAnswer(userAnswers[currentQuestionIndex - 1] || null) // Maintain selection for the previous question
+    }
+  }
+
+  const handleSubmitResults = () => {
+    setTestCompleted(true)
   }
 
   return (
@@ -53,32 +57,45 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
               </button>
             ))}
           </div>
-          <button
-            onClick={handleNextQuestion}
-            className='mt-6 px-6 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700'
-            disabled={selectedAnswer === null} // Disable if no answer is selected
-          >
-            {currentQuestionIndex < questions.length - 1
-              ? 'Next Question'
-              : 'Finish Test'}
-          </button>
+          <div className='flex justify-between mt-6'>
+            <button
+              onClick={handlePreviousQuestion}
+              className='px-6 py-2 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-700'
+              disabled={currentQuestionIndex === 0}
+            >
+              Previous Question
+            </button>
+            <button
+              onClick={handleNextQuestion}
+              className='px-6 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700'
+              disabled={selectedAnswer === null}
+            >
+              {currentQuestionIndex < questions.length - 1
+                ? 'Next Question'
+                : 'Submit Results'}
+            </button>
+          </div>
         </div>
       ) : (
-        <div className='bg-white shadow-md rounded-lg p-6'>
+        <div className='bg-white shadow-md rounded-lg p-6 text-center'>
           <h1 className='text-2xl font-bold mb-4'>Test Completed</h1>
+          <p>
+            Thank you for completing the test. Your results have been submitted
+            successfully.
+          </p>
           {questions.map((question, index) => (
-            <div key={index} className='mb-4'>
-              <div className='text-lg font-semibold'>{question.question}</div>
+            <div key={index} className='mb-8 bg-gray-50 p-4 rounded-lg shadow'>
+              <div className='text-lg font-semibold mb-2'>{question.question}</div>
               {question.answers.map((answer, ansIndex) => (
                 <div
                   key={ansIndex}
-                  className={`p-4 rounded-lg border-2 ${
+                  className={`p-3 rounded-lg mb-2 ${
                     userAnswers[index] === ansIndex
                       ? answer.answerIsCorrect
-                        ? 'border-green-500 bg-green-100'
-                        : 'border-red-500 bg-red-100'
-                      : 'border-gray-300'
-                  }`}
+                        ? 'bg-green-100 border-green-500'
+                        : 'bg-red-100 border-red-500'
+                      : 'bg-white'
+                  } border-2`}
                 >
                   {answer.answer}
                   {(userAnswers[index] === ansIndex || !answer.answerIsCorrect) && (
@@ -90,16 +107,9 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
               ))}
             </div>
           ))}
-          <button
-            onClick={handleRetakeTest}
-            className='mt-4 px-6 py-2 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-700'
-          >
-            Retake Test
-          </button>
         </div>
       )}
     </div>
   )
 }
-
 export default TestSection
