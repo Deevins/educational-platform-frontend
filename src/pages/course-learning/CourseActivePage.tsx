@@ -3,104 +3,121 @@ import video from '../../../public/videovideo.mp4'
 import ReactPlayer from 'react-player'
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
+import TestSection from '@/pages/course-learning/TestSection.tsx'
 
 interface CourseSection {
   id: number
   title: string
   duration: string
-  items: CourseItem[]
+  lectures: Lecture[]
+  tests: Test[]
 }
 
-interface CourseItem {
+interface Lecture {
   id: number
   title: string
-  type: 'lecture' | 'test' | 'reviews'
   duration: string
   videoUrl: string
 }
 
+interface Test {
+  id: number
+  title: string
+  duration: string
+}
+
+interface TestQuestion {
+  question: string
+  answers: {
+    answer: string
+    answerIsCorrect: boolean
+    answerDescription: string
+  }[]
+}
+
+// Sample data for courses, including lectures and tests
 const courseData: CourseSection[] = [
   {
     id: 1,
     title: 'Chapter 1: Writing Your Framework',
     duration: '4h 14m',
-    items: [
+    lectures: [
       {
         id: 123,
         title: 'Part 1: Basic Framework Writing',
-        type: 'lecture',
         duration: '1h 34m',
         videoUrl: 'https://youtu.be/6wbckQjhA4Y',
       },
       {
         id: 321,
         title: 'Part 2: User Interface Development',
-        type: 'lecture',
         duration: '2h 40m',
         videoUrl: video,
       },
     ],
-  },
-  {
-    id: 1,
-    title: 'Chapter 1: Writing Your Framework',
-    duration: '4h 14m',
-    items: [
+    tests: [
       {
-        id: 123,
-        title: 'Part 1: Basic Framework Writing',
-        type: 'lecture',
-        duration: '1h 34m',
-        videoUrl: 'https://twitter.com/i/status/1789359851094614449',
+        id: 456,
+        title: 'Framework Basics Test',
+        duration: '30m',
+      },
+    ],
+  },
+]
+
+const questions: TestQuestion[] = [
+  {
+    question: 'Question 1: What is React?',
+    answers: [
+      {
+        answer: 'Library',
+        answerIsCorrect: true,
+        answerDescription: 'React is a JavaScript library for building user interfaces.',
       },
       {
-        id: 321,
-        title: 'Part 2: User Interface Development',
-        type: 'lecture',
-        duration: '2h 40m',
-        videoUrl: video,
+        answer: 'Framework',
+        answerIsCorrect: false,
+        answerDescription: "React is not considered a framework; it's a library.",
+      },
+      {
+        answer: 'Application',
+        answerIsCorrect: false,
+        answerDescription:
+          'React is used to build applications, not an application itself.',
+      },
+      {
+        answer: 'Language',
+        answerIsCorrect: false,
+        answerDescription: 'React is a library, not a programming language.',
       },
     ],
   },
   {
-    id: 1,
-    title: 'Chapter 1: Writing Your Framework',
-    duration: '4h 14m',
-    items: [
+    question: 'Question 2: What is useState used for in React?',
+    answers: [
       {
-        id: 123,
-        title: 'Part 1: Basic Framework Writing',
-        type: 'lecture',
-        duration: '1h 34m',
-        videoUrl: video,
+        answer: 'State management',
+        answerIsCorrect: true,
+        answerDescription:
+          'useState is a Hook that allows you to have state variables in functional components.',
       },
       {
-        id: 321,
-        title: 'Part 2: User Interface Development',
-        type: 'lecture',
-        duration: '2h 40m',
-        videoUrl: video,
-      },
-    ],
-  },
-  {
-    id: 1,
-    title: 'Chapter 1: Writing Your Framework',
-    duration: '4h 14m',
-    items: [
-      {
-        id: 123,
-        title: 'Part 1: Basic Framework Writing',
-        type: 'lecture',
-        duration: '1h 34m',
-        videoUrl: video,
+        answer: 'Data fetching',
+        answerIsCorrect: false,
+        answerDescription:
+          'Data fetching is typically handled by other means like useEffect or dedicated libraries.',
       },
       {
-        id: 321,
-        title: 'Part 2: User Interface Development',
-        type: 'lecture',
-        duration: '2h 40m',
-        videoUrl: video,
+        answer: 'Performing calculations',
+        answerIsCorrect: false,
+        answerDescription:
+          'Calculations can be done directly in the component or useEffect.',
+      },
+      {
+        answer: 'None of the above',
+        answerIsCorrect: false,
+        answerDescription:
+          'useState is specifically used for state management in functional components.',
       },
     ],
   },
@@ -108,8 +125,9 @@ const courseData: CourseSection[] = [
 
 const CourseActivePage: React.FC = () => {
   const [openSections, setOpenSections] = useState<number[]>([])
-  const [selectedItemIndex, setSelectedItemIndex] = useState<{
+  const [selectedItem, setSelectedItem] = useState<{
     section: number
+    type: 'lecture' | 'test'
     item: number
   } | null>(null)
   const [activeTab, setActiveTab] = useState<string>('overview')
@@ -127,11 +145,16 @@ const CourseActivePage: React.FC = () => {
     setOpenSections(newOpenSections)
   }
 
-  const selectItem = (sectionIndex: number, itemIndex: number) => {
-    setSelectedItemIndex({ section: sectionIndex, item: itemIndex })
+  const selectItem = (
+    sectionIndex: number,
+    itemType: 'lecture' | 'test',
+    itemIndex: number
+  ) => {
+    setSelectedItem({ section: sectionIndex, type: itemType, item: itemIndex })
   }
+
   return (
-    <div className='flex flex-col ml-[16%] mt-[3%] '>
+    <div className='flex flex-col ml-[16%] mt-[3%]'>
       <Header />
       <div className='flex w-full h-full'>
         <SectionList
@@ -142,41 +165,18 @@ const CourseActivePage: React.FC = () => {
         />
         <div className='flex-1 p-5 flex flex-col items-center w-full'>
           <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md'>
-            {selectedItemIndex ? (
-              <>
-                <VideoPlayer
-                  url={
-                    courseData[selectedItemIndex.section].items[selectedItemIndex.item]
-                      .videoUrl
-                  }
+            {selectedItem ? (
+              selectedItem.type === 'lecture' ? (
+                <LectureComponent
+                  lecture={courseData[selectedItem.section].lectures[selectedItem.item]}
                 />
-                <div className='flex items-start flex-col w-full mb-8'>
-                  <h1 className='text-3xl font-bold'>
-                    {
-                      courseData[selectedItemIndex.section].items[selectedItemIndex.item]
-                        .title
-                    }
-                  </h1>
-                  <p>
-                    Вид занятия:{' '}
-                    {courseData[selectedItemIndex.section].items[selectedItemIndex.item]
-                      .type === 'lecture'
-                      ? 'Лекция'
-                      : 'Тест'}
-                  </p>
-                  <p>
-                    Длительность занятия:{' '}
-                    {
-                      courseData[selectedItemIndex.section].items[selectedItemIndex.item]
-                        .duration
-                    }
-                  </p>
-                </div>
-              </>
+              ) : (
+                <TestSection questions={questions} />
+              )
             ) : (
               <div className='flex justify-center items-center w-full h-full'>
                 <h1 className='text-2xl font-bold'>
-                  Пожалуйста, выберите лекцию или тест из списка слева.
+                  Please select a lecture or test from the list on the left.
                 </h1>
               </div>
             )}
@@ -332,22 +332,14 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
   )
 }
 
-interface CourseSection {
-  title: string
-  duration: string
-  items: CourseItem[]
-}
-
-interface CourseItem {
-  title: string
-  type: 'lecture' | 'test' | 'reviews'
-  duration: string
-}
-
 interface SectionListProps {
   sections: CourseSection[]
   toggleSection: (index: number) => void
-  selectItem: (sectionIndex: number, itemIndex: number) => void
+  selectItem: (
+    sectionIndex: number,
+    itemType: 'lecture' | 'test',
+    itemIndex: number
+  ) => void
   openSections: number[]
 }
 
@@ -358,9 +350,9 @@ const SectionList: React.FC<SectionListProps> = ({
   openSections,
 }) => {
   return (
-    <div className='w-2/12 bg-white text-black p-5 pt-2 overflow-y-auto shadow-2x fixed top-0 left-0 h-full mt-16'>
+    <div className='w-2/12 bg-white text-black p-5 pt-2 overflow-y-auto shadow-2xl fixed top-0 left-0 h-full mt-16'>
       {sections.map((section, idx) => (
-        <div key={idx} className={'bg-gray-100 mb-2 overflow-hidden'}>
+        <div key={idx} className='bg-gray-100 mb-2 overflow-hidden'>
           <h3
             className='text-lg font-semibold cursor-pointer px-4 py-2 hover:bg-gray-200'
             onClick={() => toggleSection(idx)}
@@ -369,19 +361,46 @@ const SectionList: React.FC<SectionListProps> = ({
           </h3>
           {openSections.includes(idx) && (
             <ul className='list-disc pl-8 pr-4 pb-4 bg-gray-50'>
-              {section.items.map((item, itemIdx) => (
+              {section.lectures.map((lecture, lectureIdx) => (
                 <li
-                  key={itemIdx}
+                  key={lectureIdx}
                   className='cursor-pointer py-1 hover:bg-gray-100'
-                  onClick={() => selectItem(idx, itemIdx)}
+                  onClick={() => selectItem(idx, 'lecture', lectureIdx)}
                 >
-                  {item.title}
+                  {lecture.title}
+                </li>
+              ))}
+              {section.tests.map((test, testIdx) => (
+                <li
+                  key={testIdx}
+                  className='cursor-pointer py-1 hover:bg-gray-100'
+                  onClick={() => selectItem(idx, 'test', testIdx)}
+                >
+                  {test.title}
                 </li>
               ))}
             </ul>
           )}
         </div>
       ))}
+    </div>
+  )
+}
+
+interface LectureComponentProps {
+  lecture: Lecture
+}
+
+const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
+  return (
+    <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md p-5'>
+      <h1 className='text-3xl font-bold'>{lecture.title}</h1>
+      <p>Duration: {lecture.duration}</p>
+      <VideoPlayer url={lecture.videoUrl} />
+      <div className='flex items-start flex-col w-full'>
+        <p className='text-xl'>Lecture Details:</p>
+        {/* Add additional details or components related to the lecture here */}
+      </div>
     </div>
   )
 }
@@ -412,18 +431,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
       >
         Обзор
       </button>
-      {/*<button*/}
-      {/*  className={`p-2 ${activeTab === 'details' ? 'font-bold border-b-black border-b-2' : ''}`}*/}
-      {/*  onClick={() => setActiveTab('details')}*/}
-      {/*>*/}
-      {/*  Вопросы и ответы*/}
-      {/*</button>*/}
-      {/*<button*/}
-      {/*  className={`p-2 ${activeTab === 'tests' ? 'font-bold border-b-black border-b-2' : ''}`}*/}
-      {/*  onClick={() => setActiveTab('tests')}*/}
-      {/*>*/}
-      {/*  Tests*/}
-      {/*</button>*/}
       <button
         className={`p-2 ${activeTab === 'reviews' ? 'font-bold border-b-black border-b-2' : ''}`}
         onClick={() => setActiveTab('reviews')}
@@ -476,62 +483,6 @@ const reviews: Review[] = [
     date: '8 months ago',
     content: 'Хороший курс! Точно.',
     rating: 5,
-  },
-  {
-    id: 2,
-    name: 'Mikhail',
-    date: '8 months ago',
-    content: 'Всё предельно понятно',
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: 'Юрий Сергеевич',
-    date: '2 years ago',
-    content: 'Спасибо за курс! Очень понравился...',
-    rating: 4,
-  },
-  {
-    id: 4,
-    name: 'Myroslava S.',
-    date: '8 months ago',
-    content: 'Хороший курс! Точно.',
-    rating: 5,
-  },
-  {
-    id: 5,
-    name: 'Mikhail',
-    date: '8 months ago',
-    content: 'Всё предельно понятно',
-    rating: 5,
-  },
-  {
-    id: 6,
-    name: 'Юрий Сергеевич',
-    date: '2 years ago',
-    content: 'Спасибо за курс! Очень понравился...',
-    rating: 4,
-  },
-  {
-    id: 7,
-    name: 'Myroslava S.',
-    date: '8 months ago',
-    content: 'Хороший курс! Точно.',
-    rating: 5,
-  },
-  {
-    id: 8,
-    name: 'Mikhail',
-    date: '8 months ago',
-    content: 'Всё предельно понятно',
-    rating: 5,
-  },
-  {
-    id: 9,
-    name: 'Юрий Сергеевич',
-    date: '2 years ago',
-    content: 'Спасибо за курс! Очень понравился...',
-    rating: 4,
   },
   {
     id: 11,
