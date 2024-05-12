@@ -131,21 +131,17 @@ const CourseActivePage: React.FC = () => {
     setSelectedItemIndex({ section: sectionIndex, item: itemIndex })
   }
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col ml-[16%] mt-[3%] '>
       <Header />
-      <div className='flex w-full'>
+      <div className='flex w-full h-full'>
         <SectionList
           sections={courseData}
           toggleSection={toggleSection}
           selectItem={selectItem}
           openSections={openSections}
         />
-        <div className='flex-1 p-5 flex flex-col items-center ml-[16.666667%]'>
-          {' '}
-          {/* Сдвигаем, но меньше отступаем от SectionList */}
-          <div className='flex flex-col items-center w-full max-w-7xl bg-white shadow-md'>
-            {' '}
-            {/* Увеличиваем максимальную ширину */}
+        <div className='flex-1 p-5 flex flex-col items-center w-full'>
+          <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md'>
             {selectedItemIndex ? (
               <>
                 <VideoPlayer
@@ -192,6 +188,7 @@ const CourseActivePage: React.FC = () => {
     </div>
   )
 }
+
 export default CourseActivePage
 
 interface DetailContentProps {
@@ -241,10 +238,37 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
             </h2>
             <div className='mr-4 md:mr-16 flex flex-col'>
               {/* // TODO: Add description here via html */}
+              13.04.2022 Вышло новое большое обновление курса! Включает в себя React 18й
+              версии. Этот курс направлен на подробное изучение JavaScript без воды, но
+              главное - немедленное применение его на практике. Это значит, что вы
+              получите материал для работы и мы вместе будем создавать реальные проекты
+              шаг за шагом. Вторая часть курса - это изучение самой популярной библиотеки
+              на основе JavaScript - React.js со всеми необходимыми технологиями (в том
+              числе и Redux) Для кого подойдет этот курс? Если вы ничего не знаете про
+              программирование, но хотите начать Если вы новичок в JavaScript и хотите
+              быстро его освоить и начать уже применять в работе Если вы начали своё
+              обучение с JQuery или другого инструмента, но вам не хватает знаний основ
+              Если вы хотите научить создавать web-приложения Если вы хотите освоить
+              библиотеку React на реальных проектах Что внутри курса? Теория - это хорошо,
+              но без практики результата не будет. Поэтому каждый теоретический блок
+              заканчивается практикой, где вы будете писать приложение, интерактивные
+              элементы на сайте и тд. Все материалы для работы будут предоставлены. На все
+              вопросы внутри курса отвечаю лично как можно быстрее. Так же есть телеграм
+              канал для вопросов и обсуждений. Все обновления курса бесплатны и в
+              автоматическом режиме. мы изучим основы программирования и алгоритмов мы
+              изучим основы объектно ориентированного программирования мы изучим основные
+              концепции и принципы JavaScript, от самых простых до самых сложных мы
+              научимся работать с такими популярными технологиями как AJAX, JSON и тд мы
+              научимся работать с Git и GitHub мы научимся работать с npm, Babel,
+              Browserify, Webpack, Heroku, Firebase и тд подумаем, какой фрэймворк или
+              библиотеку выбрать в дальнейшем. Познакомимся с React, Angular, Vue, Jquery
+              мы изучим библиотеку React и создадим 4 приложения на её основе мы изучим
+              различные архитектурные подходы при построении web-приложений мы научимся
+              работать с Redux и интегрировать этот инструмент в наши приложения
             </div>
           </div>
 
-          <div className='mt-16 ml-4'>
+          <div className='mt-8 ml-4'>
             <h2>
               <strong>Чему вы научитесь:</strong>
             </h2>
