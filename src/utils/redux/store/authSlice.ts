@@ -135,7 +135,7 @@ const authSlice = createSlice({
     })
   },
 })
-// daker2544@mail.ru qweqwe123123
+
 export const { clearToken } = authSlice.actions
 
 export const setUserId = createAction<string>('user/setUserId')
