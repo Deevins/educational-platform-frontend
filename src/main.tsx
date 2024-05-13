@@ -40,7 +40,6 @@ import CourseActivePage from '@/pages/course-learning/CourseActivePage.tsx'
 import InstructorCommunicationPage from '@/pages/instructor/InstructorCommunicationPage.tsx'
 import { Provider } from 'react-redux'
 import store from '@/utils/redux/store/store.ts'
-import { jwtDecode, JwtPayload } from 'jwt-decode'
 
 const router = createBrowserRouter([
   {
@@ -89,7 +88,7 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/users/:userID/profile',
+        path: '/users/user/:userID/profile',
         element: <UserProfilePage />,
         errorElement: <NotFoundPage />,
       },
@@ -253,29 +252,6 @@ const router = createBrowserRouter([
 // { label: 'Друзья', to: '/friends' },
 // { label: 'Сообщения', to: '/messages' },
 // { label: 'Выйти', to: '/auth/logout', onClick: logout },
-
-interface CustomTokenPayload extends JwtPayload {
-  user_id: string
-}
-
-// Assuming your JWT token is stored in localStorage
-const token = localStorage.getItem('token')
-
-if (token) {
-  try {
-    // Decode the token
-    const decodedToken = jwtDecode<CustomTokenPayload>(token)
-
-    // Extract userID from decoded token
-    const userID = decodedToken.user_id // Assuming userID is stored as 'userId' claim
-
-    console.log('UserID:', userID)
-  } catch (error) {
-    console.error('Error decoding token:', error)
-  }
-} else {
-  console.error('Token not found in localStorage')
-}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>

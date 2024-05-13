@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import Input from '@/components/Input.tsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { login, selectIsAuthenticated } from '@/utils/redux/store/authSlice.ts'
+import { AppDispatch } from '@/utils/redux/store/store.ts'
 
 const LoginPage: React.FC = () => {
+  const isAuthenticated = useSelector(selectIsAuthenticated)
+  const navigate = useNavigate()
+
+  if (isAuthenticated) {
+    navigate('/')
+  }
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   })
+  const dispatch = useDispatch<AppDispatch>()
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +29,7 @@ const LoginPage: React.FC = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Проверка данных формы на ошибки
     const formErrors: { [key: string]: string } = {}
@@ -33,10 +44,21 @@ const LoginPage: React.FC = () => {
 
     // Если нет ошибок, отправляем данные
     if (Object.keys(formErrors).length === 0) {
-      // Здесь можно отправить данные формы
-      console.log('Форма отправлена:', formData)
+      e.preventDefault()
+      try {
+        dispatch(login({ email: formData.email, password: formData.password }))
+      } catch (error) {
+        // Обработка ошибок входа
+        console.error('Login failed:', error)
+      }
     }
   }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
 
   return (
     <div className=' flex items-center justify-center bg-gray-100'>

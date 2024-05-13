@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import PhoneInput from 'react-phone-input-2' // Предполагается, что у вас есть компонент PhoneInput
 import 'react-phone-input-2/lib/style.css'
@@ -31,10 +31,6 @@ const RegisterPage: React.FC = () => {
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const dispatch = useDispatch<AppDispatch>()
-
-  if (isAuthenticated) {
-    navigate('/')
-  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
@@ -77,13 +73,18 @@ const RegisterPage: React.FC = () => {
             email: formData.email,
             password: formData.password,
           })
-        ) // Правильный вызов dispatch
-        navigate('/')
+        )
       } catch (error) {
         console.error(error)
       }
     }
   }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
 
   return (
     <div className=' flex flex-col'>

@@ -6,7 +6,6 @@ import useModal from '@/utils/hooks/useModal.ts'
 import Pagination from '@/components/Pagination.tsx'
 
 const ITEMS_PER_PAGE = 6
-const ITEMS_PER_ROW = 3
 
 export interface IUser {
   id: number
@@ -25,159 +24,7 @@ interface Course {
   description: string
 }
 
-type MainTab = 'friends' | 'courses'
-
-type FriendsSubTab = 'friends' | 'requests' | 'sentRequests'
-
-const friendsData: IUser[] = [
-  {
-    id: 2,
-    username: 'friend1',
-    fullName: 'Friend One',
-    email: 'friend1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 3,
-    username: 'friend2',
-    fullName: 'Friend Two',
-    email: 'friend2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 2,
-    username: 'friend1',
-    fullName: 'Friend One',
-    email: 'friend1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 3,
-    username: 'friend2',
-    fullName: 'Friend Two',
-    email: 'friend2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 2,
-    username: 'friend1',
-    fullName: 'Friend One',
-    email: 'friend1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 3,
-    username: 'friend2',
-    fullName: 'Friend Two',
-    email: 'friend2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 2,
-    username: 'friend1',
-    fullName: 'Friend One',
-    email: 'friend1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 3,
-    username: 'friend2',
-    fullName: 'Friend Two',
-    email: 'friend2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 2,
-    username: 'friend1',
-    fullName: 'Friend One',
-    email: 'friend1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 3,
-    username: 'friend2',
-    fullName: 'Friend Two',
-    email: 'friend2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-]
-
-const requestsData: IUser[] = [
-  {
-    id: 4,
-    username: 'request1',
-    fullName: 'Request One',
-    email: 'request1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 5,
-    username: 'request2',
-    fullName: 'Request Two',
-    email: 'request2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-]
-
-const sentRequestsData: IUser[] = [
-  {
-    id: 6,
-    username: 'sentRequest1',
-    fullName: 'Sent Request One',
-    email: 'sentRequest1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 7,
-    username: 'sentRequest2',
-    fullName: 'Sent Request Two',
-    email: 'sentRequest2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 6,
-    username: 'sentRequest1',
-    fullName: 'Sent Request One',
-    email: 'sentRequest1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 6,
-    username: 'sentRequest1',
-    fullName: 'Sent Request One',
-    email: 'sentRequest1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 7,
-    username: 'sentRequest2',
-    fullName: 'Sent Request Two',
-    email: 'sentRequest2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 7,
-    username: 'sentRequest2',
-    fullName: 'Sent Request Two',
-    email: 'sentRequest2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 6,
-    username: 'sentRequest1',
-    fullName: 'Sent Request One',
-    email: 'sentRequest1@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  {
-    id: 7,
-    username: 'sentRequest2',
-    fullName: 'Sent Request Two',
-    email: 'sentRequest2@example.com',
-    avatar: 'https://github.com/shadcn.png',
-  },
-  // Добавьте другие отправленные запросы по аналогии
-]
+type MainTab = 'courses'
 
 const courses: Course[] = [
   {
@@ -233,204 +80,6 @@ const renderItemsPerPage = (items: IUser[] | Course[], currentPage: number) => {
   return items.slice(startIndex, endIndex)
 }
 
-const renderItemsInRows = (items: IUser[] | Course[]) => {
-  const rows = []
-  for (let i = 0; i < items.length; i += ITEMS_PER_ROW) {
-    rows.push(items.slice(i, i + ITEMS_PER_ROW))
-  }
-  return rows
-}
-
-const FriendsList: React.FC<{ friends: IUser[] }> = ({ friends }) => {
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const paginatedFriends = renderItemsPerPage(friends, currentPage)
-  const friendsRows = renderItemsInRows(paginatedFriends)
-
-  const handleClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
-  }
-
-  return (
-    <div>
-      {friendsRows.map((row, index) => (
-        <div key={index} className='flex flex-wrap -mx-2 mb-4'>
-          {row.map((friend) => (
-            <div key={friend.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
-              <FriendCard friend={friend as IUser} />
-            </div>
-          ))}
-        </div>
-      ))}
-      <Pagination
-        currentPage={currentPage}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={friends.length}
-        onClick={handleClick}
-      />
-    </div>
-  )
-}
-
-interface FriendCardProps {
-  friend: IUser
-}
-
-const FriendCard: React.FC<FriendCardProps> = ({ friend }) => {
-  const handleRemoveFriend = () => {
-    console.log(`Removing friend with id ${friend.id}`)
-  }
-
-  return (
-    <div className='flex items-center'>
-      <Avatar className={'w-12 h-12 mr-4'}>
-        <AvatarImage src={friend.avatar} />
-        <AvatarFallback>{friend.username}</AvatarFallback>
-      </Avatar>
-      <div>
-        <h2 className='text-lg font-semibold'>{friend.fullName}</h2>
-        <p className='text-gray-600'>
-          <b>Username: </b> {friend.username}
-        </p>
-        <p className='text-gray-600'>{friend.email}</p>
-        <NavLink to={`/users/${friend.id}`}>
-          <button className='ml-2 text-blue-500 hover:text-blue-700'>View Profile</button>
-        </NavLink>
-        <button
-          className='ml-2 text-red-500 hover:text-red-700'
-          onClick={handleRemoveFriend}
-        >
-          Remove
-        </button>
-      </div>
-    </div>
-  )
-}
-
-const FriendRequests: React.FC<{ requests: IUser[] }> = ({ requests }) => {
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const handleClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
-  }
-
-  const paginatedRequests = renderItemsPerPage(requests, currentPage)
-  const requestsRows = renderItemsInRows(paginatedRequests)
-
-  return (
-    <div>
-      {requestsRows.map((row, index) => (
-        <div key={index} className='flex flex-wrap -mx-2 mb-4'>
-          {row.map((request) => (
-            <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
-              <FriendRequestCard request={request as IUser} />
-            </div>
-          ))}
-        </div>
-      ))}
-      <Pagination
-        currentPage={currentPage}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={requests.length}
-        onClick={handleClick}
-      />
-    </div>
-  )
-}
-
-const FriendRequestCard: React.FC<{ request: IUser }> = ({ request }) => {
-  const handleAcceptRequest = () => {
-    console.log(`Accepting friend request with id ${request.id}`)
-    // Здесь можно добавить логику для принятия запроса
-  }
-
-  const handleDeclineRequest = () => {
-    console.log(`Declining friend request with id ${request.id}`)
-    // Здесь можно добавить логику для отклонения запроса
-  }
-
-  return (
-    <div className='flex items-center'>
-      <Avatar className={'w-12 h-12 mr-4'}>
-        <AvatarImage src={request.avatar} />
-        <AvatarFallback>{request.username}</AvatarFallback>
-      </Avatar>
-      <div>
-        <h2 className='text-lg font-semibold'>{request.fullName}</h2>
-        <p className='text-gray-600'>Username: {request.username}</p>
-        <p className='text-gray-600'>{request.email}</p>
-        <button
-          className='mr-2 text-green-500 hover:text-green-700'
-          onClick={handleAcceptRequest}
-        >
-          Accept
-        </button>
-        <button
-          className='mr-2 text-red-500 hover:text-red-700'
-          onClick={handleDeclineRequest}
-        >
-          Decline
-        </button>
-      </div>
-    </div>
-  )
-}
-
-const SentRequests: React.FC<{ sentRequests: IUser[] }> = ({ sentRequests }) => {
-  const [currentPage, setCurrentPage] = useState(1)
-
-  const handleClick = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
-  }
-
-  const paginatedSentRequests = renderItemsPerPage(sentRequests, currentPage)
-  const sentRequestsRows = renderItemsInRows(paginatedSentRequests) as IUser[][]
-
-  return (
-    <div>
-      {sentRequestsRows.map((row, index) => (
-        <div key={index} className='flex flex-wrap -mx-2 mb-4'>
-          {row.map((request) => (
-            <div key={request.id} className='w-full sm:w-1/2 md:w-1/3 px-2 mb-4'>
-              <SentRequestCard request={request} />
-            </div>
-          ))}
-        </div>
-      ))}
-      <Pagination
-        currentPage={currentPage}
-        itemsPerPage={ITEMS_PER_PAGE}
-        totalItems={sentRequests.length}
-        onClick={handleClick}
-      />
-    </div>
-  )
-}
-
-const SentRequestCard: React.FC<{ request: IUser }> = ({ request }) => {
-  const handleCancelRequest = () => {
-    console.log(`Canceling friend request with id ${request.id}`)
-    // Здесь можно добавить логику для отмены запроса
-  }
-
-  return (
-    <div className='flex items-center'>
-      <Avatar className={'w-12 h-12 mr-4'}>
-        <AvatarImage src={request.avatar} />
-        <AvatarFallback>{request.username}</AvatarFallback>
-      </Avatar>
-      <div>
-        <h2 className='text-lg font-semibold'>{request.fullName}</h2>
-        <p className='text-gray-600'>Username: {request.username}</p>
-        <p className='text-gray-600'>{request.email}</p>
-        <button className='text-red-500 hover:text-red-700' onClick={handleCancelRequest}>
-          Cancel Request
-        </button>
-      </div>
-    </div>
-  )
-}
-
 const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const paginatedCourses = renderItemsPerPage(courses, currentPage) as Course[]
@@ -473,13 +122,23 @@ const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
 const UserPage: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null)
   const [updatedUser, setUpdatedUser] = useState<IUser | null>(null)
-  const [currentMainTab, setCurrentMainTab] = useState<MainTab>('friends')
-  const [currentFriendsSubTab, setCurrentFriendsSubTab] =
-    useState<FriendsSubTab>('friends')
-  const [isOnline, setIsOnline] = useState(false)
+  const [currentMainTab, setCurrentMainTab] = useState<MainTab>('courses')
   const [, setPhoneNumber] = useState('')
   const { isOpen, openModal, closeModal, ref } = useModal() // Используем наш хук для модального окна
+  const [isOnline, setIsOnline] = useState(true)
 
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
   useEffect(() => {
     // Simulate fetching user data
     const userData: IUser = {
@@ -494,13 +153,6 @@ const UserPage: React.FC = () => {
     }
     setUser(userData)
     setUpdatedUser(userData)
-
-    // Simulate online status change
-    const onlineStatusTimer = setInterval(() => {
-      setIsOnline((prevOnlineStatus) => !prevOnlineStatus)
-    }, 5000)
-
-    return () => clearInterval(onlineStatusTimer)
   }, [])
 
   const handleEditClick = () => {
@@ -538,10 +190,6 @@ const UserPage: React.FC = () => {
     setCurrentMainTab(tab)
   }
 
-  const handleFriendsSubTabChange = (tab: FriendsSubTab) => {
-    setCurrentFriendsSubTab(tab)
-  }
-
   return (
     <>
       <div className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
@@ -562,9 +210,6 @@ const UserPage: React.FC = () => {
               <div>
                 <h2 className='text-2xl font-bold'>{user.fullName}</h2>
                 <p className='text-gray-600'>
-                  <b>Никнейм:</b> {user.username}
-                </p>
-                <p className='text-gray-600'>
                   <b>e-mail:</b> {user.email}
                 </p>
                 <p className='text-gray-600'>
@@ -578,7 +223,7 @@ const UserPage: React.FC = () => {
               className='bg-blue-500 text-white px-4 py-2 rounded'
               onClick={handleEditClick}
             >
-              Edit Profile
+              Редактировать профиль:
             </button>
             <div className='mt-4'>
               <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
@@ -586,16 +231,6 @@ const UserPage: React.FC = () => {
             </div>
             <div className='mt-8'>
               <div className='flex justify-between items-center mb-4'>
-                <button
-                  className={`px-4 py-2 rounded ${
-                    currentMainTab === 'friends'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-300 text-gray-800'
-                  }`}
-                  onClick={() => handleMainTabChange('friends')}
-                >
-                  Друзья
-                </button>
                 <button
                   className={`px-4 py-2 rounded ${
                     currentMainTab === 'courses'
@@ -607,51 +242,7 @@ const UserPage: React.FC = () => {
                   Курсы
                 </button>
               </div>
-              {currentMainTab === 'friends' && (
-                <div className='mb-4'>
-                  <div className='flex justify-between items-center mb-20 '>
-                    <button
-                      className={`px-4 py-2 rounded ${
-                        currentFriendsSubTab === 'friends'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
-                      onClick={() => handleFriendsSubTabChange('friends')}
-                    >
-                      Друзья
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded ${
-                        currentFriendsSubTab === 'requests'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
-                      onClick={() => handleFriendsSubTabChange('requests')}
-                    >
-                      Запросы в друзья
-                    </button>
-                    <button
-                      className={`px-4 py-2 rounded ${
-                        currentFriendsSubTab === 'sentRequests'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
-                      onClick={() => handleFriendsSubTabChange('sentRequests')}
-                    >
-                      Отправленные запросы
-                    </button>
-                  </div>
-                  {currentFriendsSubTab === 'friends' && (
-                    <FriendsList friends={friendsData} />
-                  )}
-                  {currentFriendsSubTab === 'requests' && (
-                    <FriendRequests requests={requestsData} />
-                  )}
-                  {currentFriendsSubTab === 'sentRequests' && (
-                    <SentRequests sentRequests={sentRequestsData} />
-                  )}
-                </div>
-              )}
+
               {currentMainTab === 'courses' && <CoursesList courses={courses} />}
             </div>
           </>
@@ -664,7 +255,7 @@ const UserPage: React.FC = () => {
         <div className='fixed inset-0 bg-gray-700 bg-opacity-75 flex justify-center items-center'>
           <div
             ref={ref}
-            className='bg-white p-8 rounded shadow-lg w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12'
+            className='bg-gray-100 p-8 rounded shadow-lg w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12'
           >
             <h2 className='text-2xl font-bold mb-4'>Редактировать профиль</h2>
             <div className='mb-4'>

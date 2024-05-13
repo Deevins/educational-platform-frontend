@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
-import axios from 'axios'
-import Popup from '@/components/Popup.tsx'
 import { IUser } from '@/pages/UserProfilePage.tsx'
 import { Button } from '@radix-ui/themes'
 import { NavLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logout } from '@/utils/redux/store/authSlice.ts'
 
 interface MenuItem {
   label: string
@@ -16,9 +16,8 @@ interface MenuItem {
 type themeState = 'dark' | 'light'
 
 const AvatarMenu: React.FC = () => {
+  const dispatch = useDispatch()
   const [isOpen, setIsOpen] = React.useState(false)
-  const [loading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
   const [theme, setTheme] = React.useState<themeState>('light')
   const [isNearMenu, setIsNearMenu] = React.useState(false) // Состояние, отображающее, находится ли курсор рядом с меню
   const menuRef = React.useRef<HTMLDivElement>(null)
@@ -31,24 +30,8 @@ const AvatarMenu: React.FC = () => {
     avatar: 'https://github.com/shadcn.png',
   }
 
-  const handleLogout = async () => {
-    try {
-      setLoading(true)
-      // TODO: after backend registration fix
-      await axios.post('/api/logout').then((r) => console.log(`ddd ${r.status}`))
-
-      localStorage.removeItem('accessToken')
-    } catch (error) {
-      console.error('Ошибка при попытке выйти из аккаунта:', error)
-      setError(
-        'Произошла ошибка при разлогинивании. Пожалуйста, попробуйте еще раз. Проверьте ошибку в консоли'
-      )
-    } finally {
-      setLoading(false)
-      if (error !== null && error !== '') {
-        window.location.href = '/auth/logout'
-      }
-    }
+  const handleLogout = () => {
+    dispatch(logout())
   }
   const handleThemeSwitch = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
@@ -93,8 +76,7 @@ const AvatarMenu: React.FC = () => {
   }, [])
 
   const menuItems: MenuItem[] = [
-    { label: 'Моя страница', to: `/users/${user.id}/profile` },
-    { label: 'Курсы', to: `/users/${user.id}/courses` },
+    { label: 'Моя страница', to: `/users/user/${user.id}/profile` },
     { label: 'Настройки', to: `/users/${user.id}/settings` },
     {
       label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,
@@ -121,7 +103,7 @@ const AvatarMenu: React.FC = () => {
       </div>
       {isOpen && (
         <div
-          className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-50'
+          className='absolute right-0 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-50'
           role='menu'
           aria-orientation='vertical'
           aria-labelledby='user-menu'
@@ -155,12 +137,6 @@ const AvatarMenu: React.FC = () => {
           </div>
         </div>
       )}
-      {loading && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
-          <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900'></div>
-        </div>
-      )}
-      {error && <Popup type={'error'} text={error} isPopupTriggered={error !== ''} />}
     </div>
   )
 }
