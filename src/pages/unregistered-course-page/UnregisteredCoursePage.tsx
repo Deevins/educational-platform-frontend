@@ -107,7 +107,8 @@ const UnregisteredCoursePage: React.FC = () => {
                       'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
                     }
                   >
-                    Перейти к курсу
+                    {' '}
+                    isInstuctor Зарегистрироваться
                   </button>
                 </Link>
               )}

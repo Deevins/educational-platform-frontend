@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player'
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import TestSection from '@/pages/course-learning/TestSection.tsx'
+import { TestQuestion } from '@/pages/course-creation/curriculum/types.ts'
 
 interface CourseSection {
   id: number
@@ -24,20 +25,43 @@ interface Lecture {
 interface Test {
   id: number
   title: string
-  duration: string
-}
-
-interface TestQuestion {
-  question: string
-  answers: {
-    answer: string
-    answerIsCorrect: boolean
-    answerDescription: string
-  }[]
+  isAlreadyPassed: boolean
+  attempts: number
 }
 
 // Sample data for courses, including lectures and tests
 const courseData: CourseSection[] = [
+  {
+    id: 1,
+    title: '' + 'Chapter 1: Writing Your Framework',
+    duration: '4h 14m',
+    lectures: [
+      {
+        id: 123,
+        title: 'Part 1: Basic Framework Writing',
+        duration: '1h 34m',
+        videoUrl: 'https://youtu.be/6wbckQjhA4Y',
+        description:
+          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
+      },
+      {
+        id: 321,
+        title: 'Part 2: User Interface Development',
+        duration: '2h 40m',
+        videoUrl: video,
+        description:
+          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
+      },
+    ],
+    tests: [
+      {
+        id: 456,
+        attempts: 2,
+        isAlreadyPassed: false,
+        title: 'Framework Basics Test',
+      },
+    ],
+  },
   {
     id: 1,
     title: 'Chapter 1: Writing Your Framework',
@@ -63,8 +87,9 @@ const courseData: CourseSection[] = [
     tests: [
       {
         id: 456,
+        attempts: 2,
+        isAlreadyPassed: false,
         title: 'Framework Basics Test',
-        duration: '30m',
       },
     ],
   },
@@ -159,7 +184,7 @@ const CourseActivePage: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col ml-[16%] mt-[3%]'>
+    <div className='flex flex-col ml-[15%] mt-[3%]'>
       <Header />
       <div className='flex w-full h-full'>
         <SectionList
@@ -168,7 +193,7 @@ const CourseActivePage: React.FC = () => {
           selectItem={selectItem}
           openSections={openSections}
         />
-        <div className='flex-1 p-5 flex flex-col items-center w-full'>
+        <div className='flex-1 p-5 flex flex-col items-center w-full ml-[7%]'>
           <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md'>
             {selectedItem ? (
               selectedItem.type === 'lecture' ? (
@@ -208,7 +233,7 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
   const lectures = 12
   const videoLength = '2h 30m'
   return (
-    <div>
+    <div className={'ml-16'}>
       {activeTab === 'overview' && (
         <div className='mt-4'>
           <div>
@@ -237,42 +262,41 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
             </div>
           </div>
 
-          <div className='flex flex-col md:flex-row min-h-32 mt-4'>
-            <h2 className='mr-4 md:mr-16'>
+          <div className='flex flex-col md:flex-row min-h-8 mt-4'>
+            <h2 className='ml-8 md:mr-16'>
               <strong>Описание</strong>:
             </h2>
-            <div className='mr-4 md:mr-16 flex flex-col'>
-              {/* // TODO: Add description here via html */}
-              13.04.2022 Вышло новое большое обновление курса! Включает в себя React 18й
-              версии. Этот курс направлен на подробное изучение JavaScript без воды, но
-              главное - немедленное применение его на практике. Это значит, что вы
-              получите материал для работы и мы вместе будем создавать реальные проекты
-              шаг за шагом. Вторая часть курса - это изучение самой популярной библиотеки
-              на основе JavaScript - React.js со всеми необходимыми технологиями (в том
-              числе и Redux) Для кого подойдет этот курс? Если вы ничего не знаете про
-              программирование, но хотите начать Если вы новичок в JavaScript и хотите
-              быстро его освоить и начать уже применять в работе Если вы начали своё
-              обучение с JQuery или другого инструмента, но вам не хватает знаний основ
-              Если вы хотите научить создавать web-приложения Если вы хотите освоить
-              библиотеку React на реальных проектах Что внутри курса? Теория - это хорошо,
-              но без практики результата не будет. Поэтому каждый теоретический блок
-              заканчивается практикой, где вы будете писать приложение, интерактивные
-              элементы на сайте и тд. Все материалы для работы будут предоставлены. На все
-              вопросы внутри курса отвечаю лично как можно быстрее. Так же есть телеграм
-              канал для вопросов и обсуждений. Все обновления курса бесплатны и в
-              автоматическом режиме. мы изучим основы программирования и алгоритмов мы
-              изучим основы объектно ориентированного программирования мы изучим основные
-              концепции и принципы JavaScript, от самых простых до самых сложных мы
-              научимся работать с такими популярными технологиями как AJAX, JSON и тд мы
-              научимся работать с Git и GitHub мы научимся работать с npm, Babel,
-              Browserify, Webpack, Heroku, Firebase и тд подумаем, какой фрэймворк или
-              библиотеку выбрать в дальнейшем. Познакомимся с React, Angular, Vue, Jquery
-              мы изучим библиотеку React и создадим 4 приложения на её основе мы изучим
-              различные архитектурные подходы при построении web-приложений мы научимся
-              работать с Redux и интегрировать этот инструмент в наши приложения
-            </div>
           </div>
-
+          <div className='mr-4 md:mr-16 flex flex-col  ml-36'>
+            {/* // TODO: Add description here via html */}
+            13.04.2022 Вышло новое большое обновление курса! Включает в себя React 18й
+            версии. Этот курс направлен на подробное изучение JavaScript без воды, но
+            главное - немедленное применение его на практике. Это значит, что вы получите
+            материал для работы и мы вместе будем создавать реальные проекты шаг за шагом.
+            Вторая часть курса - это изучение самой популярной библиотеки на основе
+            JavaScript - React.js со всеми необходимыми технологиями (в том числе и Redux)
+            Для кого подойдет этот курс? Если вы ничего не знаете про программирование, но
+            хотите начать Если вы новичок в JavaScript и хотите быстро его освоить и
+            начать уже применять в работе Если вы начали своё обучение с JQuery или
+            другого инструмента, но вам не хватает знаний основ Если вы хотите научить
+            создавать web-приложения Если вы хотите освоить библиотеку React на реальных
+            проектах Что внутри курса? Теория - это хорошо, но без практики результата не
+            будет. Поэтому каждый теоретический блок заканчивается практикой, где вы
+            будете писать приложение, интерактивные элементы на сайте и тд. Все материалы
+            для работы будут предоставлены. На все вопросы внутри курса отвечаю лично как
+            можно быстрее. Так же есть телеграм канал для вопросов и обсуждений. Все
+            обновления курса бесплатны и в автоматическом режиме. мы изучим основы
+            программирования и алгоритмов мы изучим основы объектно ориентированного
+            программирования мы изучим основные концепции и принципы JavaScript, от самых
+            простых до самых сложных мы научимся работать с такими популярными
+            технологиями как AJAX, JSON и тд мы научимся работать с Git и GitHub мы
+            научимся работать с npm, Babel, Browserify, Webpack, Heroku, Firebase и тд
+            подумаем, какой фрэймворк или библиотеку выбрать в дальнейшем. Познакомимся с
+            React, Angular, Vue, Jquery мы изучим библиотеку React и создадим 4 приложения
+            на её основе мы изучим различные архитектурные подходы при построении
+            web-приложений мы научимся работать с Redux и интегрировать этот инструмент в
+            наши приложения
+          </div>
           <div className='mt-8 ml-4'>
             <h2>
               <strong>Чему вы научитесь:</strong>
@@ -304,33 +328,8 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
         </div>
       )}
       {activeTab === 'reviews' && (
-        <div className='mt-4 bg-amber-700'>
-          <div className={'bg-amber-300'}>
-            <ReviewsComponent />
-          </div>
-          <div className={'border-y-2 border-gray-300 flex min-h-32 '}>
-            <h2 className={' mt-4'}>Подробные данные:</h2>
-            <div className={'mr-16 mt-4  flex'}>
-              <ul className={'flex flex-col'}>
-                <li>
-                  <strong>Уровень навыков</strong>: {levels[0]}
-                </li>
-                <li>
-                  <strong>Студентов</strong>: {studentCount}
-                </li>
-              </ul>
-            </div>
-            <div className={' mt-4 flex'}>
-              <ul className={'flex flex-col items-start'}>
-                <li>
-                  <strong>Лекций</strong>: {lectures}
-                </li>
-                <li>
-                  <strong>Общая длина видео</strong>: {videoLength}
-                </li>
-              </ul>
-            </div>
-          </div>
+        <div className='mt-4 min-w-64 bg-gray-800'>
+          <ReviewsComponent />
         </div>
       )}
     </div>
@@ -355,9 +354,9 @@ const SectionList: React.FC<SectionListProps> = ({
   openSections,
 }) => {
   return (
-    <div className='w-2/12 bg-white text-black p-5 pt-2 overflow-y-auto shadow-2xl fixed top-0 left-0 h-full mt-16'>
+    <div className='w-3/12 bg-white text-black p-5 pt-2 overflow-y-auto shadow-2xl fixed top-0 left-0 h-full mt-16'>
       {sections.map((section, idx) => (
-        <div key={idx} className='bg-gray-100 mb-2 overflow-hidden'>
+        <div key={idx} className='bg-gray-100 mb-2 overflow-hidden py-2'>
           <h3
             className='text-lg font-semibold cursor-pointer px-4 py-2 hover:bg-gray-200'
             onClick={() => toggleSection(idx)}
@@ -408,7 +407,9 @@ const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
       <p>Duration: {lecture.duration}</p>
       <VideoPlayer url={lecture.videoUrl} />
       <div className='flex items-start flex-col truncate max-w-7xl max-h-7xl mx-16'>
-        <p className='text-xl'>Lecture Details:</p>
+        <p className='text-xl'>
+          <strong>Подробности лекции:</strong>
+        </p>
         <p
           className='truncate overflow-hidden text-justify'
           style={{ maxHeight: '96px', lineHeight: '24px' }}
@@ -436,7 +437,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   return (
-    <div className={'sm:w-full h-[80%] 2xl:w-[70%] 2xl:h-[90%]'}>
+    <div className={'sm:w-full h-[80%] 2xl:w-[70%] 2xl:h-[60%]'}>
       <ReactPlayer url={url} width='100%' height={'100%'} controls={true} />
     </div>
   )
@@ -484,7 +485,7 @@ export const ReviewsComponent: React.FC = () => {
   const avgRating = averageRating(reviews)
 
   return (
-    <div className='max-w-8xl p-6 bg-white rounded-lg shadow w-full'>
+    <div className='max-w-8xl p-6 bg-white shadow w-full'>
       <h2 className='text-2xl font-bold mb-4'>Отзывы студентов</h2>
       <RatingSummary averageRating={avgRating} distribution={ratingsDistribution} />
       <ReviewList reviews={reviews} />

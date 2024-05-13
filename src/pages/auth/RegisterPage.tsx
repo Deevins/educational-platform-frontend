@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import PhoneInput from 'react-phone-input-2' // Предполагается, что у вас есть компонент PhoneInput
 import 'react-phone-input-2/lib/style.css'
 import Input from '@/components/Input.tsx'
-
-interface IRole {
-  id: number
-  title: string
-}
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  registerUserAsync,
+  selectIsAuthenticated,
+} from '@/utils/redux/store/authSlice.ts'
+import { AppDispatch } from '@/utils/redux/store/store.ts'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 
 interface IRegisterForm {
   fullName: string
@@ -15,22 +17,24 @@ interface IRegisterForm {
   phoneNumber: string
   password: string
   repeatPassword: string
-  role: IRole
 }
 
 const RegisterPage: React.FC = () => {
+  const isAuthenticated = useSelector(selectIsAuthenticated)
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<IRegisterForm>({
     fullName: '',
     email: '',
     phoneNumber: '',
     password: '',
     repeatPassword: '',
-    role: {
-      id: 1,
-      title: 'Преподаватель',
-    },
   })
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const dispatch = useDispatch<AppDispatch>()
+
+  if (isAuthenticated) {
+    navigate('/')
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
@@ -39,13 +43,10 @@ const RegisterPage: React.FC = () => {
     if (errors[name]) {
       setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }))
     }
-    if (name === 'role') {
-      // TODO: fix hardcode
-    }
     setFormData((prevData) => ({ ...prevData, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formErrors: { [key: string]: string } = {}
     if (formData.fullName.trim() === '') {
@@ -68,21 +69,33 @@ const RegisterPage: React.FC = () => {
     setErrors(formErrors)
 
     if (Object.keys(formErrors).length === 0) {
-      console.log('Форма отправлена:', formData)
+      try {
+        dispatch(
+          registerUserAsync({
+            full_name: formData.fullName,
+            phone_number: formData.phoneNumber,
+            email: formData.email,
+            password: formData.password,
+          })
+        ) // Правильный вызов dispatch
+        navigate('/')
+      } catch (error) {
+        console.error(error)
+      }
     }
-  }
-
-  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedRole = e.target.value
-    const role: IRole =
-      Number(selectedRole) === 1
-        ? { id: 1, title: 'Преподаватель' }
-        : { id: 2, title: 'Студент' }
-    setFormData((prevData) => ({ ...prevData, role }))
   }
 
   return (
     <div className=' flex flex-col'>
+      <header className='bg-gray-200 text-black p-4 flex justify-between items-center shadow-xl'>
+        <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
+          <Avatar className={'hover:scale-105'}>
+            <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
+            <AvatarFallback>Логотип</AvatarFallback>
+          </Avatar>
+          <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
+        </NavLink>
+      </header>
       <div className='flex-grow flex flex-col items-center justify-center bg-gray-200'>
         <div className='absolute inset-0 bg-white' />
         <div className='relative bg-white p-8 sm:p-12 rounded-lg border border-black shadow-lg'>
@@ -148,16 +161,6 @@ const RegisterPage: React.FC = () => {
               >
                 Кем вы хотите быть на этой платформе?
               </label>
-              <select
-                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-                id='role'
-                name='role'
-                value={formData.role.id}
-                onChange={handleRoleChange}
-              >
-                <option value='student'>Студент</option>
-                <option value='teacher'>Преподаватель</option>
-              </select>
             </div>
             <button
               type='submit'

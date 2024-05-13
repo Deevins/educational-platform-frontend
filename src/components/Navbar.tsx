@@ -116,7 +116,7 @@ const MenuItem = ({ item }: Props) => {
 
   return (
     <li
-      className='menu-items'
+      className='menu-items z-50'
       ref={ref}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import axios from 'axios'
@@ -22,7 +22,7 @@ const AvatarMenu: React.FC = () => {
   const [theme, setTheme] = React.useState<themeState>('light')
   const [isNearMenu, setIsNearMenu] = React.useState(false) // Состояние, отображающее, находится ли курсор рядом с меню
   const menuRef = React.useRef<HTMLDivElement>(null)
-
+  const leaveTimeout = useRef<NodeJS.Timeout | null>(null)
   const user: IUser = {
     id: 1,
     username: 'friend1',
@@ -56,6 +56,10 @@ const AvatarMenu: React.FC = () => {
   }
 
   const handleMouseEnter = () => {
+    if (leaveTimeout.current) {
+      clearTimeout(leaveTimeout.current) // Clear timeout if mouse re-enters
+      leaveTimeout.current = null
+    }
     setIsOpen(true)
   }
 
@@ -63,15 +67,15 @@ const AvatarMenu: React.FC = () => {
     setIsNearMenu(true) // Установить состояние, когда курсор рядом с меню
   }
 
-  const handleMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseLeave = () => {
     // Проверяем, находится ли курсор внутри меню или в его близости
-    if (
-      !menuRef.current ||
-      menuRef.current.contains(event.target as Node) ||
-      isNearMenu
-    ) {
+    if (isNearMenu) {
       return // Если да, то не закрываем меню
     }
+    leaveTimeout.current = setTimeout(() => {
+      setIsOpen(false)
+      leaveTimeout.current = null
+    }, 600)
     setIsOpen(false)
   }
 
@@ -89,7 +93,7 @@ const AvatarMenu: React.FC = () => {
   }, [])
 
   const menuItems: MenuItem[] = [
-    { label: 'Моя страница', to: `/users/${user.id}` },
+    { label: 'Моя страница', to: `/users/${user.id}/profile` },
     { label: 'Курсы', to: `/users/${user.id}/courses` },
     { label: 'Настройки', to: `/users/${user.id}/settings` },
     {
@@ -101,7 +105,7 @@ const AvatarMenu: React.FC = () => {
   ]
 
   return (
-    <div className='relative z-50' ref={menuRef}>
+    <div className='relative' ref={menuRef}>
       <div className='flex items-center'>
         <Button
           className='p-1 text-gray-600 rounded-full hover:bg-gray-200 focus:outline-none focus:ring'
@@ -117,11 +121,12 @@ const AvatarMenu: React.FC = () => {
       </div>
       {isOpen && (
         <div
-          className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100'
+          className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-50'
           role='menu'
           aria-orientation='vertical'
           aria-labelledby='user-menu'
           onMouseEnter={handleMenuMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           <div className='py-1'>
             {menuItems.map((item, index) =>

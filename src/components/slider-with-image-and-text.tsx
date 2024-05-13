@@ -32,6 +32,7 @@ const settings: Settings = {
   autoplay: true,
   arrows: true,
   speed: 1000,
+  draggable: true,
   slidesToShow: 1,
   slidesToScroll: 1,
   autoplaySpeed: 5000,

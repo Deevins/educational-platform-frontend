@@ -11,28 +11,33 @@ import {
 } from '@/pages/course-creation/curriculum/types.ts'
 import LectureComponent from '@/pages/course-creation/curriculum/Lecture.tsx'
 import TestComponent from '@/pages/course-creation/curriculum/Test.tsx'
-import AssignmentComponent from '@/pages/course-creation/curriculum/Assignment.tsx'
 import { Modal } from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
 
 interface SectionComponentProps {
   sectionType: SectionComponentType
   lectureData?: SectionLecture
   testData?: SectionTest
-  assignmentData?: SectionAssignment
+  onRemove: (serial: number) => void
+  onUpdate: (serial: number, title: string) => void
 }
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
   sectionType,
   lectureData,
   testData,
-  assignmentData,
+  onUpdate, // These props need to be part of SectionComponentProps
+  onRemove,
 }) => {
-  // switch over types of component - lecture, test, assignment
-
   switch (sectionType) {
     case 'lecture':
       if (lectureData) {
-        return <LectureComponent lectureData={lectureData} />
+        return (
+          <LectureComponent
+            lectureData={lectureData}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+          />
+        )
       }
       break
     case 'test':
@@ -40,24 +45,14 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
         return <TestComponent testData={testData} />
       }
       break
-    case 'assignment':
-      if (assignmentData) {
-        return <AssignmentComponent assignmentData={assignmentData} />
-      }
-      break
   }
+  return null // Ensure all paths return a value
 }
 
-const Section: React.FC<SectionType> = ({
-  sectionNum,
-  title,
-  assignments,
-  lectures,
-  tests,
-}) => {
+const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) => {
   const [items, setItems] = React.useState<
     SectionLecture[] | SectionTest[] | SectionAssignment[]
-  >([...lectures, ...tests, ...assignments])
+  >([...lectures, ...tests])
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
 
@@ -108,15 +103,6 @@ const Section: React.FC<SectionType> = ({
             }
             setItems((prevItems) => [...prevItems, newItem]) // Update items state
             break
-          case 'assignment':
-            newItem = {
-              componentSerial: assignments.length + 1,
-              type: componentType,
-              title: component.title,
-              description: component.description,
-            }
-            setItems((prevItems) => [...prevItems, newItem]) // Update items state
-            break
           case 'test':
             newItem = {
               componentSerial: tests.length + 1,
@@ -135,6 +121,19 @@ const Section: React.FC<SectionType> = ({
       }, 500)
     })
   }
+
+  const onUpdate = (serial: number, newTitle: string) => {
+    setItems(
+      items.map((item) =>
+        item.componentSerial === serial ? { ...item, title: newTitle } : item
+      )
+    )
+  }
+
+  const onRemove = (serial: number) => {
+    setItems(items.filter((item) => item.componentSerial !== serial))
+  }
+
   return (
     <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2'}>
       <div
@@ -157,8 +156,9 @@ const Section: React.FC<SectionType> = ({
           key={index}
           sectionType={item.type}
           lectureData={item as SectionLecture}
-          assignmentData={item as SectionAssignment}
           testData={item as SectionTest}
+          onUpdate={onUpdate}
+          onRemove={onRemove}
         />
       ))}
       {isComponentAdditionActive ? (
@@ -185,15 +185,6 @@ const Section: React.FC<SectionType> = ({
               >
                 <FaPlus className={'mr-1'} />
                 <span className={'font-semibold'}>Тест</span>
-              </button>
-              <button
-                className={
-                  'flex items-center ml-2 text-indigo-400 hover:text-indigo-800 mr-4'
-                }
-                onClick={() => handleOpenModal('assignment')}
-              >
-                <FaPlus className={'mr-1'} />
-                <span className={'font-semibold'}>Задание</span>
               </button>
             </div>
             {isModalOpen && (

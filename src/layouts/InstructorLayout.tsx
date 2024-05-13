@@ -3,13 +3,14 @@ import CommonFooter from '@/components/footers/CommonFooter.tsx'
 import InstructorHeader from '@/components/headers/InstructorHeader.tsx'
 import { FiHome, FiSettings } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 
 type PropsType = {
   children: React.ReactNode
 }
 
 const InstructorLayout: React.FC<PropsType> = ({ children }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true)
   const [activeItem, setActiveItem] = useState<number>(1)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -87,6 +88,15 @@ const InstructorLayout: React.FC<PropsType> = ({ children }) => {
         <div
           className={`flex flex-col justify-center ${isMenuOpen ? 'block' : 'hidden'}`}
         >
+          <div className={'flex justify-center items-center mt-4'}>
+            <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
+              <Avatar className={'hover:scale-105  mr-4'}>
+                <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
+                <AvatarFallback>Логотип</AvatarFallback>
+              </Avatar>
+              <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
+            </NavLink>
+          </div>
           {/* Menu items */}
           <div className='py-4'>
             <NavLink to={'/instructor/courses'}>

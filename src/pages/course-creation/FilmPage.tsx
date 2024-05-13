@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
 const FilmPage: React.FC = () => {
   return (
@@ -17,27 +16,7 @@ const FilmPage: React.FC = () => {
             приступить к съемке. Не торопитесь, снимайте в удобном для вас темпе, и
             доведите всё до совершенства во время монтажа.
           </p>
-          <div
-            className={
-              'bg-white w-full h-32 lg:flex sm:flex sm:flex-col sm:h-1/2 sm:pb-4 text-center'
-            }
-          >
-            <h1 className={'text-2xl font-bold text-center sm:text-center sm:pl-4 pt-2'}>
-              Ваша команда единомышленников
-            </h1>
-            <p className={'px-2'}>
-              Общайтесь и получайте полезные советы по съемке и монтажу от других
-              преподавателей Udemy
-            </p>
-            <Link
-              to={'/teaching/test-video'}
-              className='bg-white text-black border-2 border-black px-4 py-2 mt-4 mx-auto w-1/2 font-bold'
-            >
-              Присоединиться к сообществу
-            </Link>
-          </div>
         </div>
-
         <div className='container py-4 px-12'>
           <h2 className='text-2xl font-bold mb-6'>Советы</h2>
           <TipsSection title='Делайте перерывы и отсматривайте небольшими фрагментами.'>

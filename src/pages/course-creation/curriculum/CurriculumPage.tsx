@@ -52,14 +52,6 @@ const sections: SectionType[] = [
         ],
       },
     ],
-    assignments: [
-      {
-        componentSerial: 1,
-        type: 'assignment',
-        title: 'Задание 1',
-        description: 'assignment1 desc',
-      },
-    ],
   },
 ]
 
@@ -117,7 +109,6 @@ const CurriculumPage = () => {
           title={section.title}
           lectures={section.lectures}
           tests={section.tests}
-          assignments={section.assignments}
         />
       ))}
 

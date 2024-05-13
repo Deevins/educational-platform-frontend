@@ -1,4 +1,4 @@
-export type SectionComponentType = 'lecture' | 'test' | 'assignment'
+export type SectionComponentType = 'lecture' | 'test'
 
 export type TestAnswer = {
   answer: string
@@ -6,9 +6,9 @@ export type TestAnswer = {
   answerDescription: string
 }
 
-export type TestQuestion = {
+export interface TestQuestion {
   question: string
-  answers: TestAnswer[]
+  answers: { answer: string; answerIsCorrect: boolean; answerDescription: string }[]
 }
 
 export type SectionTest = {
@@ -37,5 +37,4 @@ export type SectionType = {
   description: string
   lectures: SectionLecture[]
   tests: SectionTest[]
-  assignments: SectionAssignment[]
 }

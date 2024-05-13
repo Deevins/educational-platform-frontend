@@ -45,10 +45,7 @@ const sidebarData: SidebarSection[] = [
   },
   {
     title: 'Публикация курса',
-    items: [
-      { label: 'Целевая страница курса', checked: false, path: 'basics' },
-      { label: 'Сообщения курса', checked: false, path: 'messages' },
-    ],
+    items: [{ label: 'Целевая страница курса', checked: false, path: 'basics' }],
   },
 ]
 

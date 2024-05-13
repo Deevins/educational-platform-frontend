@@ -18,29 +18,6 @@ const VideoSetupPage: React.FC = () => {
             множество оригинальных способов создать видео профессионального качества с
             помощью подручных средств.
           </p>
-          <div
-            className={
-              'bg-white w-full h-32 lg:flex sm:flex sm:flex-col sm:h-1/2 sm:pb-4 '
-            }
-          >
-            <h1
-              className={
-                'text-2xl font-bold text-center lg:text-left sm:text-center sm:pl-4 pt-2'
-              }
-            >
-              Бесплатная помощь от экспертов по видео
-            </h1>
-            <p className={'px-2'}>
-              Получите индивидуальные советы и рекомендации по вашим аудио- и
-              видеоматериалам
-            </p>
-            <Link
-              to={'/teaching/test-video'}
-              className='bg-white text-black border-2 border-black px-4 py-2 mt-4 mx-auto w-1/2 font-bold'
-            >
-              Создайте тестовое видео
-            </Link>
-          </div>
         </div>
 
         <div className='container py-4 px-12'>
@@ -102,7 +79,6 @@ const VideoSetupPage: React.FC = () => {
               интерес студентов и позволяет усваивать информацию небольшими порциями.
             </p>
           </TipsSection>
-          video-setup
           <TipsSection title='Выбирайте и комбинируйте типы лекций.'>
             <p>
               Меняйте планы видео: показывайте себя в кадре, демонстрируйте экран,

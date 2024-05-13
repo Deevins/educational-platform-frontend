@@ -98,6 +98,9 @@ importers:
       react-slick:
         specifier: ^0.30.2
         version: 0.30.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      redux:
+        specifier: ^5.0.1
+        version: 5.0.1
       sass:
         specifier: ^1.72.0
         version: 1.72.0

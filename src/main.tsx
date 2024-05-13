@@ -15,7 +15,6 @@ import AuthPage from '@/pages/auth/AuthPage.tsx'
 import TermsOfServicePage from '@/pages/TermsOfServicePage.tsx'
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage.tsx'
 import CoursesSearchPage from '@/pages/CoursesSearchPage.tsx'
-import UserCoursesPage from '@/pages/UserCoursesPage.tsx'
 import LogOutPage from '@/pages/auth/LogOutPage.tsx'
 import UserProfilePage from '@/pages/UserProfilePage.tsx'
 import FirstTimeInstructorPage from '@/pages/FirstTimeInstructorPage.tsx'
@@ -31,7 +30,6 @@ import VideoSetupPage from '@/pages/course-creation/VideoSetupPage.tsx'
 import FilmPage from '@/pages/course-creation/FilmPage.tsx'
 import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
 import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
-import CourseMessagesPage from '@/pages/course-creation/CourseMessagesPage.tsx'
 import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
 import SettingsPage from '@/pages/course-creation/SettingsPage.tsx'
 import { NotificationProvider } from '@/utils/contexts/notificationContext.tsx'
@@ -39,6 +37,9 @@ import CoursesSearchByCategory from '@/pages/CoursesSearchByCategory.tsx'
 import UnregisteredCoursePage from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 import InstructorNewcomerPage from '@/pages/instructor/InstructorNewcomerPage.tsx'
 import CourseActivePage from '@/pages/course-learning/CourseActivePage.tsx'
+import InstructorCommunicationPage from '@/pages/instructor/InstructorCommunicationPage.tsx'
+import { Provider } from 'react-redux'
+import store from '@/utils/redux/store/store.ts'
 
 const router = createBrowserRouter([
   {
@@ -61,11 +62,11 @@ const router = createBrowserRouter([
         element: <CoursesSearchPage />,
         errorElement: <NotFoundPage />,
       },
-      {
-        path: '/courses/my',
-        element: <UserCoursesPage />,
-        errorElement: <NotFoundPage />,
-      },
+      // {
+      //   path: '/courses/my',
+      //   element: <UserCoursesPage />,
+      //   errorElement: <NotFoundPage />,
+      // },
       {
         path: '/forum',
         element: <ForumPage />,
@@ -87,7 +88,7 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/users/user/:userID/profile',
+        path: '/users/:userID/profile',
         element: <UserProfilePage />,
         errorElement: <NotFoundPage />,
       },
@@ -121,15 +122,15 @@ const router = createBrowserRouter([
         element: <CoursesSearchByCategory />,
         errorElement: <NotFoundPage />,
       },
-      {
-        path: '/courses/:categoryID/:subcategoryID',
-        element: <CoursesSearchByCategory />,
-        errorElement: <NotFoundPage />,
-      },
     ],
   },
   {
     path: '/courses/course/:courseID/learn/',
+    element: <CourseActivePage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: '/courses/course/draft/:courseID/learn/', // same - need to let view only author
     element: <CourseActivePage />,
     errorElement: <NotFoundPage />,
   },
@@ -151,6 +152,11 @@ const router = createBrowserRouter([
       {
         path: 'newcomer',
         element: <InstructorNewcomerPage />,
+        errorElement: <NotFoundPage />,
+      },
+      {
+        path: 'communication',
+        element: <InstructorCommunicationPage />,
         errorElement: <NotFoundPage />,
       },
     ],
@@ -201,13 +207,9 @@ const router = createBrowserRouter([
         element: <BasicsPage />,
         errorElement: <NotFoundPage />,
       },
+
       {
-        path: 'messages', // Сообщения курса
-        element: <CourseMessagesPage />,
-        errorElement: <NotFoundPage />,
-      },
-      {
-        path: 'settings', // Сообщения курса
+        path: 'settings',
         element: <SettingsPage />,
         errorElement: <NotFoundPage />,
       },
@@ -240,17 +242,6 @@ const router = createBrowserRouter([
       },
     ],
   },
-
-  // {
-  //   path: '/courses/course/:courseID/learn/:elementType/:elementID',
-  //   element: <CourseActivePage />,
-  //   errorElement: <NotFoundPage />,
-  // },
-  // {
-  //   path: '/courses/course/:courseID/learn/quiz/:quizID',
-  //   element: <CourseActivePage />,
-  //   errorElement: <NotFoundPage />,
-  // },
 ])
 
 // TODO: mb implement
@@ -262,7 +253,9 @@ const router = createBrowserRouter([
 // { label: 'Сообщения', to: '/messages' },
 // { label: 'Выйти', to: '/auth/logout', onClick: logout },
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <NotificationProvider>
-    <RouterProvider router={router} />
-  </NotificationProvider>
+  <Provider store={store}>
+    <NotificationProvider>
+      <RouterProvider router={router} />
+    </NotificationProvider>
+  </Provider>
 )

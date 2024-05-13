@@ -7,6 +7,7 @@ import {
   TestQuestion,
 } from '@/pages/course-creation/curriculum/types.ts'
 import { MdModeEdit } from 'react-icons/md'
+import { Link, useParams } from 'react-router-dom'
 
 type TestComponentProps = {
   testData: SectionTest
@@ -19,7 +20,8 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null)
   const [isQuestionsVisible, setIsQuestionsVisible] = useState(false) // Состояние видимости вопросов
-
+  const { courseID } = useParams()
+  console.log(courseID)
   const handleAddQuestion = (newQuestion: TestQuestion) => {
     const updatedQuestions =
       selectedQuestionIndex !== null
@@ -124,9 +126,12 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
                 Новый вопрос
               </button>
             </div>
-            <button className='bg-black text-white px-1 py-1 ml-auto'>
-              Предпросмотр
-            </button>
+            <Link
+              to={`/courses/course/draft/${courseID}/learn`}
+              className='bg-black text-white px-1 py-1 ml-auto'
+            >
+              <button>Предпросмотр</button>
+            </Link>
           </div>
           {questions.map((question, index) => (
             <QuestionBlock

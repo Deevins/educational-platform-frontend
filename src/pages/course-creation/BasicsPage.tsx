@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AiFillInfoCircle } from 'react-icons/ai'
 
 const BasicsPage: React.FC = () => {
   const [courseTitle, setCourseTitle] = useState('')
   const [courseSubtitle, setCourseSubtitle] = useState('')
-  // const [courseDescription, setCourseDescription] = useState('');
   const [language, setLanguage] = useState('')
   const [category, setCategory] = useState('')
   const [mainSubject, setMainSubject] = useState('')
@@ -48,42 +46,6 @@ const BasicsPage: React.FC = () => {
     }
   }
 
-  // const fetchSuggestions = async (query: string): Promise<string[]> => {
-  //   try {
-  //     const response = await fetch(`https://your-backend.com/suggestions?query=${query}`)
-  //     const data = await response.json()
-  //     return data.suggestions
-  //   } catch (error) {
-  //     console.error('Failed to fetch suggestions:', error)
-  //     return []
-  //   }
-  // }
-
-  // Пример массива с предметами курсов
-  const courseSubjects = [
-    'Веб-разработка',
-    'Разработка под Android',
-    'Разработка на iOS',
-    'Разработка программного обеспечения',
-    'Основы разработки игр',
-    'Разработка мобильных приложений',
-    'Пейзажная фотография',
-    'Портретная фотография',
-  ]
-
-  // Моковая функция для поиска
-  const fetchSuggestions = async (query: string): Promise<string[]> => {
-    return new Promise((resolve) => {
-      // Имитируем задержку сетевого запроса
-      setTimeout(() => {
-        const filteredSubjects = courseSubjects.filter((subject) =>
-          subject.toLowerCase().includes(query.toLowerCase())
-        )
-        resolve(filteredSubjects)
-      }, 500)
-    })
-  }
-
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-2xl font-bold mb-4'>Целевая страница курса</h1>
@@ -116,7 +78,7 @@ const BasicsPage: React.FC = () => {
         </div>
         <div className={'self-end w-[48%]'}>
           <SelectField
-            label='asdas'
+            label='Уровень '
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             options={languageOptions}
@@ -135,11 +97,7 @@ const BasicsPage: React.FC = () => {
         onChange={(e) => setCategory(e.target.value)}
         options={subCategoryOptions}
       />
-      <SearchableInput
-        label='Каков основной предмет вашего курса?'
-        placeholder='например, пейзажная фотография'
-        fetchSuggestions={fetchSuggestions}
-      />
+
       <FileUploadField
         url={imageUrl}
         label='Изображение курса'
@@ -186,9 +144,10 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({ label, url, onChange 
       </div>
       <div className={'flex flex-col h-[24vh] justify-end w-[50%] '}>
         <p>
-          Загрузите изображение своего курса здесь. Чтобы загрузка была успешной, оно
-          должно соответствовать стандартам качества изображений курсов. Важные
-          требования: 750×422 пикселей; jpg, jpeg, gif, png, без текста на изображении.
+          Размещение проморолика ― это быстрый и эффективный способ для ознакомления
+          студентов с содержанием вашего курса. Студенты, которые рассматривают
+          возможность прохождения вашего курса, с большей вероятностью зарегистрируются на
+          него, если ваше рекламное видео сделано качественно.
         </p>
         <input
           type='file'
@@ -248,82 +207,6 @@ const InputField: React.FC<InputFieldProps> = ({
     />
   </div>
 )
-
-interface SearchableInputProps {
-  placeholder: string
-  label: string
-  fetchSuggestions: (query: string) => Promise<string[]> // Предполагается, что это функция для запроса на сервер
-}
-
-const SearchableInput: React.FC<SearchableInputProps> = ({
-  placeholder,
-  label,
-  fetchSuggestions,
-}) => {
-  const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [showTooltip, setShowTooltip] = useState(false)
-  const [showSuggestions, setShowSuggestions] = useState(false)
-
-  const handleInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value
-    setQuery(value)
-    if (value.length > 2) {
-      const results = await fetchSuggestions(value)
-      setSuggestions(results)
-      setShowSuggestions(true)
-    } else {
-      setShowSuggestions(false)
-    }
-  }
-
-  return (
-    <div className=''>
-      <div className={'flex items-center text-center'}>
-        <label className='block text-gray-700 text-lg font-bold mb-2'>{label}</label>
-        <AiFillInfoCircle
-          className='ml-2 w-6 h-6 pb-1'
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-        />
-      </div>
-      <input
-        type='text'
-        value={query}
-        onChange={handleInputChange}
-        className='shadow appearance-none border-2 w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-        placeholder={placeholder}
-      />
-      {showSuggestions && (
-        <ul className='absolute z-10 w-full bg-white border border-gray-300 mt-1 rounded shadow-lg max-h-60 overflow-auto'>
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              className='px-4 py-2 hover:bg-gray-100 cursor-pointer'
-              onClick={() => {
-                setQuery(suggestion)
-                setShowSuggestions(false)
-              }}
-            >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
-      {showTooltip && (
-        <div className='absolute right-[24%] bottom-[-10%] w-64 p-3 bg-white border border-gray-300 rounded shadow-lg mt-1'>
-          Каждая отдельная выбранная тема должна конкретно и точно описывать содержание
-          вашего курса, не обобщая излишне. Например для курса "Полный курс по теннису"
-          необходимо выбрать тему "Теннис", а не "Подача в теннисе" или "Спорт".{' '}
-          <Link to='#' className='text-blue-500'>
-            Узнать больше
-          </Link>
-          .
-        </div>
-      )}
-    </div>
-  )
-}
 
 interface ProfileAlertProps {
   fullName: string // ФИО пользователя

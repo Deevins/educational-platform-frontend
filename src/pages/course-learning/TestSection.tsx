@@ -6,6 +6,7 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({})
   const [testCompleted, setTestCompleted] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+  const [testStarted, setTestStarted] = useState(false)
 
   const handleAnswerSelect = (index: number) => {
     setUserAnswers((prev) => ({
@@ -18,16 +19,16 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1)
-      setSelectedAnswer(userAnswers[currentQuestionIndex + 1] || null) // Maintain or reset selection for the next question
+      setSelectedAnswer(userAnswers[currentQuestionIndex + 1] || null)
     } else {
-      handleSubmitResults() // Automatically submit results on last question
+      handleSubmitResults()
     }
   }
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1)
-      setSelectedAnswer(userAnswers[currentQuestionIndex - 1] || null) // Maintain selection for the previous question
+      setSelectedAnswer(userAnswers[currentQuestionIndex - 1] || null)
     }
   }
 
@@ -35,9 +36,27 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
     setTestCompleted(true)
   }
 
+  const handleStartTest = () => {
+    setTestStarted(true)
+  }
+
   return (
-    <div className='container mx-auto px-4 py-2'>
-      {!testCompleted ? (
+    <div className='container px-4 py-2 ml-[10%]'>
+      {!testStarted ? (
+        <div className='bg-white shadow-md rounded-lg p-6 text-center'>
+          <h1 className='text-2xl font-bold mb-4'>Test Description</h1>
+          <p>
+            This is the description of the test. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit.
+          </p>
+          <button
+            onClick={handleStartTest}
+            className='px-6 py-2 mt-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700'
+          >
+            Start Test
+          </button>
+        </div>
+      ) : !testCompleted ? (
         <div className='bg-white shadow-md rounded-lg p-6'>
           <div className='text-xl font-semibold mb-4'>
             {questions[currentQuestionIndex].question}
@@ -112,4 +131,5 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
     </div>
   )
 }
+
 export default TestSection
