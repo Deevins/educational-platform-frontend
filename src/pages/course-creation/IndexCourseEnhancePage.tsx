@@ -1,8 +1,8 @@
-import { NavLink, Outlet, useParams } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom'
 import CourseEditLayout from '@/layouts/CourseEditLayout.tsx'
-import React from 'react'
+import React, { useState } from 'react'
 
-const IndexCourseEnhancePage = () => {
+const IndexCourseEnhancePage: React.FC = () => {
   return (
     <CourseEditLayout>
       <div className='flex min-h-screen justify-center'>
@@ -40,7 +40,6 @@ const sidebarData: SidebarSection[] = [
     items: [
       { label: 'Съемка видео и монтаж', checked: false, path: 'film' },
       { label: 'Учебный план', checked: false, path: 'curriculum' },
-      { label: 'Доступность (необязательно)', checked: false, path: 'accessibility' },
     ],
   },
   {
@@ -50,10 +49,20 @@ const sidebarData: SidebarSection[] = [
 ]
 
 const Sidebar: React.FC = () => {
-  const { courseID } = useParams()
+  const { courseID } = useParams<{ courseID: string }>()
+  const navigate = useNavigate()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleButtonClick = () => {
+    setIsModalOpen(true)
+    setTimeout(() => {
+      setIsModalOpen(false)
+      navigate('/instructor/courses')
+    }, 1500)
+  }
 
   return (
-    <div className='bg-white p-4 w-[20%] sm:w-1/3 mt-8'>
+    <div className='bg-white p-4 w-full sm:w-1/3 mt-8'>
       {sidebarData.map((section, sIndex) => (
         <div key={sIndex}>
           <div className='text-lg font-bold mb-2'>{section.title}</div>
@@ -75,9 +84,23 @@ const Sidebar: React.FC = () => {
           ))}
         </div>
       ))}
-      <button className='bg-purple-600 text-white font-semibold p-2 mt-4 w-full py-4 hover:bg-purple-700'>
+      <button
+        className='bg-purple-600 text-white font-semibold p-2 mt-4 w-full py-4 hover:bg-purple-700'
+        onClick={handleButtonClick}
+      >
         Отправить на проверку
       </button>
+
+      {isModalOpen && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='bg-white p-6 rounded-lg shadow-lg text-center'>
+            <h2 className='text-xl font-semibold mb-4'>
+              Ваш курс успешно отправлен на проверку, и в случае положительного результата
+              будет опубликован на нашей платформе
+            </h2>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -28,111 +28,93 @@ interface ThreadCardProps {
 const initialThreads: Thread[] = [
   {
     id: 1,
-    title: 'Thread 1',
-    author: 'User 1',
-    createdDate: '2024-04-30',
-    lastReplyDate: '2024-05-01',
-    repliesCount: 5,
+    title: 'Как начать программировать на Python',
+    author: 'Алексей Смирнов',
+    createdDate: '2024-05-10',
+    lastReplyDate: '2024-05-12',
+    repliesCount: 8,
     tags: [
-      { id: 1, title: 'tag1' },
-      { id: 2, title: 'tag2' },
-      { id: 3, title: 'tag3' },
+      { id: 1, title: 'Python' },
+      { id: 2, title: 'Начало' },
+      { id: 3, title: 'Программирование' },
     ],
   },
   {
     id: 2,
-    title: 'Thread 2',
-    author: 'User 2',
-    createdDate: '2024-04-29',
-    lastReplyDate: '2024-04-30',
-    repliesCount: 10,
+    title: 'Лучшие практики JavaScript',
+    author: 'Марина Иванова',
+    createdDate: '2024-05-08',
+    lastReplyDate: '2024-05-11',
+    repliesCount: 15,
     tags: [
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
-      { id: 6, title: 'tag6' },
-      { id: 7, title: 'tag7' },
-      { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag9' },
+      { id: 4, title: 'JavaScript' },
+      { id: 5, title: 'Best Practices' },
+      { id: 6, title: 'Web Development' },
     ],
   },
   {
     id: 3,
-    title: 'Thread 2',
-    author: 'User 2',
-    createdDate: '2024-04-29',
-    lastReplyDate: '2024-04-30',
-    repliesCount: 10,
+    title: 'Обзор новых функций в React 18',
+    author: 'Виктор Петров',
+    createdDate: '2024-05-07',
+    lastReplyDate: '2024-05-10',
+    repliesCount: 12,
     tags: [
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
-      { id: 6, title: 'tag6' },
-      { id: 7, title: 'tag7' },
-      { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag9' },
+      { id: 7, title: 'React' },
+      { id: 8, title: 'Frontend' },
+      { id: 9, title: 'JavaScript' },
     ],
   },
   {
     id: 4,
-    title: 'Thread 2',
-    author: 'User 2',
-    createdDate: '2024-04-29',
-    lastReplyDate: '2024-04-30',
-    repliesCount: 10,
+    title: 'Понимание асинхронного программирования в Node.js',
+    author: 'Екатерина Кузнецова',
+    createdDate: '2024-05-05',
+    lastReplyDate: '2024-05-09',
+    repliesCount: 22,
     tags: [
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
-      { id: 6, title: 'tag6' },
-      { id: 7, title: 'tag7' },
-      { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag9' },
+      { id: 10, title: 'Node.js' },
+      { id: 11, title: 'Async' },
+      { id: 12, title: 'JavaScript' },
     ],
   },
   {
     id: 5,
-    title: 'Thread 2',
-    author: 'User 2',
-    createdDate: '2024-04-29',
-    lastReplyDate: '2024-04-30',
-    repliesCount: 10,
+    title: 'Как улучшить производительность веб-сайта',
+    author: 'Дмитрий Соколов',
+    createdDate: '2024-05-04',
+    lastReplyDate: '2024-05-08',
+    repliesCount: 18,
     tags: [
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
-      { id: 6, title: 'tag6' },
-      { id: 7, title: 'tag7' },
-      { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag9' },
+      { id: 13, title: 'Performance' },
+      { id: 14, title: 'Optimization' },
+      { id: 15, title: 'Web' },
     ],
   },
   {
     id: 6,
-    title: 'Thread 2',
-    author: 'User 2',
-    createdDate: '2024-04-29',
-    lastReplyDate: '2024-04-30',
-    repliesCount: 10,
+    title: 'Основы работы с базами данных',
+    author: 'Анна Попова',
+    createdDate: '2024-05-02',
+    lastReplyDate: '2024-05-06',
+    repliesCount: 7,
     tags: [
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
-      { id: 6, title: 'tag6' },
-      { id: 7, title: 'tag7' },
-      { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag9' },
+      { id: 16, title: 'Databases' },
+      { id: 17, title: 'SQL' },
+      { id: 18, title: 'Backend' },
     ],
   },
   {
     id: 7,
-    title: 'Thread 2',
-    author: 'User 2',
-    createdDate: '2024-04-29',
-    lastReplyDate: '2024-04-30',
-    repliesCount: 10,
+    title: 'Что нового в CSS 2024',
+    author: 'Сергей Ковалев',
+    createdDate: '2024-05-01',
+    lastReplyDate: '2024-05-05',
+    repliesCount: 5,
     tags: [
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
-      { id: 6, title: 'tag6' },
-      { id: 7, title: 'tag7' },
-      { id: 8, title: 'tag8' },
-      { id: 9, title: 'tag2' },
+      { id: 19, title: 'CSS' },
+      { id: 20, title: 'Web Design' },
+      { id: 21, title: 'Frontend' },
     ],
   },
 ]
@@ -162,7 +144,7 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
         <title>Форум</title>
       </Helmet>
       <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
-        <h2 className='text-lg font-semibold mb-2'>Заголовок: {title}</h2>
+        <h2 className='text-lg font-semibold mb-2'>{title}</h2>
         <div className='flex items-center mb-2'>
           <span className='text-sm text-gray-600 mr-2'>Автор: {author}</span>
           <span className='text-sm text-gray-600'>Дата создания: {createdDate}</span>
@@ -220,11 +202,36 @@ const ForumPage: React.FC = () => {
   const fetchTags = async (): Promise<ITag[]> => {
     // Заглушка: имитация запроса к серверу для получения списка тегов
     return [
-      { id: 1, title: 'tag1' },
-      { id: 2, title: 'tag2' },
-      { id: 3, title: 'tag3' },
-      { id: 4, title: 'tag4' },
-      { id: 5, title: 'tag5' },
+      { id: 1, title: 'Python' },
+      { id: 2, title: 'JavaScript' },
+      { id: 3, title: 'React' },
+      { id: 4, title: 'Node.js' },
+      { id: 5, title: 'Performance' },
+      { id: 6, title: 'SQL' },
+      { id: 7, title: 'Databases' },
+      { id: 8, title: 'Web Development' },
+      { id: 9, title: 'Frontend' },
+      { id: 10, title: 'Backend' },
+      { id: 11, title: 'Async' },
+      { id: 12, title: 'Best Practices' },
+      { id: 13, title: 'Optimization' },
+      { id: 14, title: 'Web Design' },
+      { id: 15, title: 'Начало' },
+      { id: 16, title: 'Программирование' },
+      { id: 17, title: 'API' },
+      { id: 18, title: 'Security' },
+      { id: 19, title: 'DevOps' },
+      { id: 20, title: 'Machine Learning' },
+      { id: 21, title: 'Data Science' },
+      { id: 22, title: 'Cloud Computing' },
+      { id: 23, title: 'AI' },
+      { id: 24, title: 'Testing' },
+      { id: 25, title: 'CI/CD' },
+      { id: 26, title: 'Docker' },
+      { id: 27, title: 'Kubernetes' },
+      { id: 28, title: 'Microservices' },
+      { id: 29, title: 'Agile' },
+      { id: 30, title: 'Scrum' },
     ]
   }
 
@@ -315,6 +322,14 @@ const ForumPage: React.FC = () => {
     console.log(`Clicked on tag: ${tag.title}`)
   }
 
+  // Валидация и обработка блокировки скроллинга
+  useEffect(() => {
+    document.body.style.overflow = showCreateModal ? 'hidden' : 'unset'
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showCreateModal])
+
   return (
     <div className='flex flex-col lg:flex-row justify-center min-h-screen'>
       <div className='w-full lg:w-3/4 p-4'>
@@ -340,12 +355,14 @@ const ForumPage: React.FC = () => {
           ))
         ) : (
           <div className='flex flex-col items-center justify-center h-full'>
-            <p className='text-center mb-4'>No threads found.</p>
+            <p className='text-center mb-4'>
+              Обсуждение по заданным фильтрам не найдено.
+            </p>
             <button
               onClick={() => setShowCreateModal(true)}
               className={'bg-red-500 text-white px-4 py-2 rounded'}
             >
-              Create new thread
+              Начните новое обсуждение!
             </button>
           </div>
         )}
@@ -378,8 +395,8 @@ const ForumPage: React.FC = () => {
           )}
         </div>
         <div className='mb-4'>
-          <h2 className='text-lg font-semibold mb-2'>Tags</h2>
-          <div className='flex flex-wrap'>
+          <h2 className='text-lg font-semibold mb-2'>Теги</h2>
+          <div className='flex flex-wrap '>
             {tags.map((tag) => (
               <TagCard
                 key={tag.id}
@@ -392,26 +409,28 @@ const ForumPage: React.FC = () => {
         <div className='mb-4'>
           <button
             onClick={() => setFilter('hot')}
-            className={`bg-blue-500 text-white px-4 py-2 mr-3  ${
+            className={`bg-gray-600 text-white px-4 py-2 mr-3  ${
               filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            Hot Threads
+            Горячие обсуждения
           </button>
           <button
             onClick={() => setFilter('newest')}
-            className={`bg-blue-500 text-white px-4 py-2  ${
+            className={`bg-gray-600 text-white px-4 py-2  ${
               filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            Newest Threads
+            Самые новые обсуждения
           </button>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className={'bg-red-500 text-white px-4 py-2 rounded block'}
+          className={
+            'bg-white text-black border-2 shadow-md border-black px-4 py-2 rounded block hover:bg-gray-50'
+          }
         >
-          Create new thread
+          Создайте новое обсуждение!
         </button>
       </div>
       {showCreateModal && (
@@ -484,7 +503,7 @@ const CreateThreadModal: React.FC<CreateThreadModalProps> = ({
     <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center'>
       <div className='bg-white p-4 rounded-lg w-full max-w-lg'>
         <div className='flex justify-between items-center mb-4'>
-          <h2 className='text-lg font-semibold'>Create New Thread</h2>
+          <h2 className='text-lg font-semibold'>Создать новое обсуждение</h2>
           <button onClick={onClose}>&times;</button>
         </div>
         <div className='mb-4'>
@@ -494,7 +513,7 @@ const CreateThreadModal: React.FC<CreateThreadModalProps> = ({
               checked={anonymous}
               onChange={(e) => setAnonymous(e.target.checked)}
             />
-            <span className='ml-2'>Anonymous</span>
+            <span className='ml-2'>Анонимно</span>
           </label>
           <input
             type='text'
@@ -512,7 +531,7 @@ const CreateThreadModal: React.FC<CreateThreadModalProps> = ({
               className='w-full border border-gray-300 p-2 rounded mb-2'
             />
             {suggestedTags.length > 0 && (
-              <div className='absolute top-full bg-white border border-gray-300 shadow rounded mt-1 w-full'>
+              <div className='absolute top-full bg-white border border-gray-300 shadow rounded mt-1 w-full  overflow-y-scroll h-[30vh]'>
                 {suggestedTags.map((tag) => (
                   <div
                     key={tag.id}
@@ -551,7 +570,7 @@ const CreateThreadModal: React.FC<CreateThreadModalProps> = ({
             isLoading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
-          {isLoading ? 'Creating...' : 'Create Post'}
+          {isLoading ? 'В процессе...' : 'Создать обсуждение'}
         </button>
       </div>
     </div>
@@ -567,7 +586,7 @@ const TagCard: React.FC<ITagCardProps> = ({ tag, handleTagSelect }) => {
   return (
     <div
       key={tag.id}
-      className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'
+      className='bg-gray-200 text-xs px-2 py-1 mr-2 cursor-pointer mb-2'
       onClick={() => handleTagSelect(tag)}
     >
       {tag.title}

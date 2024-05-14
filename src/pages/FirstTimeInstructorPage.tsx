@@ -210,10 +210,9 @@ const FirstTimeInstructorPage = () => {
       </div>
       <div className='bg-purple-600 text-white py-16 '>
         <div className='flex justify-center'>
-          <Column amount='62 млн' label='Студенты' />
-          <Column amount='75+' label='Языки' />
-          <Column amount='830 млн' label='Регистраций' />
-          <Column amount='180+' label='Страны' />
+          <Column amount='10+' label='Студентов' />
+          <Column amount='100+' label='Регистраций' />
+          <Column amount='100+' label='Стран' />
         </div>
       </div>
       <StartBlock />

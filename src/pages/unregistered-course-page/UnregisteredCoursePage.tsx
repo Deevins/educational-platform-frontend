@@ -10,20 +10,20 @@ import { ReviewsComponent } from '@/pages/unregistered-course-page/ReviewsCompon
 import { InstructorComponent } from '@/pages/unregistered-course-page/InstructorComponent.tsx'
 
 const instructorObject = {
-  id: 1,
-  name: 'Иван Иванов',
+  id: '2',
+  name: 'Александр Мордов',
   avatar: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
   rating: 4.9,
   totalRatings: 606,
   studentsCount: 6453,
   description:
-    'Иван Иванов - опытный разработчик, который работает в индустрии более 10 лет. Он специализируется на создании веб-приложений с использованием современных технологий.',
+    'Александр Мордов - опытный разработчик, который работает в индустрии более 10 лет. Он специализируется на создании веб-приложений с использованием современных технологий.',
 }
 
 const UnregisteredCoursePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('learn')
   const studentsCount = 6453
-  const instuctorUrl = ''
+  const instuctorUrl = '/users/user/2/profile'
   const isStudentRegistered = false
 
   const renderContent = () => {
@@ -37,7 +37,8 @@ const UnregisteredCoursePage: React.FC = () => {
       case 'instructor':
         return (
           <InstructorComponent
-            name='Евгений Волосатов'
+            id={instructorObject.id}
+            name=' Александр Мордов'
             title='Магистр математики и информатики, C#, Java, PHP программист'
             rating={4.4}
             reviewCount={859}
@@ -108,7 +109,7 @@ const UnregisteredCoursePage: React.FC = () => {
                     }
                   >
                     {' '}
-                    isInstuctor Зарегистрироваться
+                    Зарегистрироваться
                   </button>
                 </Link>
               )}
@@ -203,106 +204,106 @@ const InstructorCourses: React.FC = () => {
     {
       courseId: '1123',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Introduction to Programming',
+      rating: 4.7,
+      reviews: 123,
+      lectureLength: 12,
     },
     {
       courseId: '26',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Advanced Mathematics',
+      rating: 4.8,
+      reviews: 289,
+      lectureLength: 15,
     },
     {
       courseId: '213',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Data Science Basics',
+      rating: 4.6,
+      reviews: 450,
+      lectureLength: 10,
     },
     {
       courseId: '424',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
+      title: 'Machine Learning 101',
       rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      reviews: 605,
+      lectureLength: 8,
     },
     {
       courseId: '55',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Web Development Fundamentals',
+      rating: 4.5,
+      reviews: 732,
+      lectureLength: 20,
     },
     {
       courseId: '12',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Introduction to AI',
+      rating: 4.4,
+      reviews: 198,
+      lectureLength: 6,
     },
     {
       courseId: '11',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Cybersecurity Basics',
+      rating: 4.7,
+      reviews: 345,
+      lectureLength: 9,
     },
     {
       courseId: '13',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Digital Marketing 101',
+      rating: 4.8,
+      reviews: 423,
+      lectureLength: 11,
     },
     {
       courseId: '6',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Graphic Design for Beginners',
+      rating: 4.6,
+      reviews: 510,
+      lectureLength: 14,
     },
     {
       courseId: '7',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Photography Essentials',
+      rating: 4.7,
+      reviews: 215,
+      lectureLength: 7,
     },
     {
       courseId: '8',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Business Management',
+      rating: 4.5,
+      reviews: 328,
+      lectureLength: 13,
     },
     {
       courseId: '9',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
+      title: 'Public Speaking Mastery',
       rating: 4.9,
-      reviews: 606,
+      reviews: 602,
       lectureLength: 5,
     },
     {
       courseId: '10',
       image: 'https://via.placeholder.com/150',
-      title: 'Course 1',
-      rating: 4.9,
-      reviews: 606,
-      lectureLength: 5,
+      title: 'Creative Writing Workshop',
+      rating: 4.8,
+      reviews: 409,
+      lectureLength: 8,
     },
   ]
   const indexOfLastItem = currentPage * itemsPerPage
@@ -310,7 +311,7 @@ const InstructorCourses: React.FC = () => {
   const currentCourses = courses.slice(indexOfFirstItem, indexOfLastItem)
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
-  const instructorID = 1
+  const instructorID = 2
 
   const pageNumbers = []
   for (let i = 1; i <= Math.ceil(courses.length / itemsPerPage); i++) {
@@ -322,7 +323,7 @@ const InstructorCourses: React.FC = () => {
       <h1 className={'border-b-2 border-black pb-4 font-semibold mt-16'}>
         Другие курсы от{' '}
         <NavLink
-          to={`/users/user/${instructorID}`}
+          to={`/users/user/${instructorID}/profile`}
           className={'hover:text-blue-500 text-purple-700'}
         >
           инструктора:

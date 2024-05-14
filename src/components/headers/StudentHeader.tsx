@@ -33,6 +33,27 @@ const StudentHeader = () => {
     setIsInstructorModeOpen(false)
   }
 
+  // const fetchCategories = async (): Promise<Category[]> => {
+  //   try {
+  //     const response = await axios.get<Category[]>(
+  //       'http://localhost:8080/directories/categories'
+  //     )
+  //     return response.data
+  //   } catch (error) {
+  //     console.error('Error fetching categories', error)
+  //     return []
+  //   }
+  // }
+  //
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const categories = await fetchCategories()
+  //     setCategories(categories)
+  //   }
+  //
+  //   fetchData()
+  // }, [])
+
   return (
     <header className='bg-gray-200 text-black p-4 flex justify-center  lg:justify-between items-center shadow-xl'>
       <NavLink to={'/'} className='hidden lg:flex items-center sm:hidden'>

@@ -22,7 +22,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     >
       <div>
         <div
-          className={`bg-${course.color}-100 rounded-lg shadow-md overflow-hidden border border-gray-200`}
+          className={`bg-${course.color}-100 rounded-lg shadow-md overflow-hidden border border-gray-300`}
         >
           <div className={`h-16 w-full bg-${course.color}-500`} />
           <div className='p-4'>
@@ -85,13 +85,13 @@ const Filter: React.FC<FilterProps> = ({
         className='bg-blue-500 text-white rounded-full px-4 py-2 text-sm font-semibold mr-2 mb-2'
         onClick={onFilter}
       >
-        Filter
+        Отфильтровать
       </button>
       <button
         className='bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold mb-2'
         onClick={onReset}
       >
-        Reset
+        Сбросить
       </button>
     </div>
   )
@@ -122,7 +122,7 @@ const CoursesList: React.FC<CoursesPageProps> = ({ courses }) => {
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-3xl font-semibold mb-4'>Курсов ({courses.length})</h1>
+      <h1 className='text-3xl font-semibold mb-4'>Курсов ({filteredCourses.length})</h1>
       <Filter
         tags={['React', 'JavaScript', 'TypeScript', 'CSS', 'HTML']}
         selectedTags={selectedTags}

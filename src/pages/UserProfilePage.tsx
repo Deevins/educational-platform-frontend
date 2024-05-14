@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import PhoneInput from 'react-phone-input-2'
 import useModal from '@/utils/hooks/useModal.ts'
@@ -18,6 +18,21 @@ export interface IUser {
   courses?: number[]
 }
 
+// UserInfoRequest.ts
+export interface UserInfoRequest {
+  id: string
+}
+
+// UserInfoResponse.ts
+export interface UserInfoResponse {
+  id: number
+  full_name: string
+  description: string
+  email: string
+  avatar: string
+  phone_number: string
+}
+
 interface Course {
   id: number
   title: string
@@ -29,48 +44,18 @@ type MainTab = 'courses'
 const courses: Course[] = [
   {
     id: 1,
-    title: 'title 1',
-    description: 'description 1',
+    title: 'Курс по разработке веб-приложений',
+    description: 'Описание курса по разработке веб-приложений',
   },
   {
     id: 2,
-    title: 'title 2',
-    description: 'description 2',
+    title: 'Курс по разработке мобильных приложений',
+    description: 'Курс по разработке мобильных приложений',
   },
   {
     id: 3,
-    title: 'title 3',
-    description: 'description 3',
-  },
-  {
-    id: 1,
-    title: 'title 1',
-    description: 'description 1',
-  },
-  {
-    id: 2,
-    title: 'title 2',
-    description: 'description 2',
-  },
-  {
-    id: 3,
-    title: 'title 3',
-    description: 'description 3',
-  },
-  {
-    id: 1,
-    title: 'title 1',
-    description: 'description 1',
-  },
-  {
-    id: 2,
-    title: 'title 2',
-    description: 'description 2',
-  },
-  {
-    id: 3,
-    title: 'title 3',
-    description: 'description 3',
+    title: 'Курс по разработке игр',
+    description: 'Здесь создают игры на любой вкус',
   },
 ]
 
@@ -122,11 +107,12 @@ const CoursesList: React.FC<{ courses: Course[]; user: IUser }> = ({ courses, us
 }
 
 const UserPage: React.FC = () => {
+  const { userID } = useParams<{ userID: string }>()
   const [user, setUser] = useState<IUser | null>(null)
   const [updatedUser, setUpdatedUser] = useState<IUser | null>(null)
   const [currentMainTab, setCurrentMainTab] = useState<MainTab>('courses')
   const [, setPhoneNumber] = useState('')
-  const { isOpen, openModal, closeModal, ref } = useModal() // Используем наш хук для модального окна
+  const { isOpen, openModal, closeModal, ref } = useModal()
   const [isOnline, setIsOnline] = useState(true)
 
   useEffect(() => {
@@ -141,20 +127,71 @@ const UserPage: React.FC = () => {
       window.removeEventListener('offline', handleOffline)
     }
   }, [])
+
+  // const fetchUserInfo = async (userId: string): Promise<UserInfoResponse | null> => {
+  //   try {
+  //     const response = await axios.get<UserInfoResponse>(
+  //       `http://localhost:8080/user/get-self-info`,
+  //       {
+  //         params: { id: userId },
+  //       }
+  //     )
+  //     return response.data
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       console.error(`Error fetching user info: ${error.message}`)
+  //       console.error(`Status code: ${error.response?.status}`)
+  //       console.error(`Response data: ${error.response?.data}`)
+  //     } else {
+  //       console.error('Unexpected error', error)
+  //     }
+  //     return null
+  //   }
+  // }
+
   useEffect(() => {
     // Simulate fetching user data
-    const userData: IUser = {
-      id: 1,
-      username: 'exampleUser',
-      email: 'example@example.com',
-      fullName: 'John Doe',
-      avatar: 'https://github.com/shadcn.png',
-      mobile: '1234567890',
-      about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      courses: [1, 2, 3, 4, 5, 6, 7, 8],
+    if (userID === '2') {
+      const userData: IUser = {
+        id: 2,
+        username: 'exampleUser',
+        email: 'shinichi@gmail.com',
+        fullName: 'Александр Мордов',
+        avatar: 'https://github.com/shadcn.png',
+        mobile: '8-904-003-53-23',
+        about:
+          'Всем привет! Меня зовут Алесандр. Я занимаюсь разработкой программного обеспечения более 10 лет.\n' +
+          '\n' +
+          'Работал над проектами в различных сферах: от игр и мобильных приложений до интерактивных инсталляций и программирования микроконтроллеров.\n' +
+          '\n' +
+          'На данный момент являюсь инженером компьютерной графики и работаю в индустрии виртуальной реальности в Финляндии.\n' +
+          '\n' +
+          'Мне нравится рассказывать сложные вещи простым языком. Я уверен, мой опыт и курс будут полезны в освоении профессии разработчика игр. Считаю, что теория и практика одинаковы важны, а для глубокого усвоения  материала все концепты теории должны быть объяснены на примерах по фейнмановскому методу.',
+        courses: [1, 2, 3, 4, 5, 6, 7, 8],
+      }
+      setUser(userData)
+      setUpdatedUser(userData)
+    } else {
+      const userData: IUser = {
+        id: 1,
+        username: 'exampleUser',
+        email: 'daker255@bk.ru',
+        fullName: 'Виктор Самсонов',
+        avatar: 'https://github.com/shadcn.png',
+        mobile: '8-904-003-53-23',
+        about:
+          'Всем привет! Меня зовут Виктор. Я занимаюсь разработкой программного обеспечения более 2 лет.\n' +
+          '\n' +
+          'Работал над проектами в различных сферах: от игр и мобильных приложений до интерактивных инсталляций и программирования микроконтроллеров.\n' +
+          '\n' +
+          'На данный момент являюсь инженером компьютерной графики и работаю в индустрии виртуальной реальности в Финляндии.\n' +
+          '\n' +
+          'Мне нравится рассказывать сложные вещи простым языком. Я уверен, мой опыт и курс будут полезны в освоении профессии разработчика игр. Считаю, что теория и практика одинаковы важны, а для глубокого усвоения  материала все концепты теории должны быть объяснены на примерах по фейнмановскому методу.',
+        courses: [1, 2, 3, 4, 5, 6, 7, 8],
+      }
+      setUser(userData)
+      setUpdatedUser(userData)
     }
-    setUser(userData)
-    setUpdatedUser(userData)
   }, [])
 
   const handleEditClick = () => {
@@ -221,12 +258,15 @@ const UserPage: React.FC = () => {
               </div>
             </div>
             <hr className='my-4 border-t border-gray-300' />
-            <button
-              className='bg-blue-500 text-white px-4 py-2 rounded'
-              onClick={handleEditClick}
-            >
-              Редактировать профиль:
-            </button>
+            {user.id === 1 && (
+              <button
+                className='bg-blue-500 text-white px-4 py-2 rounded'
+                onClick={handleEditClick}
+              >
+                Редактировать профиль:
+              </button>
+            )}
+
             <div className='mt-4'>
               <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
               <p className='text-black mb-4'>{user.about}</p>

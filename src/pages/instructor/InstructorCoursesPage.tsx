@@ -20,7 +20,7 @@ const InstructorCoursesPage: React.FC = () => {
   const courses = [
     {
       id: 1,
-      title: 'Курс 1',
+      title: 'Разработка фуллстек приложений на React и Node.js',
       imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
       isDraft: true,
       isPublic: false,
@@ -28,13 +28,12 @@ const InstructorCoursesPage: React.FC = () => {
     },
     {
       id: 2,
-      title: 'Курс 2',
+      title: 'Основы k8s и его практическое применение',
       imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
       isDraft: false,
       isPublic: true,
       progress: 70,
     },
-    // Добавьте больше курсов при необходимости
   ]
   return (
     <div className='relative flex'>
@@ -78,8 +77,8 @@ const InstructorCoursesPage: React.FC = () => {
             </NavLink>
           </div>
         )}
-        <div className='relative flex flex-col items-center lg:w-8/12'>
-          <div className='flex-1 flex flex-col items-center lg:w-full'>
+        <div className='relative flex flex-col items-center lg:w-9/12 md:5/12'>
+          <div className='flex-1 flex flex-col items-center lg:w-full lg:mr-32'>
             {/* Отображение карточек курсов */}
             {courses.map((course) => (
               <CourseCard
@@ -261,7 +260,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <div>
           <h1 className='text-center mb-4 font-medium'>{title}</h1>
           <div className='mb-4'>
-            <p>{isDraft ? 'Черновик' : 'Рабочий курс'}</p>
+            <p>{isDraft ? 'Черновик' : 'Публичный'}</p>
             <p>{isPublic ? 'Доступен всем' : 'Не доступен всем'}</p>
           </div>
         </div>

@@ -28,7 +28,6 @@ import IndexCourseEnhancePage from '@/pages/course-creation/IndexCourseEnhancePa
 import CourseStructurePage from '@/pages/course-creation/CourseStructurePage.tsx'
 import VideoSetupPage from '@/pages/course-creation/VideoSetupPage.tsx'
 import FilmPage from '@/pages/course-creation/FilmPage.tsx'
-import AccessibilityPage from '@/pages/course-creation/AccessibilityPage.tsx'
 import BasicsPage from '@/pages/course-creation/BasicsPage.tsx'
 import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
 import SettingsPage from '@/pages/course-creation/SettingsPage.tsx'
@@ -195,11 +194,6 @@ const router = createBrowserRouter([
       {
         path: 'curriculum', // после manage различные разделы редактирования курса
         element: <CurriculumPage />,
-        errorElement: <NotFoundPage />,
-      },
-      {
-        path: 'accessibility', // после manage различные разделы редактирования курса
-        element: <AccessibilityPage />,
         errorElement: <NotFoundPage />,
       },
       {

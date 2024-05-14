@@ -276,7 +276,7 @@ const QuestionModal: React.FC<{
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className='text-lg font-semibold'>
-          {initialData ? 'Edit Question' : 'Add Question'}
+          {initialData ? 'Редактирование вопроса' : 'Добавление вопроса'}
         </h2>
         <button onClick={onClose} className='absolute top-3 right-2 text-xl font-bold'>
           &times;

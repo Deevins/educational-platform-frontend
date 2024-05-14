@@ -12,16 +12,16 @@ type NavBarElem = {
 const menuItemsData: NavBarElem[] = [
   {
     title: 'Курсы',
-    url: '',
+    url: '/courses/all',
     submenu: [
-      {
-        title: 'Все курсы',
-        url: '/courses/all',
-      },
-      {
-        title: 'Мои курсы',
-        url: '/courses/my',
-      },
+      // {
+      //   title: 'Все курсы',
+      //   url: '/courses/all',
+      // },
+      // {
+      //   title: 'Мои курсы',
+      //   url: '/courses/my',
+      // },
     ],
   },
   {
@@ -181,26 +181,26 @@ const mockData: Record<SearchPossibility, SearchResult[]> = {
     {
       id: 1,
       type: 'course',
-      title: 'Курс 1',
+      title: 'Обучение Python',
       image: 'https://flowbite.com/docs/images/logo.svg',
-      rating: 4.5,
+      rating: 4.0,
       enrollment: 100,
     },
     {
       id: 2,
       type: 'course',
-      title: 'Курс 2',
+      title: 'Разработка на React + Redux',
       image: 'https://flowbite.com/docs/images/logo.svg',
       rating: 4.8,
-      enrollment: 120,
+      enrollment: 600,
     },
     {
       id: 3,
       type: 'course',
-      title: 'Курс 3',
+      title: 'Разработка микросервисов на Go',
       image: 'https://flowbite.com/docs/images/logo.svg',
       rating: 4.2,
-      enrollment: 80,
+      enrollment: 150,
     },
   ],
   threads: [
@@ -338,12 +338,12 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
                   className='search-result-card border border-gray-300 rounded-lg overflow-hidden mt-4 cursor-pointer hover:bg-gray-100'
                 >
                   {result.type === 'course' && (
-                    <Link to={`/courses/${(result as Course).id}`}>
+                    <Link to={`/courses/course/${(result as Course).id}`}>
                       <CourseCard course={result as Course} />
                     </Link>
                   )}
                   {result.type === 'thread' && (
-                    <Link to={`/forum/threads/${(result as Thread).id}`}>
+                    <Link to={`/forum/threads/thread/${(result as Thread).id}`}>
                       <ThreadCard thread={result as Thread} />
                     </Link>
                   )}
@@ -366,8 +366,8 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
       <div>
         <h3 className='text-lg font-semibold'>{course.title}</h3>
         <div className='flex items-center'>
-          <span className='mr-2'>{course.rating}</span>
-          <span>{course.enrollment}</span>
+          <span className='mr-2'>Оценка: {course.rating}</span>
+          <span>Количество участников: {course.enrollment}</span>
         </div>
       </div>
     </div>

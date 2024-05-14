@@ -13,30 +13,30 @@ interface MenuItem {
   onClick?: () => void
 }
 
-type themeState = 'dark' | 'light'
+// type themeState = 'dark' | 'light'
 
 const AvatarMenu: React.FC = () => {
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = React.useState(false)
-  const [theme, setTheme] = React.useState<themeState>('light')
+  // const [theme, setTheme] = React.useState<themeState>('light')
   const [isNearMenu, setIsNearMenu] = React.useState(false) // Состояние, отображающее, находится ли курсор рядом с меню
   const menuRef = React.useRef<HTMLDivElement>(null)
   const leaveTimeout = useRef<NodeJS.Timeout | null>(null)
   const user: IUser = {
     id: 1,
     username: 'friend1',
-    fullName: 'Friend One',
-    email: 'friend1@example.com',
+    fullName: 'Виктор Самсонов',
+    email: 'daker255@bk.ru',
     avatar: 'https://github.com/shadcn.png',
   }
 
   const handleLogout = () => {
     dispatch(logout())
   }
-  const handleThemeSwitch = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
-  }
+  // const handleThemeSwitch = () => {
+  //   const newTheme = theme === 'light' ? 'dark' : 'light'
+  //   setTheme(newTheme)
+  // }
 
   const handleMouseEnter = () => {
     if (leaveTimeout.current) {
@@ -77,11 +77,11 @@ const AvatarMenu: React.FC = () => {
 
   const menuItems: MenuItem[] = [
     { label: 'Моя страница', to: `/users/user/${user.id}/profile` },
-    {
-      label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,
-      onClick: handleThemeSwitch,
-      to: '',
-    },
+    // {
+    // label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,
+    // onClick: handleThemeSwitch,
+    // to: '',
+    // },
     { label: 'Выйти', to: '/auth/logout', onClick: handleLogout },
   ]
 

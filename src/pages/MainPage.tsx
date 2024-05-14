@@ -5,33 +5,33 @@ import CoursesSection from '@/components/CourseSection/CoursesSection.tsx'
 // TODO: add pre-fetch courses from redux with types
 const courses = [
   {
-    title: 'Курс 1',
-    description: 'Описание курса 1',
+    title: 'Обучение Python',
+    description: 'Описание курса Python',
     url: '/courses/course/1',
   },
   {
-    title: 'Курс 2',
-    description: 'Описание курса 2',
+    title: 'Разработка на React + Redux',
+    description: 'Описание курса React + Redux',
     url: '/courses/course/2',
   },
   {
-    title: 'Курс 3',
-    description: 'Описание курса 3',
+    title: 'Разработка микросервисов на Go',
+    description: 'Описание курса Go',
     url: '/courses/course/3',
   },
   {
-    title: 'Курс 4',
-    description: 'Описание курса 4',
+    title: 'Разработка на Java',
+    description: 'Описание курса разработки мобильных приложений на Java',
     url: '/courses/course/4',
   },
   {
-    title: 'Курс 5',
-    description: 'Описание курса 5',
+    title: 'Разработка на C#',
+    description: 'Описание курса разработки веб-приложений на C#',
     url: '/courses/course/5',
   },
   {
-    title: 'Курс 6',
-    description: 'Описание курса 6',
+    title: 'Разработка на C++',
+    description: 'Разработка на самом сложном и мощном языке программирования',
     url: '/courses/course/6',
   },
 ]

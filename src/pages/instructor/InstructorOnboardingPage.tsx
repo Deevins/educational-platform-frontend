@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
+import item_1 from '/create_course_1.png'
+
 // Компонент заголовка
 const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
   return <h2 className='text-3xl font-bold mb-10'>{title}</h2>
@@ -146,7 +148,7 @@ const InstructorOnboardingPage: React.FC = () => {
             text={
               'Когда ваш курс опубликован, вы можете начать расширять свою аудиторию студентов, использовать возможности продвижения на площадке ProdigyPath и рекламировать свои курсы самостоятельно. Всё вместе это поможет заинтересованным студентам найти ваш курс.'
             }
-            checkBoxHeader={'Расширяйте свою аудиторию?'}
+            checkBoxHeader={'Планируете расширять свою аудиторию?'}
             options={[
               'В настоящий момент нет',
               'У меня маленькая аудитория',
@@ -215,10 +217,7 @@ const PageSection: React.FC<PageSectionProps> = ({
         />
       </div>
       <div className='w-full md:w-2/3 md:ml-4 lg:block hidden '>
-        <SectionImage
-          src='https://s.udemycdn.com/instructor/onboarding/share.jpg'
-          alt='Изображение'
-        />
+        <SectionImage src={item_1} alt='Изображение' />
       </div>
     </div>
   )
