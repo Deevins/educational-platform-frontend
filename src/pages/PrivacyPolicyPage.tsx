@@ -5,14 +5,14 @@ const PrivacyPolicyPage: React.FC = () => {
     <div className='min-h-screen mx-6 sm:mx-12 lg:mx-24 xl:mx-36 flex flex-col mb-12 sm:mb-24 mt-6 sm:mt-10'>
       <hr className='border-t border-gray-400 mb-4 opacity-75' />
       <div className='flex flex-col items-center text-center justify-center my-6 sm:my-12'>
-        <p className='text-ellipsis text-lg font-semibold'>ProdigyPath Education</p>
+        <p className='text-ellipsis text-lg font-semibold'>ProdigyPath</p>
         <p className='text-xl font-bold'>Политика Конфиденциальности</p>
       </div>
       <hr className='border-t border-gray-400 mb-6 sm:mb-10 w-full' />
 
       <div>
         <CustomP>
-          ProdigyPath Education предоставляет настоящую Политику конфиденциальности, чтобы
+          ProdigyPath предоставляет настоящую Политику конфиденциальности, чтобы
           проинформировать вас о наших политиках и процедурах, касающихся сбора,
           использования и раскрытия личной информации, которую мы можем получить от
           пользователей нашего веб-сайта («Сайт ») и любые другие услуги, предлагаемые

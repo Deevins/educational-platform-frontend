@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import logo from '/platform_logo.png'
 import { NavLink } from 'react-router-dom'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
@@ -9,18 +10,9 @@ import { selectIsAuthenticated } from '@/utils/redux/store/authSlice.ts'
 
 const StudentHeader = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
-  // const [isAuthenticated, setIsAuthenticated] = useState(true)
   const [isInstructorModeOpen, setIsInstructorModeOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
-
-  // const handleLogin = () => {
-  //   setIsAuthenticated(true)
-  // }
-  //
-  // const handleLogout = () => {
-  //   setIsAuthenticated(false)
-  // }
 
   const openInstructorMode = () => {
     setIsHovered(true)
@@ -42,34 +34,34 @@ const StudentHeader = () => {
   }
 
   return (
-    <header className='bg-gray-200 text-black p-4 flex justify-between items-center shadow-xl'>
-      <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
+    <header className='bg-gray-200 text-black p-4 flex justify-center  lg:justify-between items-center shadow-xl'>
+      <NavLink to={'/'} className='hidden lg:flex items-center sm:hidden'>
         <Avatar className={'hover:scale-105'}>
-          <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
+          <AvatarImage src={logo} />
           <AvatarFallback>Логотип</AvatarFallback>
         </Avatar>
-        <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
+        <h1 className='text-lg font-bold'>ProdigyPath</h1>
       </NavLink>
-      <div className={'lg:mr-[10%]'}>
-        <Dropdown />
-      </div>
+      {/*<div className={'lg:mr-[10%]'}>*/}
+      {/*  <Dropdown />*/}
+      {/*</div>*/}
 
-      <div className='text-center flex justify-center space-x-4 lg:mr-[25%]'>
+      <div className='text-center flex justify-center space-x-4 lg:mr-[5%]'>
         <Navbar />
       </div>
 
-      <div className='flex space-x-4 lg:mr-16'>
+      <div className=' flex items-center'>
         <div
           className='relative flex text-center'
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <button
+          <NavLink
+            to={'/teaching'}
             className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
-            onMouseEnter={openInstructorMode}
           >
-            <NavLink to={'/teaching'}>Преподаватель</NavLink>
-          </button>
+            <button onMouseEnter={openInstructorMode}>Преподаватель</button>
+          </NavLink>
           <div ref={dialogRef}>
             {isHovered && isInstructorModeOpen && (
               <div
@@ -96,7 +88,7 @@ const StudentHeader = () => {
         {isAuthenticated ? (
           <AvatarMenu />
         ) : (
-          <>
+          <div className={'flex mt-2 lg:mt-0'}>
             <NavLink to={'/auth/login'}>
               <Button className='bg-gray-50 text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-300 hover:cursor-pointer'>
                 Войти
@@ -107,7 +99,7 @@ const StudentHeader = () => {
                 Зарегистрироваться
               </Button>
             </NavLink>
-          </>
+          </div>
         )}
       </div>
     </header>
@@ -115,102 +107,81 @@ const StudentHeader = () => {
 }
 export default StudentHeader
 
-interface Category {
-  label: string
-  url: string
-  subcategories: { label: string; url: string }[]
-}
+// interface Category {
+//   label: string
+//   url: string
+//   subcategories: { label: string; url: string }[]
+// }
 
 // TODO: stub, replace with real data from API
-const categories: Category[] = [
-  {
-    label: 'Web Development',
-    url: 'web-development',
-    subcategories: [
-      { label: 'React JS', url: 'react-js' },
-      { label: 'Vue JS', url: 'vue-js' },
-      { label: 'Angular', url: 'angular' },
-    ],
-  },
-  {
-    label: 'Business Strategy',
-    url: 'business-strategy',
-    subcategories: [
-      { label: 'Business Analysis', url: 'business-analysis' },
-      { label: 'Lean Startup', url: 'lean-startup' },
-      { label: 'Growth Hacking', url: 'growth-hacking' },
-    ],
-  },
-  // Add more categories as needed
-]
 
-const Dropdown: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const leaveTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  const handleMouseEnter = () => {
-    if (leaveTimeout.current) {
-      clearTimeout(leaveTimeout.current) // Clear timeout if mouse re-enters
-      leaveTimeout.current = null
-    }
-    setIsVisible(true)
-  }
-
-  const handleMouseLeave = () => {
-    // Set a delay before hiding the dropdown
-    leaveTimeout.current = setTimeout(() => {
-      setIsVisible(false)
-      setActiveCategory(null)
-      leaveTimeout.current = null
-    }, 200)
-  }
-
-  return (
-    <div ref={dropdownRef} className='relative'>
-      <button
-        onMouseOver={handleMouseEnter}
-        onMouseOut={handleMouseLeave}
-        className='bg-gray-200 px-4 py-2 rounded-lg'
-      >
-        Категории
-      </button>
-      {isVisible && (
-        <div
-          className='absolute left-0 mt-2 bg-white shadow-lg border rounded-lg w-48 z-50'
-          onMouseOver={handleMouseEnter}
-          onMouseOut={handleMouseLeave}
-        >
-          {categories.map((category) => (
-            <div
-              key={category.url}
-              className='px-4 py-2 hover:bg-gray-100'
-              onMouseOver={() => setActiveCategory(category.url)}
-            >
-              <NavLink
-                to={`/courses/${category.url}`}
-                className='block text-black hover:text-blue-600'
-              >
-                {category.label}
-              </NavLink>
-              {activeCategory === category.url && (
-                <div className='absolute left-full top-0 mt-0 ml-1 bg-white shadow-lg border rounded-lg w-48'>
-                  {category.subcategories.map((subcategory) => (
-                    <NavLink
-                      key={subcategory.url}
-                      to={`/courses/${category.url}/${subcategory.url}`}
-                      className='block px-4 py-2 hover:bg-gray-100 text-black hover:text-blue-600'
-                    >
-                      {subcategory.label}
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+// const Dropdown: React.FC = () => {
+//   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+//   const [isVisible, setIsVisible] = useState(false)
+//   const dropdownRef = useRef<HTMLDivElement>(null)
+//   const leaveTimeout = useRef<NodeJS.Timeout | null>(null)
+//
+//   const handleMouseEnter = () => {
+//     if (leaveTimeout.current) {
+//       clearTimeout(leaveTimeout.current) // Clear timeout if mouse re-enters
+//       leaveTimeout.current = null
+//     }
+//     setIsVisible(true)
+//   }
+//
+//   const handleMouseLeave = () => {
+//     leaveTimeout.current = setTimeout(() => {
+//       setIsVisible(false)
+//       setActiveCategory(null)
+//       leaveTimeout.current = null
+//     }, 200)
+//   }
+//
+//   return (
+//     <div ref={dropdownRef} className='relative'>
+//       <button
+//         onMouseOver={handleMouseEnter}
+//         onMouseOut={handleMouseLeave}
+//         className='bg-gray-200 px-4 py-2 rounded-lg'
+//       >
+//         Категории
+//       </button>
+//       {isVisible && (
+//         <div
+//           className='absolute left-0 mt-2 bg-white shadow-lg border rounded-lg w-48 z-50'
+//           onMouseOver={handleMouseEnter}
+//           onMouseOut={handleMouseLeave}
+//         >
+//           {categories.map((category) => (
+//             <div
+//               key={category.url}
+//               className='px-4 py-2 hover:bg-gray-100'
+//               onMouseOver={() => setActiveCategory(category.url)}
+//             >
+//               <NavLink
+//                 to={`/courses/${category.url}`}
+//                 className='block text-black hover:text-blue-600'
+//               >
+//                 {category.label}
+//               </NavLink>
+//               {activeCategory === category.url && (
+//                 <div className='absolute left-full top-0 mt-0 ml-1 bg-white shadow-lg border rounded-lg w-48'>
+//                   {category.subcategories.map((subcategory) => (
+//                     <NavLink
+//                       key={subcategory.url}
+//                       to={`/courses/${category.url}/${subcategory.url}`}
+//                       className='block px-4 py-2 hover:bg-gray-100 text-black hover:text-blue-600'
+//                     >
+//                       {subcategory.label}
+//                     </NavLink>
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   )
+// }

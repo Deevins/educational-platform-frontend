@@ -6,7 +6,7 @@ interface AuthState {
   userId: string | null
   error: string | null
   isLoggedIn: boolean
-  status: 'idle' | 'loading' | 'failed'
+  status: 'ready' | 'loading' | 'failed'
 }
 
 interface RegisterUserData {
@@ -26,7 +26,7 @@ const initialState: AuthState = {
   userId: null,
   error: null,
   isLoggedIn: localStorage.getItem('token') !== null,
-  status: 'idle',
+  status: 'ready',
 }
 
 // Создание Thunk для входа в систему
@@ -51,8 +51,7 @@ export const login = createAsyncThunk(
       localStorage.setItem('token', data.token)
       return data
     } catch (error) {
-      // @ts-ignore
-      return rejectWithValue(error.message)
+      return rejectWithValue(error)
     }
   }
 )
@@ -104,7 +103,7 @@ const authSlice = createSlice({
         state.userId = action.payload.user_id
         console.log(action.payload.token, action.payload.user_id)
         state.isLoggedIn = true
-        state.status = 'idle'
+        state.status = 'ready'
       })
       .addCase(login.rejected, (state) => {
         state.status = 'failed'
@@ -118,6 +117,7 @@ const authSlice = createSlice({
         state.isLoggedIn = action.payload.token !== null
         state.userId = action.payload.userId
         state.error = null
+        state.status = 'ready'
       })
       .addCase(registerUserAsync.rejected, (state) => {
         state.status = 'failed'
@@ -126,7 +126,7 @@ const authSlice = createSlice({
         state.token = null
         state.isLoggedIn = false
         state.userId = null
-        state.status = 'idle'
+        state.status = 'ready'
         localStorage.removeItem('token')
       })
 
@@ -135,8 +135,6 @@ const authSlice = createSlice({
     })
   },
 })
-
-export const { clearToken } = authSlice.actions
 
 export const setUserId = createAction<string>('user/setUserId')
 export const selectIsAuthenticated = (state: RootState) => state.auth.isLoggedIn

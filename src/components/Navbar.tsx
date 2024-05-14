@@ -116,7 +116,7 @@ const MenuItem = ({ item }: Props) => {
 
   return (
     <li
-      className='menu-items z-50'
+      className={`menu-items z-50 ${item.submenu ? 'relative' : ''}`}
       ref={ref}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -131,9 +131,9 @@ const MenuItem = ({ item }: Props) => {
           >
             <NavLink
               to={item.url}
-              className={
-                "ext-gray-900 hover:bg-gray-500 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent'\n"
-              }
+              className={`ext-gray-900 hover:bg-gray-500 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent ${
+                item.submenu ? 'block' : ''
+              }`}
             >
               {item.title}
             </NavLink>
@@ -147,14 +147,6 @@ const MenuItem = ({ item }: Props) => {
       )}
     </li>
   )
-}
-
-type Person = {
-  id: number
-  type: 'person'
-  fullName: string
-  avatar: string
-  nickname: string
 }
 
 type Course = {
@@ -176,9 +168,9 @@ type Thread = {
   lastResponder: string
 }
 
-type SearchResult = Person | Course | Thread
+type SearchResult = Course | Thread
 
-type SearchPossibility = 'courses' | 'profiles' | 'threads'
+type SearchPossibility = 'courses' | 'threads'
 
 interface SearchDialogProps {
   onClickFunc: () => void
@@ -209,29 +201,6 @@ const mockData: Record<SearchPossibility, SearchResult[]> = {
       image: 'https://flowbite.com/docs/images/logo.svg',
       rating: 4.2,
       enrollment: 80,
-    },
-  ],
-  profiles: [
-    {
-      id: 1,
-      type: 'person',
-      fullName: 'Иван Иванов',
-      avatar: 'https://flowbite.com/docs/images/logo.svg',
-      nickname: '@ivan',
-    },
-    {
-      id: 2,
-      type: 'person',
-      fullName: 'Петр Петров',
-      avatar: 'https://flowbite.com/docs/images/logo.svg',
-      nickname: '@peter',
-    },
-    {
-      id: 3,
-      type: 'person',
-      fullName: 'Анна Сидорова',
-      avatar: 'https://flowbite.com/docs/images/logo.svg',
-      nickname: '@anna',
     },
   ],
   threads: [
@@ -319,8 +288,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
 
   const getItemName = (item: SearchResult): string => {
     switch (item.type) {
-      case 'person':
-        return (item as Person).fullName
       case 'course':
         return (item as Course).title
       case 'thread':
@@ -344,7 +311,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
         </div>
         <div className='border-b border-gray-300' />
         <div className='flex justify-between mt-4'>
-          {['courses', 'profiles', 'threads'].map((option, index) => (
+          {['courses', 'threads'].map((option, index) => (
             <button
               key={index}
               className={`text-gray-500 hover:text-gray-900 focus:outline-none hover:scale-105 ${
@@ -355,7 +322,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
               onClick={() => handleSearchOptionChange(option as SearchPossibility)}
             >
               {option === 'courses' && 'Курсы'}
-              {option === 'profiles' && 'Профили'}
               {option === 'threads' && 'Треды'}
             </button>
           ))}
@@ -371,11 +337,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
                   }}
                   className='search-result-card border border-gray-300 rounded-lg overflow-hidden mt-4 cursor-pointer hover:bg-gray-100'
                 >
-                  {result.type === 'person' && (
-                    <Link to={`/profiles/${(result as Person).id}`}>
-                      <PersonCard person={result as Person} />
-                    </Link>
-                  )}
                   {result.type === 'course' && (
                     <Link to={`/courses/${(result as Course).id}`}>
                       <CourseCard course={result as Course} />
@@ -393,22 +354,6 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
             <p>Нет результатов</p>
           )}
         </div>
-      </div>
-    </div>
-  )
-}
-
-const PersonCard: React.FC<{ person: Person }> = ({ person }) => {
-  return (
-    <div className='flex p-4'>
-      <img
-        src={person.avatar}
-        alt={person.fullName}
-        className='w-16 h-16 mr-4 rounded-full'
-      />
-      <div>
-        <h3 className='text-lg font-semibold'>{person.fullName}</h3>
-        <p className='text-sm text-gray-500'>{person.nickname}</p>
       </div>
     </div>
   )

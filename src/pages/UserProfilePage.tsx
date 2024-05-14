@@ -80,7 +80,7 @@ const renderItemsPerPage = (items: IUser[] | Course[], currentPage: number) => {
   return items.slice(startIndex, endIndex)
 }
 
-const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
+const CoursesList: React.FC<{ courses: Course[]; user: IUser }> = ({ courses, user }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const paginatedCourses = renderItemsPerPage(courses, currentPage) as Course[]
 
@@ -90,7 +90,9 @@ const CoursesList: React.FC<{ courses: Course[] }> = ({ courses }) => {
 
   return (
     <div>
-      <h3 className='text-xl font-bold mb-4'>Enrolled Courses</h3>
+      <h3 className='text-xl font-bold mb-4'>
+        Курсы, на которые записан {user.fullName}
+      </h3>
       {paginatedCourses.length === 0 ? (
         <p className='text-gray-500 text-center'>Список курсов пуст</p>
       ) : (
@@ -192,7 +194,7 @@ const UserPage: React.FC = () => {
 
   return (
     <>
-      <div className='bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
+      <div className='min-h-screen bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
         {user ? (
           <>
             <div className='flex items-center mb-4'>
@@ -243,7 +245,9 @@ const UserPage: React.FC = () => {
                 </button>
               </div>
 
-              {currentMainTab === 'courses' && <CoursesList courses={courses} />}
+              {currentMainTab === 'courses' && (
+                <CoursesList courses={courses} user={user} />
+              )}
             </div>
           </>
         ) : (

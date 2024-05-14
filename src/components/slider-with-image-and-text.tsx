@@ -1,28 +1,29 @@
 import React from 'react'
 import Slider, { Settings } from 'react-slick'
 
+import item_1 from '/carousel_1.png'
+import item_2 from '/carousel_2.png'
+import item_3 from '/carousel_3.png'
+
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import CarouselItem from '@/components/carousel/carousel-item/carousel-item.tsx'
 
 const items = [
   {
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2006-09-15_18-47-19_ziaja.jpg/1200px-2006-09-15_18-47-19_ziaja.jpg',
-    title: 'Заголовок 1',
-    text: 'Данная платформа предлагает какую-то  за какую-то , мимо которй мы не сможете пройтпи',
+    image: item_1,
+    title: 'Откройте новые горизонты',
+    text: 'Начните своё путешествие в мир знаний с нашими интерактивными курсами! Узнайте что-то новое, расширьте свои навыки и достигайте своих целей вместе с нами!',
   },
   {
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2006-09-15_18-47-19_ziaja.jpg/1200px-2006-09-15_18-47-19_ziaja.jpg',
-    title: 'Заголовок 2',
-    text: 'Текст 2 ...',
+    image: item_2,
+    title: 'Учитесь у лучших',
+    text: 'Присоединяйтесь к нашим занятиям, проводимым экспертами отрасли. Получите уникальные инсайты и практические знания, которые помогут вам продвинуться в карьере',
   },
   {
-    image:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/2006-09-15_18-47-19_ziaja.jpg/1200px-2006-09-15_18-47-19_ziaja.jpg',
-    title: 'Заголовок 3',
-    text: 'Данная платформа предлагает какую-то  за какую-то , мимо которй...',
+    image: item_3,
+    title: 'Гибкое обучение для вашего удобства',
+    text: 'Учитесь в удобное для вас время и в любом месте. Наши курсы доступны 24/7, чтобы вы могли развиваться без ограничений. Начните уже сегодня!',
   },
 ]
 
@@ -35,7 +36,7 @@ const settings: Settings = {
   draggable: true,
   slidesToShow: 1,
   slidesToScroll: 1,
-  autoplaySpeed: 5000,
+  autoplaySpeed: 4000,
 }
 
 const SliderWithImageAndText: React.FC = () => {

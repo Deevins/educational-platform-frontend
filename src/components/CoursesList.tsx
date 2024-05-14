@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export interface ICourse {
   id: number
@@ -15,28 +16,33 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
   return (
-    <div className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4'>
-      <div
-        className={`bg-${course.color}-100 rounded-lg shadow-md overflow-hidden border border-gray-200`}
-      >
-        <div className={`h-16 w-full bg-${course.color}-500`} />
-        <div className='p-4'>
-          <h2 className='text-lg font-semibold mb-2'>{course.title}</h2>
-          <p className='text-sm mb-2'>{course.author}</p>
-          <p className='text-sm text-gray-700'>{course.description}</p>
-          <div className='mt-4'>
-            {course.tags.map((tag, index) => (
-              <span
-                key={index}
-                className='inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2'
-              >
-                {tag}
-              </span>
-            ))}
+    <Link
+      to={`/courses/course/${course.id}`}
+      className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4'
+    >
+      <div>
+        <div
+          className={`bg-${course.color}-100 rounded-lg shadow-md overflow-hidden border border-gray-200`}
+        >
+          <div className={`h-16 w-full bg-${course.color}-500`} />
+          <div className='p-4'>
+            <h2 className='text-lg font-semibold mb-2'>{course.title}</h2>
+            <p className='text-sm mb-2'>{course.author}</p>
+            <p className='text-sm text-gray-700'>{course.description}</p>
+            <div className='mt-4'>
+              {course.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className='inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2'
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
@@ -116,7 +122,7 @@ const CoursesList: React.FC<CoursesPageProps> = ({ courses }) => {
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-3xl font-semibold mb-4'>Courses ({courses.length})</h1>
+      <h1 className='text-3xl font-semibold mb-4'>Курсов ({courses.length})</h1>
       <Filter
         tags={['React', 'JavaScript', 'TypeScript', 'CSS', 'HTML']}
         selectedTags={selectedTags}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import logo from '/platform_logo.png'
 import CommonFooter from '@/components/footers/CommonFooter.tsx'
 import InstructorHeader from '@/components/headers/InstructorHeader.tsx'
 import { FiHome, FiSettings } from 'react-icons/fi'
@@ -91,10 +92,10 @@ const InstructorLayout: React.FC<PropsType> = ({ children }) => {
           <div className={'flex justify-center items-center mt-4'}>
             <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
               <Avatar className={'hover:scale-105  mr-4'}>
-                <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
+                <AvatarImage src={logo} />
                 <AvatarFallback>Логотип</AvatarFallback>
               </Avatar>
-              <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
+              <h1 className='text-lg font-bold'>ProdigyPath</h1>
             </NavLink>
           </div>
           {/* Menu items */}

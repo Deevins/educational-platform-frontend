@@ -5,18 +5,17 @@ const TermsOfServicePage = () => {
     <div className='mx-36 flex flex-col mb-32 mt-10'>
       <hr className='border-t border-gray-400 mb-4 opacity-75' />
       <div className='flex items-center text-center justify-center my-12'>
-        <p className='mr-4 text-ellipsis text-lg'>ProdigyPath Education</p>
+        <p className='mr-4 text-ellipsis text-lg'>ProdigyPath</p>
         <p className='text-xl font-bold'>Условия обслуживания</p>
       </div>
       <hr className='border-t border-gray-400 mb-10 w-full' />
 
       <div>
         <p className={'mb-4'}>
-          Настоящие условия обслуживания заключаются между вами и ProdigyPath Education в
-          отношении использования нашего приложения в отношении наших средств обучения.
-          Заходя на наши веб-сайты («Услуги»), вы подтверждаете, что прочитали, поняли и
-          согласились с самой последней версией настоящих Условий обслуживания
-          («Условия»).
+          Настоящие условия обслуживания заключаются между вами и ProdigyPath в отношении
+          использования нашего приложения в отношении наших средств обучения. Заходя на
+          наши веб-сайты («Услуги»), вы подтверждаете, что прочитали, поняли и согласились
+          с самой последней версией настоящих Условий обслуживания («Условия»).
         </p>
         <p className={'mb-12'}>
           Мы оставляем за собой право пересматривать настоящие Условия в любое время. В

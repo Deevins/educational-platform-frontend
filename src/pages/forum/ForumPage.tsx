@@ -162,10 +162,10 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
         <title>Форум</title>
       </Helmet>
       <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
-        <h2 className='text-lg font-semibold mb-2'>{title}</h2>
+        <h2 className='text-lg font-semibold mb-2'>Заголовок: {title}</h2>
         <div className='flex items-center mb-2'>
-          <span className='text-sm text-gray-600 mr-2'>{author}</span>
-          <span className='text-sm text-gray-600'>{createdDate}</span>
+          <span className='text-sm text-gray-600 mr-2'>Автор: {author}</span>
+          <span className='text-sm text-gray-600'>Дата создания: {createdDate}</span>
         </div>
         <div className='flex items-center'>
           {tags.slice(0, 3).map((tag, index) => (
@@ -198,9 +198,11 @@ const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }
           )}
         </div>
       </div>
-      <div className='flex flex-col items-end md:items-center'>
-        <span className='text-sm text-gray-600 mb-2'>Replies: {repliesCount}</span>
-        <span className='text-sm text-gray-600'>{lastReplyDate}</span>
+      <div className='flex flex-col  md:items-center justify-start items-start'>
+        <span className='text-sm text-gray-600 mb-2'>Ответов: {repliesCount}</span>
+        <span className='text-sm text-gray-600'>
+          Дата последнего ответа: {lastReplyDate}
+        </span>
       </div>
     </div>
   )

@@ -249,7 +249,7 @@ const Profile: React.FC<ProfileAlertProps> = ({ fullName, isFilled }) => {
           ) : null}
         </div>
         <div className='ml-3'>
-          <Link to={`/profiles/23/}`}>
+          <Link to={`/users/user/${1}/profile}`}>
             <p className='text-sm leading-5 font-medium text-purple-600 hover:cursor-pointer'>
               {fullName}
             </p>

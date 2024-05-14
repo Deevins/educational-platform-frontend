@@ -77,7 +77,6 @@ const AvatarMenu: React.FC = () => {
 
   const menuItems: MenuItem[] = [
     { label: 'Моя страница', to: `/users/user/${user.id}/profile` },
-    { label: 'Настройки', to: `/users/${user.id}/settings` },
     {
       label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,
       onClick: handleThemeSwitch,
@@ -95,7 +94,7 @@ const AvatarMenu: React.FC = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <Avatar className={'hover:scale-[135%] scale-125'}>
+          <Avatar className={'hover:scale-[135%] scale-125 mr-16'}>
             <AvatarImage src={user.avatar} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>

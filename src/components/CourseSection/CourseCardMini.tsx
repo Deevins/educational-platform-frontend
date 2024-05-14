@@ -1,6 +1,5 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { FaArrowRightLong } from 'react-icons/fa6'
 
 export interface Course {
   title: string
@@ -36,24 +35,14 @@ const CourseCardMini: React.FC<Course> = ({ title, description, url }) => {
   const color = getRandomColor()
 
   return (
-    <div className='w-full sm:w-1/2 md:w-1/3 p-4 hover:scale-140 hover:cursor-pointer'>
+    <div className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 hover:scale-110 transition-transform duration-300 ease-in-out hover:cursor-pointer'>
       <NavLink to={url}>
         <div
-          className={`bg-red-500 p-6 rounded-lg shadow-md relative`}
-          style={{
-            backgroundColor: color,
-          }}
+          className={`bg-red-500 p-6 rounded-lg shadow-md`}
+          style={{ backgroundColor: color }}
         >
-          <div className='absolute top-0 right-0 mt-2 mr-2'>
-            <FaArrowRightLong
-              size={20}
-              className={
-                'duration-100 ease-in-out transform hover:scale-115 hover:cursor-pointer'
-              }
-            />
-          </div>
-          <h3 className='text-lg font-bold '>{title}</h3>
-          <p className='mt-2 '>{description}</p>
+          <h3 className='text-lg font-bold'>{title}</h3>
+          <p className='mt-2'>{description}</p>
         </div>
       </NavLink>
     </div>

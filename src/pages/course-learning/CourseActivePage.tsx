@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import video from '../../../public/videovideo.mp4'
+import video from '/videovideo.mp4'
 import ReactPlayer from 'react-player'
 import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
@@ -406,7 +406,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
       <h1 className='text-3xl font-bold'>{lecture.title}</h1>
       <p>Duration: {lecture.duration}</p>
       <VideoPlayer url={lecture.videoUrl} />
-      <div className='flex items-start flex-col truncate max-w-7xl max-h-7xl mx-16'>
+      <div className='flex items-start flex-col truncate max-w-7xl max-h-7xl mx-16 lg:ml-52 xl:ml-0'>
         <p className='text-xl'>
           <strong>Подробности лекции:</strong>
         </p>
@@ -437,7 +437,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ url }) => {
   return (
-    <div className={'sm:w-full h-[80%] 2xl:w-[70%] 2xl:h-[60%]'}>
+    <div className={'sm:w-full w-[60%] h-[80%] 2xl:w-[70%] 2xl:h-[60%]'}>
       <ReactPlayer url={url} width='100%' height={'100%'} controls={true} />
     </div>
   )
@@ -450,7 +450,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <div className='flex border-b w-full'>
+    <div className='flex border-b lg:ml-40 w-full'>
       <button
         className={`p-2 ${activeTab === 'overview' ? 'font-bold border-b-black border-b-2' : ''}`}
         onClick={() => setActiveTab('overview')}
@@ -474,65 +474,157 @@ const Header: React.FC = () => {
           <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
           <AvatarFallback>Логотип</AvatarFallback>
         </Avatar>
-        <h1 className='text-lg font-bold ml-6'>ProdigyPath Education</h1>
+        <h1 className='text-lg font-bold ml-6'>ProdigyPath</h1>
       </NavLink>
-    </div>
-  )
-}
-
-export const ReviewsComponent: React.FC = () => {
-  const ratingsDistribution = computeRatingDistribution(reviews)
-  const avgRating = averageRating(reviews)
-
-  return (
-    <div className='max-w-8xl p-6 bg-white shadow w-full'>
-      <h2 className='text-2xl font-bold mb-4'>Отзывы студентов</h2>
-      <RatingSummary averageRating={avgRating} distribution={ratingsDistribution} />
-      <ReviewList reviews={reviews} />
     </div>
   )
 }
 
 interface Review {
   id: number
+  author: string
+  content: string
   name: string
   date: string
-  content: string
   rating: number
 }
 
-const reviews: Review[] = [
-  // Example reviews
+const initialReviews: Review[] = [
   {
     id: 1,
-    name: 'Myroslava S.',
-    date: '8 months ago',
-    content: 'Хороший курс! Точно.',
+    author: 'John Doe',
+    content: 'Great course!',
+    name: '',
+    date: '2023-05-01',
     rating: 5,
   },
   {
-    id: 11,
-    name: 'Myroslava S.',
-    date: '8 months ago',
-    content: 'Хороший курс! Точно.',
-    rating: 5,
-  },
-  {
-    id: 13,
-    name: 'Mikhail',
-    date: '8 months ago',
-    content: 'Всё предельно понятно',
-    rating: 5,
-  },
-  {
-    id: 14,
-    name: 'Юрий Сергеевич',
-    date: '2 years ago',
-    content: 'Спасибо за курс! Очень понравился...',
+    id: 2,
+    author: 'Jane Smith',
+    content: 'Learned a lot, highly recommend!',
+    name: '',
+    date: '2023-05-02',
     rating: 4,
   },
 ]
 
+export const ReviewsComponent: React.FC = () => {
+  const [reviews, setReviews] = useState<Review[]>(initialReviews)
+  const [newReview, setNewReview] = useState({
+    author: '',
+    content: '',
+    name: '',
+    date: '',
+    rating: 0,
+  })
+
+  const ratingsDistribution = computeRatingDistribution(reviews)
+  const avgRating = averageRating(reviews)
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target
+    setNewReview((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const newId = reviews.length > 0 ? reviews[reviews.length - 1].id + 1 : 1
+    const reviewToAdd = {
+      id: newId,
+      ...newReview,
+      date: new Date().toISOString().split('T')[0],
+    }
+    setReviews([...reviews, reviewToAdd])
+    setNewReview({ author: '', content: '', name: '', date: '', rating: 0 })
+  }
+
+  return (
+    <div className='max-w-8xl p-6 bg-white shadow w-full'>
+      <h2 className='text-2xl font-bold mb-4'>Отзывы студентов</h2>
+      <RatingSummary averageRating={avgRating} distribution={ratingsDistribution} />
+      <ReviewList reviews={reviews} />
+      <form
+        onSubmit={handleSubmit}
+        className='bg-gray-100 shadow-md rounded px-8 pt-6 pb-8 mt-6'
+      >
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='author'>
+            Автор
+          </label>
+          <input
+            id='author'
+            name='author'
+            type='text'
+            value={newReview.author}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            placeholder='Ваше имя'
+            required
+          />
+        </div>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='content'>
+            Отзыв
+          </label>
+          <textarea
+            id='content'
+            name='content'
+            value={newReview.content}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            placeholder='Ваш отзыв'
+            required
+          />
+        </div>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='name'>
+            Ваше имя
+          </label>
+          <input
+            id='name'
+            name='name'
+            type='text'
+            value={newReview.name}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            placeholder='Имя'
+            required
+          />
+        </div>
+        <div className='mb-4'>
+          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='rating'>
+            Рейтинг
+          </label>
+          <input
+            id='rating'
+            name='rating'
+            type='number'
+            value={newReview.rating}
+            onChange={handleInputChange}
+            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            placeholder='Рейтинг от 1 до 5'
+            min='1'
+            max='5'
+            required
+          />
+        </div>
+        <div className='flex items-center justify-between'>
+          <button
+            type='submit'
+            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+          >
+            Отправить
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
 const computeRatingDistribution = (reviews: Review[]) => {
   const total = reviews.length
   const countPerStar = Array(5).fill(0) // Five star rating system

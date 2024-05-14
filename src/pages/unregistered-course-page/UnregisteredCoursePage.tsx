@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
-import video from '../../../public/videovideo.mp4'
+import video from '/videovideo.mp4'
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { GoVideo } from 'react-icons/go'
 import { Link, NavLink } from 'react-router-dom'

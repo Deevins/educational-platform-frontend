@@ -8,11 +8,11 @@ const CommonFooter: React.FC = () => {
       <div className='container mx-auto text-center'>
         <div className='flex flex-col md:flex-row justify-between'>
           <div className='w-full md:w-1/2'>
-            <h3 className='text-lg font-bold'>ProdigyPath Education</h3>
+            <h3 className='text-lg font-bold'>ProdigyPath</h3>
             <p>Здесь обучаются все!</p>
             <ul className='mt-2'>
               <li>
-                <NavLink to='/courses'>Все курсы</NavLink>
+                <NavLink to='/courses/all'>Все курсы</NavLink>
               </li>
               <li>
                 <NavLink to='/forum'>Форум</NavLink>

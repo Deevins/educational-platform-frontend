@@ -8,8 +8,7 @@ import {
   registerUserAsync,
   selectIsAuthenticated,
 } from '@/utils/redux/store/authSlice.ts'
-import { AppDispatch } from '@/utils/redux/store/store.ts'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
+import { AppDispatch, RootState } from '@/utils/redux/store/store.ts'
 
 interface IRegisterForm {
   fullName: string
@@ -21,6 +20,7 @@ interface IRegisterForm {
 
 const RegisterPage: React.FC = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isLoading = useSelector((state: RootState) => state.auth.status === 'loading')
   const navigate = useNavigate()
   const [formData, setFormData] = useState<IRegisterForm>({
     fullName: '',
@@ -81,24 +81,16 @@ const RegisterPage: React.FC = () => {
   }
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isLoading) {
       navigate('/')
     }
   }, [isAuthenticated, navigate])
 
+  if (isLoading) return <div>Загрузка...</div>
+
   return (
     <div className=' flex flex-col'>
-      <header className='bg-gray-200 text-black p-4 flex justify-between items-center shadow-xl'>
-        <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden'>
-          <Avatar className={'hover:scale-105'}>
-            <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
-            <AvatarFallback>Логотип</AvatarFallback>
-          </Avatar>
-          <h1 className='text-lg font-bold'>ProdigyPath Education</h1>
-        </NavLink>
-      </header>
       <div className='flex-grow flex flex-col items-center justify-center bg-gray-200'>
-        <div className='absolute inset-0 bg-white' />
         <div className='relative bg-white p-8 sm:p-12 rounded-lg border border-black shadow-lg'>
           <h2 className='text-2xl font-semibold mb-4'>Регистрация</h2>
           <form className='space-y-4 flex-grow w-full max-w-sm' onSubmit={handleSubmit}>
@@ -155,14 +147,7 @@ const RegisterPage: React.FC = () => {
             {errors.repeatPassword && (
               <p className='text-red-500'>{errors.repeatPassword}</p>
             )}
-            <div className='mb-4'>
-              <label
-                className='block text-gray-700 text-sm font-bold mb-2'
-                htmlFor='role'
-              >
-                Кем вы хотите быть на этой платформе?
-              </label>
-            </div>
+
             <button
               type='submit'
               className='w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600'

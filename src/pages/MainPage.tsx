@@ -38,7 +38,7 @@ const courses = [
 const MainPage: React.FC = () => {
   return (
     <>
-      <div className={'mt-20 mr-[20%] ml-[20%] flex flex-col'}>
+      <div className='mt-20 mx-4 sm:mx-10 md:mx-16 lg:mx-[20%] flex flex-col min-h-screen'>
         <SliderWithImageAndText />
         <CoursesSection courses={courses} />
       </div>
