@@ -354,7 +354,7 @@ const SectionList: React.FC<SectionListProps> = ({
   openSections,
 }) => {
   return (
-    <div className='w-3/12 bg-white text-black p-5 pt-2 overflow-y-auto shadow-2xl fixed top-0 left-0 h-full mt-16'>
+    <div className='w-2/12 bg-white text-black p-5 pt-2 overflow-y-auto shadow-2xl fixed top-0 left-0 h-full mt-16'>
       {sections.map((section, idx) => (
         <div key={idx} className='bg-gray-100 mb-2 overflow-hidden py-2'>
           <h3

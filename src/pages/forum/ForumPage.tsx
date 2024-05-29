@@ -374,7 +374,7 @@ const ForumPage: React.FC = () => {
               {activeTags.map((tag, index) => (
                 <div
                   key={index}
-                  className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-20 text-center'
+                  className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-30 text-center'
                 >
                   <span>{tag.title}</span>
                   <button
