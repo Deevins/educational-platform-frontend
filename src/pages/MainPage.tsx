@@ -34,6 +34,16 @@ const courses = [
     description: 'Разработка на самом сложном и мощном языке программирования',
     url: '/courses/course/6',
   },
+  {
+    title: 'Разработка полноценной игры на Unity',
+    description: 'Разработка на самом сложном и мощном языке программирования',
+    url: '/courses/course/7',
+  },
+  {
+    title: 'Разработка полноценного веб-сайта',
+    description: 'Разработка на самом сложном и мощном языке программирования',
+    url: '/courses/course/8',
+  },
 ]
 const MainPage: React.FC = () => {
   return (

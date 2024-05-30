@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { IconType } from 'react-icons'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { BsAwardFill, BsChatLeftHeart, BsFeather } from 'react-icons/bs'
+import { useSelector } from 'react-redux'
+import { selectIsAuthenticated } from '@/utils/redux/store/authSlice.ts'
 
 interface ImageBlockProps {
   icon: IconType
@@ -170,6 +172,17 @@ const StartBlock: React.FC = () => {
 }
 
 const FirstTimeInstructorPage = () => {
+  const isAuthenticated = useSelector(selectIsAuthenticated)
+  const navigate = useNavigate()
+
+  const startTeaching = () => {
+    if (!isAuthenticated) {
+      navigate('/auth/register')
+    } else {
+      navigate('/teaching/onboarding/teaching-experience')
+    }
+  }
+
   return (
     <>
       <div className='bg-gray-300'>
@@ -181,11 +194,12 @@ const FirstTimeInstructorPage = () => {
           <p className='text-lg mb-8 text-gray-700'>
             Станьте преподавателем и меняйте жизни к лучшему — включая свою
           </p>
-          <NavLink to='/teaching/onboarding/teaching-experience'>
-            <button className='bg-black text-white px-16 py-4 hover:bg-gray-800'>
-              Начать
-            </button>
-          </NavLink>
+          <button
+            onClick={() => startTeaching()}
+            className='bg-black text-white px-16 py-4 hover:bg-gray-800'
+          >
+            Начать
+          </button>
         </div>
       </div>
       <div className='py-16 text-center'>
@@ -227,11 +241,12 @@ const FirstTimeInstructorPage = () => {
           <p className='text-lg mb-8 text-gray-700'>
             Присоединяйтесь к нашей образовательной онлайн-платформе!
           </p>
-          <NavLink to='/teaching/onboarding/teaching-experience'>
-            <button className='bg-black text-white px-16 py-4 hover:bg-gray-800'>
-              Начать действовать
-            </button>
-          </NavLink>
+          <button
+            onClick={() => startTeaching()}
+            className='bg-black text-white px-16 py-4 hover:bg-gray-800'
+          >
+            Начать действовать
+          </button>
         </div>
       </div>
     </>

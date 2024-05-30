@@ -310,11 +310,11 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
           />
         </div>
         <div className='border-b border-gray-300' />
-        <div className='flex justify-between mt-4'>
+        <div className='flex justify-center mt-4'>
           {['courses', 'threads'].map((option, index) => (
             <button
               key={index}
-              className={`text-gray-500 hover:text-gray-900 focus:outline-none hover:scale-105 ${
+              className={`text-gray-500 hover:text-gray-900 focus:outline-none hover:scale-105 mr-6 ${
                 searchOption === option
                   ? 'font-bold bg-gray-100 px-4 py-2 rounded-lg'
                   : ''
@@ -366,7 +366,7 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
       <div>
         <h3 className='text-lg font-semibold'>{course.title}</h3>
         <div className='flex items-center'>
-          <span className='mr-2'>Оценка: {course.rating}</span>
+          <span className='mr-2'>Средний рейтинг: {course.rating}</span>
           <span>Количество участников: {course.enrollment}</span>
         </div>
       </div>
