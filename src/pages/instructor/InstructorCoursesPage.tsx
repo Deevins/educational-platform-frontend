@@ -18,22 +18,22 @@ const InstructorCoursesPage: React.FC = () => {
 
   // Пример тестовых данных для курсов
   const courses = [
-    {
-      id: 1,
-      title: 'Разработка фуллстек приложений на React и Node.js',
-      imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
-      isDraft: true,
-      isPublic: false,
-      progress: 30,
-    },
-    {
-      id: 2,
-      title: 'Основы k8s и его практическое применение',
-      imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
-      isDraft: false,
-      isPublic: true,
-      progress: 70,
-    },
+    // {
+    //   id: 1,
+    //   title: 'Разработка фуллстек приложений на React и Node.js',
+    //   imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
+    //   isDraft: true,
+    //   isPublic: false,
+    //   progress: 30,
+    // },
+    // {
+    //   id: 2,
+    //   title: 'Основы k8s и его практическое применение',
+    //   imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
+    //   isDraft: false,
+    //   isPublic: true,
+    //   progress: 70,
+    // },
   ]
   return (
     <div className='relative flex'>

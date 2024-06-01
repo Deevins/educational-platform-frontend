@@ -82,6 +82,7 @@ const AvatarMenu: React.FC = () => {
     // onClick: handleThemeSwitch,
     // to: '',
     // },
+    { label: 'Курсы на проверку', to: `/courses/check/` },
     { label: 'Выйти', to: '/auth/logout', onClick: handleLogout },
   ]
 

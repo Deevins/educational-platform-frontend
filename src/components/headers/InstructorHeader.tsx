@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
+import { FaRegBell } from 'react-icons/fa'
 
 const InstructorHeader = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true)
@@ -45,7 +46,7 @@ const InstructorHeader = () => {
     <header className='bg-gray-200 text-black p-4 flex justify-end items-center shadow-xl w-screen'>
       <div className='flex space-x-4 lg:mr-16 text-center'>
         <div
-          className='relative pb-[2px]'
+          className='relative pb-[2px] flex center items-center'
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -55,6 +56,8 @@ const InstructorHeader = () => {
           >
             <NavLink to={'/'}>Студент</NavLink>
           </button>
+
+          <FaRegBell className={'cursor-pointer mt-2 mr-2'} />
           {isHovered && isTeacherModeOpen && (
             <div
               ref={dialogRef}

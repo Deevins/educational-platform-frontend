@@ -39,6 +39,7 @@ import CourseActivePage from '@/pages/course-learning/CourseActivePage.tsx'
 import InstructorCommunicationPage from '@/pages/instructor/InstructorCommunicationPage.tsx'
 import { Provider } from 'react-redux'
 import store from '@/utils/redux/store/store.ts'
+import CoursesCheckList from '@/pages/CoursesCheckList.tsx'
 
 const router = createBrowserRouter([
   {
@@ -117,8 +118,8 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
       },
       {
-        path: '/courses/:categoryID/:subcategoryID',
-        element: <CoursesSearchByCategory />,
+        path: '/courses/check/',
+        element: <CoursesCheckList />,
         errorElement: <NotFoundPage />,
       },
     ],
