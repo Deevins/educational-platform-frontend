@@ -5,6 +5,7 @@ const BasicsPage: React.FC = () => {
   const [courseTitle, setCourseTitle] = useState('')
   const [courseSubtitle, setCourseSubtitle] = useState('')
   const [language, setLanguage] = useState('')
+  const [level, setLevel] = useState('')
   const [category, setCategory] = useState('')
   const [mainSubject, setMainSubject] = useState('')
   const [imageUrl, setImageUrl] = useState<string>('')
@@ -15,15 +16,21 @@ const BasicsPage: React.FC = () => {
     { value: 'en', label: 'Английский' },
   ]
 
-  const categoryOptions = [
-    { value: '1', label: 'ИТ и ПО' },
-    { value: '2', label: 'Дизайн' },
-    { value: '3', label: 'Маркетинг' },
+  const levelOptions = [
+    { value: 'junior', label: 'Начальный уровень' },
+    { value: 'middle', label: 'Средний уровень' },
+    { value: 'senior', label: 'Высокий уровень' },
+    { value: 'all', label: 'Все уровени' },
   ]
-  const subCategoryOptions = [
-    { value: '1', label: 'ИТ-сертификация' },
-    { value: '2', label: 'ИТ-сертификация' },
-    { value: '3', label: 'ИТ-сертификация' },
+
+  const categoryOptions = [
+    { value: '1', label: 'Frontend' },
+    { value: '2', label: 'Backend' },
+    { value: '3', label: 'Fullstack' },
+    { value: '4', label: 'Мобильная разработка' },
+    { value: '5', label: 'Инфраструктура и DevOps' },
+    { value: '6', label: 'Базы данных' },
+    { value: '7', label: 'Прочие технологии' },
   ]
 
   const uploadFile = async (file: File, type: 'image' | 'video') => {
@@ -79,9 +86,9 @@ const BasicsPage: React.FC = () => {
         <div className={'self-end w-[48%]'}>
           <SelectField
             label='Уровень '
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            options={languageOptions}
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            options={levelOptions}
           />
         </div>
       </div>
@@ -90,12 +97,6 @@ const BasicsPage: React.FC = () => {
         value={category}
         onChange={(e) => setCategory(e.target.value)}
         options={categoryOptions}
-      />
-      <SelectField
-        label='Подкатегория'
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        options={subCategoryOptions}
       />
 
       <FileUploadField

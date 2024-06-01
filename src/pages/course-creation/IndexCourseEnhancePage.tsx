@@ -28,11 +28,10 @@ type SidebarItem = {
 
 const sidebarData: SidebarSection[] = [
   {
-    title: 'Сланируйте курс',
+    title: 'Спланируйте курс',
     items: [
       { label: 'Целевые учащиеся', checked: false, path: 'goals' },
       { label: 'Структура курса', checked: false, path: 'course-structure' },
-      { label: 'Подготовка и тестовое видео', checked: false, path: 'video-setup' },
     ],
   },
   {

@@ -47,7 +47,15 @@ const CheckBoxes: React.FC<{
     </>
   )
 }
-
+const techStack: string[] = [
+  'Frontend',
+  'Backend',
+  'Fullstack',
+  'Мобильная разработка',
+  'Инфраструктура и DevOps',
+  'Базы данных',
+  'Прочие технологии',
+]
 const SectionImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return <img src={src} alt={alt} className={'hidden lg:block'} />
 }
@@ -191,11 +199,7 @@ const CourseBaseCreationPage: React.FC = () => {
         )}
         {currentStep === 3 && (
           <Dropdown
-            options={[
-              'В настоящий момент нет',
-              'У меня маленькая аудитория',
-              'У меня достаточная аудитория',
-            ]}
+            options={techStack}
             selectedOption={selectedOption}
             onChange={handleOptionChange}
             title={'Какая категория лучше всего подходит к теме вашего будущего курса?'}
@@ -380,7 +384,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   }, [])
 
   return (
-    <div className='flex flex-col md:flex-row w-full md:w-auto justify-between ml-12 mt-16 mr-12'>
+    <div className='flex flex-col md:flex-row w-full md:w-auto justify-between ml-12 mt-16 mr-12 '>
       <div className='w-full items-center justify-center flex flex-col text-center '>
         <SectionTitle title={title} />
         <SectionText text={desc} />
@@ -392,7 +396,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             {selectedOption || 'Выберите опцию'}
           </button>
           {isOpen && (
-            <div className='absolute z-10 top-full left-0 mt-1 w-full bg-white border border-black  shadow-md'>
+            <div className='absolute z-10 top-full left-0 mt-1 w-full max-h-96 bg-white border border-black  shadow-md overflow-y-auto'>
               {options.map((option, index) => (
                 <div
                   key={index}

@@ -44,11 +44,8 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
     <div className='container px-4 py-2 ml-[10%]'>
       {!testStarted ? (
         <div className='bg-white shadow-md rounded-lg p-6 text-center'>
-          <h1 className='text-2xl font-bold mb-4'>Test Description</h1>
-          <p>
-            This is the description of the test. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit.
-          </p>
+          <h1 className='text-2xl font-bold mb-4'>Описание:</h1>
+          <p>Это описание теста. Вот так вот</p>
           <button
             onClick={handleStartTest}
             className='px-6 py-2 mt-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700'
