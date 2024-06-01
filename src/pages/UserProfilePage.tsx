@@ -1,0 +1,375 @@
+import React, { useEffect, useState } from 'react'
+import { NavLink, useParams } from 'react-router-dom'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
+import PhoneInput from 'react-phone-input-2'
+import useModal from '@/utils/hooks/useModal.ts'
+import Pagination from '@/components/Pagination.tsx'
+
+const ITEMS_PER_PAGE = 6
+
+export interface IUser {
+  id: number
+  username: string
+  email: string
+  fullName: string
+  avatar: string
+  mobile?: string
+  about?: string
+  courses?: number[]
+}
+
+// UserInfoRequest.ts
+export interface UserInfoRequest {
+  id: string
+}
+
+// UserInfoResponse.ts
+export interface UserInfoResponse {
+  id: number
+  full_name: string
+  description: string
+  email: string
+  avatar: string
+  phone_number: string
+}
+
+interface Course {
+  id: number
+  title: string
+  description: string
+}
+
+type MainTab = 'courses'
+
+const courses: Course[] = [
+  {
+    id: 1,
+    title: 'Курс по разработке веб-приложений',
+    description: 'Описание курса по разработке веб-приложений',
+  },
+  {
+    id: 2,
+    title: 'Курс по разработке мобильных приложений',
+    description: 'Курс по разработке мобильных приложений',
+  },
+  {
+    id: 3,
+    title: 'Курс по разработке игр',
+    description: 'Здесь создают игры на любой вкус',
+  },
+]
+
+const renderItemsPerPage = (items: IUser[] | Course[], currentPage: number) => {
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, items.length)
+  return items.slice(startIndex, endIndex)
+}
+
+const CoursesList: React.FC<{ courses: Course[]; user: IUser }> = ({ courses, user }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const paginatedCourses = renderItemsPerPage(courses, currentPage) as Course[]
+
+  const handleClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber)
+  }
+
+  return (
+    <div>
+      <h3 className='text-xl font-bold mb-4'>
+        Курсы, на которые записан {user.fullName}
+      </h3>
+      {paginatedCourses.length === 0 ? (
+        <p className='text-gray-500 text-center'>Список курсов пуст</p>
+      ) : (
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+          {paginatedCourses.map((course) => (
+            <div key={course.id} className='bg-white p-4 rounded-lg shadow-md'>
+              <h4 className='text-lg font-semibold'>{course.title}</h4>
+              <p className='text-gray-600'>{course.description}</p>
+              <NavLink
+                to={`/courses/course/${course.id}`}
+                className='mt-2 inline-block text-blue-500 hover:text-blue-700'
+              >
+                View Course
+              </NavLink>
+            </div>
+          ))}
+        </div>
+      )}
+      <Pagination
+        currentPage={currentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+        totalItems={courses.length}
+        onClick={handleClick}
+      />
+    </div>
+  )
+}
+
+const UserPage: React.FC = () => {
+  const { userID } = useParams<{ userID: string }>()
+  const [user, setUser] = useState<IUser | null>(null)
+  const [updatedUser, setUpdatedUser] = useState<IUser | null>(null)
+  const [currentMainTab, setCurrentMainTab] = useState<MainTab>('courses')
+  const [, setPhoneNumber] = useState('')
+  const { isOpen, openModal, closeModal, ref } = useModal()
+  const [isOnline, setIsOnline] = useState(true)
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
+  // const fetchUserInfo = async (userId: string): Promise<UserInfoResponse | null> => {
+  //   try {
+  //     const response = await axios.get<UserInfoResponse>(
+  //       `http://localhost:8080/user/get-self-info`,
+  //       {
+  //         params: { id: userId },
+  //       }
+  //     )
+  //     return response.data
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       console.error(`Error fetching user info: ${error.message}`)
+  //       console.error(`Status code: ${error.response?.status}`)
+  //       console.error(`Response data: ${error.response?.data}`)
+  //     } else {
+  //       console.error('Unexpected error', error)
+  //     }
+  //     return null
+  //   }
+  // }
+
+  useEffect(() => {
+    // Simulate fetching user data
+    if (userID === '2') {
+      const userData: IUser = {
+        id: 2,
+        username: 'exampleUser',
+        email: 'shinichi@gmail.com',
+        fullName: 'Александр Мордов',
+        avatar: 'https://github.com/shadcn.png',
+        mobile: '8-904-003-53-23',
+        about:
+          'Всем привет! Меня зовут Алесандр. Я занимаюсь разработкой программного обеспечения более 10 лет.\n' +
+          '\n' +
+          'Работал над проектами в различных сферах: от игр и мобильных приложений до интерактивных инсталляций и программирования микроконтроллеров.\n' +
+          '\n' +
+          'На данный момент являюсь инженером компьютерной графики и работаю в индустрии виртуальной реальности в Финляндии.\n' +
+          '\n' +
+          'Мне нравится рассказывать сложные вещи простым языком. Я уверен, мой опыт и курс будут полезны в освоении профессии разработчика игр. Считаю, что теория и практика одинаковы важны, а для глубокого усвоения  материала все концепты теории должны быть объяснены на примерах по фейнмановскому методу.',
+        courses: [1, 2, 3, 4, 5, 6, 7, 8],
+      }
+      setUser(userData)
+      setUpdatedUser(userData)
+    } else {
+      const userData: IUser = {
+        id: 1,
+        username: 'exampleUser',
+        email: 'daker255@bk.ru',
+        fullName: 'Виктор Самсонов',
+        avatar: 'https://github.com/shadcn.png',
+        mobile: '8-904-003-53-23',
+        about:
+          'Всем привет! Меня зовут Виктор. Я занимаюсь разработкой программного обеспечения более 2 лет.\n' +
+          '\n' +
+          'Работал над проектами в различных сферах: от игр и мобильных приложений до интерактивных инсталляций и программирования микроконтроллеров.\n' +
+          '\n' +
+          'На данный момент являюсь инженером компьютерной графики и работаю в индустрии виртуальной реальности в Финляндии.\n' +
+          '\n' +
+          'Мне нравится рассказывать сложные вещи простым языком. Я уверен, мой опыт и курс будут полезны в освоении профессии разработчика игр. Считаю, что теория и практика одинаковы важны, а для глубокого усвоения  материала все концепты теории должны быть объяснены на примерах по фейнмановскому методу.',
+        courses: [1, 2, 3, 4, 5, 6, 7, 8],
+      }
+      setUser(userData)
+      setUpdatedUser(userData)
+    }
+  }, [])
+
+  const handleEditClick = () => {
+    openModal()
+  }
+
+  const handleSave = () => {
+    if (updatedUser) {
+      setUser({ ...updatedUser })
+      // Save updated user data (not implemented in this example)
+    }
+    closeModal() // Закрываем модальное окно при сохранении
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (updatedUser) {
+      setUpdatedUser({
+        ...updatedUser,
+        [e.target.name]: e.target.value,
+      })
+    }
+  }
+
+  const handlePhoneChange = (value: string) => {
+    setPhoneNumber(value)
+    if (updatedUser) {
+      setUpdatedUser({
+        ...updatedUser,
+        mobile: value,
+      })
+    }
+  }
+
+  const handleMainTabChange = (tab: MainTab) => {
+    setCurrentMainTab(tab)
+  }
+
+  return (
+    <>
+      <div className='min-h-screen bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
+        {user ? (
+          <>
+            <div className='flex items-center mb-4'>
+              <div className='relative'>
+                <Avatar className={'w-16 h-16 mr-4'}>
+                  <AvatarImage src={user.avatar} />
+                  <AvatarFallback>{user.username}</AvatarFallback>
+                </Avatar>
+                <div
+                  className={`absolute bottom-0 right-4 w-4 h-4 rounded-full ${
+                    isOnline ? 'bg-green-500' : 'bg-gray-500'
+                  } border-2 border-white`}
+                />
+              </div>
+              <div>
+                <h2 className='text-2xl font-bold'>{user.fullName}</h2>
+                <p className='text-gray-600'>
+                  <b>e-mail:</b> {user.email}
+                </p>
+                <p className='text-gray-600'>
+                  <b>телефон: </b>
+                  {user.mobile}
+                </p>
+              </div>
+            </div>
+            <hr className='my-4 border-t border-gray-300' />
+            {user.id === 1 && (
+              <button
+                className='bg-blue-500 text-white px-4 py-2 rounded'
+                onClick={handleEditClick}
+              >
+                Редактировать профиль:
+              </button>
+            )}
+
+            <div className='mt-4'>
+              <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
+              <p className='text-black mb-4'>{user.about}</p>
+            </div>
+            <div className='mt-8'>
+              <div className='flex justify-between items-center mb-4'>
+                <button
+                  className={`px-4 py-2 rounded ${
+                    currentMainTab === 'courses'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-300 text-gray-800'
+                  }`}
+                  onClick={() => handleMainTabChange('courses')}
+                >
+                  Курсы
+                </button>
+              </div>
+
+              {currentMainTab === 'courses' && (
+                <CoursesList courses={courses} user={user} />
+              )}
+            </div>
+          </>
+        ) : (
+          <p className='p-8'>Загрузка...</p>
+        )}
+      </div>
+
+      {isOpen && (
+        <div className='fixed inset-0 bg-gray-700 bg-opacity-75 flex justify-center items-center'>
+          <div
+            ref={ref}
+            className='bg-gray-100 p-8 rounded shadow-lg w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12'
+          >
+            <h2 className='text-2xl font-bold mb-4'>Редактировать профиль</h2>
+            <div className='mb-4'>
+              <label htmlFor='fullName' className='block text-sm font-medium'>
+                ФИО
+              </label>
+              <input
+                type='text'
+                id='fullName'
+                name='fullName'
+                onChange={handleChange}
+                placeholder={'Введите ФИО'}
+                className='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black'
+              />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='email' className='block text-sm font-medium'>
+                e-mail
+              </label>
+              <input
+                type='email'
+                id='email'
+                name='email'
+                onChange={handleChange}
+                placeholder={'Введите ФИО'}
+                className='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black lg:pl-2 lg:pt-4'
+              />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='mobile' className='block text-sm font-medium'>
+                Мобильный телефон
+              </label>
+              <PhoneInput
+                country={'ru'}
+                onChange={handlePhoneChange}
+                placeholder={'Введите ФИО'}
+                inputClass='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border lg:pl-2 lg:pt-4'
+              />
+            </div>
+            <div className='mb-4'>
+              <label htmlFor='about' className='block text-sm font-medium'>
+                Обо мне
+              </label>
+              <textarea
+                id='about'
+                name='about'
+                onChange={handleChange}
+                placeholder={'Введите ФИО'}
+                className='w-full h-24  rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm lg:text-sm text-black border-red-300 lg:pl-4 lg:pt-1'
+              />
+            </div>
+            <div className='flex justify-end'>
+              <button
+                className='bg-blue-500 text-white px-4 py-2 rounded mr-2'
+                onClick={handleSave}
+              >
+                Сохранить
+              </button>
+              <button
+                className='bg-gray-300 text-gray-800 px-4 py-2 rounded'
+                onClick={closeModal}
+              >
+                Отменить
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+export default UserPage

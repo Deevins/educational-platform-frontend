@@ -1,27 +1,68 @@
-# React + TypeScript + Vite
+# Запуск Frontend-приложения
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Следуйте инструкциям ниже для скачивания и запуска Frontend-приложения с GitHub.
 
-Currently, two official plugins are available:
+## Предварительные требования
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Перед началом убедитесь, что на вашем компьютере установлены следующие программы:
 
-## Expanding the ESLint configuration
+- [Node.js](https://nodejs.org/) (рекомендуемая версия указана в документации проекта)
+- [Git](https://git-scm.com/)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Шаг 1: Клонирование репозитория
 
-- Configure the top-level `parserOptions` property like this:
+1. Откройте терминал или командную строку.
+2. Перейдите в директорию, куда вы хотите клонировать проект.
+3. Выполните команду:
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+    ```sh
+    git clone https://github.com/Deevins/educational-platform-frontend.git
+    ```
+4. Перейдите в директорию проекта:
+
+    ```sh
+    cd educational-platform-frontend
+    ```
+
+## Шаг 2: Установка зависимостей
+
+Перед запуском проекта необходимо установить все необходимые зависимости. Выполните следующую команду:
+
+```sh
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Эта команда установит все зависимости, указанные в файле `package.json`.
+
+## Шаг 3: Запуск приложения
+
+После успешной установки зависимостей, вы можете запустить приложение. Используйте следующую команду:
+
+```sh
+npm start
+```
+
+Эта команда запустит приложение в режиме разработки. Обычно, после этого приложение будет доступно по
+адресу `http://localhost:5173` в вашем браузере.
+
+## Дополнительные команды
+
+- **Сборка проекта для продакшена**:
+
+    ```sh
+    npm run build
+    ```
+
+  Эта команда создаст оптимизированную сборку приложения, готовую для развертывания.
+
+- **Тестирование приложения**:
+
+    ```sh
+    npm test
+    ```
+
+  Эта команда запустит тесты, определенные в проекте.
+
+## Заключение
+
+Если у вас возникли вопросы или проблемы, обратитесь к автору проекта или создайте issue в репозитории.
