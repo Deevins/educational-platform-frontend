@@ -33,20 +33,20 @@ interface Test {
 const courseData: CourseSection[] = [
   {
     id: 1,
-    title: '' + 'Chapter 1: Writing Your Framework',
-    duration: '4h 14m',
+    title: 'Секция 1: Frontend - разработка',
+    duration: '2h 14m',
     lectures: [
       {
         id: 123,
-        title: 'Part 1: Basic Framework Writing',
+        title: 'Лекция 1: Начало!',
         duration: '1h 34m',
-        videoUrl: 'https://youtu.be/6wbckQjhA4Y',
+        videoUrl: 'https://youtu.be/gb7gMluAeao?list=PLcvhF2Wqh7DNVy1OCUpG3i5lyxyBWhGZ8',
         description:
-          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
+          'В данной лекции мы начнём наше погружение в мир интерфейсов и разработки адаптивных дизайнов.',
       },
       {
         id: 321,
-        title: 'Part 2: User Interface Development',
+        title: 'Лекция 2: Продолжение',
         duration: '2h 40m',
         videoUrl: video,
         description:
@@ -58,13 +58,13 @@ const courseData: CourseSection[] = [
         id: 456,
         attempts: 2,
         isAlreadyPassed: false,
-        title: 'Framework Basics Test',
+        title: 'Тест по пройденному материалу',
       },
     ],
   },
   {
     id: 1,
-    title: 'Chapter 1: Writing Your Framework',
+    title: 'Секция 2: Занимаемся бэкендом',
     duration: '4h 14m',
     lectures: [
       {
@@ -404,7 +404,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md p-5'>
       <h1 className='text-3xl font-bold'>{lecture.title}</h1>
-      <p>Duration: {lecture.duration}</p>
+      <p>Длительность лекции: {lecture.duration}</p>
       <VideoPlayer url={lecture.videoUrl} />
       <div className='flex items-start flex-col truncate max-w-7xl max-h-7xl mx-16 lg:ml-52 xl:ml-0'>
         <p className='text-xl'>
