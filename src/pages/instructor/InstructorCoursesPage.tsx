@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import useSWR from 'swr'
 import axios from 'axios'
@@ -17,6 +17,8 @@ const InstructorCoursesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortBy, setSortBy] = useState<string>('date') // Default sorting by date
   const userID = useSelector(selectUserID)
+  const [results, setResults] = useState<AuthorCourse[]>([])
+  const [isSearching, setIsSearching] = useState<boolean>(false)
   const { data, error, isLoading } = useSWR(
     `http://localhost:8080/courses/get-all-courses-by-instructor-id/${userID}`,
     fetcher
@@ -24,6 +26,34 @@ const InstructorCoursesPage: React.FC = () => {
   // Обработчик для изменения значения поиска
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(event.target.value)
+  }
+
+  useEffect(() => {
+    setResults(data || [])
+  }, [data])
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm.trim() !== '') {
+        searchCoursesByTitle(searchTerm)
+      }
+    }, 1000)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchTerm])
+
+  const searchCoursesByTitle = async (query: string) => {
+    setIsSearching(true)
+    try {
+      const response = await axios.get<AuthorCourse[]>(
+        `http://localhost:8080/courses/search-courses-by-title/${query}`
+      )
+      setResults(response.data)
+    } catch (error) {
+      console.error('Error searching courses:', error)
+    } finally {
+      setIsSearching(false)
+    }
   }
 
   // Обработчик для изменения опции сортировки
@@ -57,8 +87,9 @@ const InstructorCoursesPage: React.FC = () => {
   return (
     <div className='relative flex'>
       {/* Main Content */}
+      {isSearching && <p>Идет поиск...</p>}
       <div className='flex-1 flex flex-col items-center pl-20 md:pl-30'>
-        {data?.length === 0 ? (
+        {results?.length === 0 ? (
           <div className='shadow-xl border-2 border-gray-100 lg:w-8/12 h-32 flex justify-between items-center mt-20 px-10'>
             <h1 className='text-xl pr-16 lg:pr-32 py-32'>Перейти к созданию курса</h1>
             <button className='hover:bg-gray-700 text-white font-bold lg:px-20 py-4 px-10 bg-black'>

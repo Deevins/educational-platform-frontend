@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { GoVideo } from 'react-icons/go'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useParams } from 'react-router-dom'
 import { LearnComponent } from '@/pages/unregistered-course-page/LearnComponent.tsx'
 import { MaterialsComponent } from '@/pages/unregistered-course-page/MaterialsComponent.tsx'
 import { ReviewsComponent } from '@/pages/unregistered-course-page/ReviewsComponent.tsx'
 import { InstructorComponent } from '@/pages/unregistered-course-page/InstructorComponent.tsx'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
 
 const instructorObject = {
   id: '2',
@@ -21,12 +24,28 @@ const instructorObject = {
     'Он специализируется на создании веб-приложений с ' +
     'использованием современных технологий.',
 }
+type ParamsType = {
+  courseID: string
+}
 
 const UnregisteredCoursePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('learn')
+  const userID = useSelector(selectUserID)
+  const { courseID } = useParams<ParamsType>()
   const studentsCount = 6453
   const instuctorUrl = '/users/user/2/profile'
   const isStudentRegistered = false
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/users/check-if-user-registered-to-course`, {
+        params: { userID, courseID },
+      })
+      .then((response) => {
+        console.log(response.data)
+      })
+    console.log('Course ID:', courseID)
+  }, [courseID, userID])
 
   const renderContent = () => {
     switch (activeSection) {

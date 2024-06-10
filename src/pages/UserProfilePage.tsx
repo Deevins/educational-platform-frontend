@@ -262,13 +262,13 @@ const UserPage: React.FC = () => {
           >
             <h2 className='text-2xl font-bold mb-4'>Редактировать профиль</h2>
             <div className='mb-4'>
-              <label htmlFor='fullName' className='block text-sm font-medium'>
+              <label htmlFor='full_name' className='block text-sm font-medium'>
                 ФИО
               </label>
               <input
                 type='text'
-                id='fullName'
-                name='fullName'
+                id='full_name'
+                name='full_name'
                 value={updatedUser?.full_name}
                 onChange={handleChange}
                 placeholder={'Введите ФИО'}
@@ -306,8 +306,8 @@ const UserPage: React.FC = () => {
                 Обо мне
               </label>
               <textarea
-                id='about'
-                name='about'
+                id='description'
+                name='description'
                 value={updatedUser?.description}
                 onChange={handleChange}
                 placeholder={'Введите описание'}
