@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 export const InstructorComponent: React.FC<InstructorInfoProps> = ({
   id,
   name,
-  title,
   rating,
   reviewCount,
   studentCount,
@@ -25,7 +24,6 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
           />
           <div>
             <h1 className='text-xl font-bold'>{name}</h1>
-            <p className='text-gray-700'>{title}</p>
             <div className='flex items-center mt-1'>
               <span className='text-yellow-500 text-xl'>{rating} ★</span>
               <span className='ml-2 text-gray-600'>({reviewCount} Отзывов)</span>
@@ -45,7 +43,6 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
 interface InstructorInfoProps {
   id: string
   name: string
-  title: string
   rating: number
   reviewCount: number
   studentCount: number

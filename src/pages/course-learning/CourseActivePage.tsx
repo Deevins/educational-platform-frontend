@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import TestSection from '@/pages/course-learning/TestSection.tsx'
 import { TestQuestion } from '@/pages/course-creation/curriculum/types.ts'
+import logo from '/platform_logo.png'
 
 interface CourseSection {
   id: number
@@ -471,7 +472,7 @@ const Header: React.FC = () => {
     <div className='bg-gray-800 text-white h-16 flex items-center px-4 fixed top-0 left-0 w-full'>
       <NavLink to={'/'} className='hidden lg:flex md:flex items-center sm:hidden h-8'>
         <Avatar className={'hover:scale-105 '}>
-          <AvatarImage src={'https://flowbite.com/docs/images/logo.svg'} />
+          <AvatarImage src={logo} />
           <AvatarFallback>Логотип</AvatarFallback>
         </Avatar>
         <h1 className='text-lg font-bold ml-6'>ProdigyPath</h1>

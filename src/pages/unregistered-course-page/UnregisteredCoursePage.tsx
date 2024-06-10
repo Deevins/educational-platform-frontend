@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import ReactPlayer from 'react-player'
-import video from '/videovideo.mp4'
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { GoVideo } from 'react-icons/go'
 import { Link, NavLink } from 'react-router-dom'
@@ -17,7 +16,10 @@ const instructorObject = {
   totalRatings: 606,
   studentsCount: 6453,
   description:
-    'Александр Мордов - опытный разработчик, который работает в индустрии более 10 лет. Он специализируется на создании веб-приложений с использованием современных технологий.',
+    'Александр Мордов - опытный разработчик, ' +
+    'который работает в индустрии более 10 лет. ' +
+    'Он специализируется на создании веб-приложений с ' +
+    'использованием современных технологий.',
 }
 
 const UnregisteredCoursePage: React.FC = () => {
@@ -39,7 +41,6 @@ const UnregisteredCoursePage: React.FC = () => {
           <InstructorComponent
             id={instructorObject.id}
             name=' Александр Мордов'
-            title='Магистр математики и информатики, C#, Java, PHP программист'
             rating={4.4}
             reviewCount={859}
             studentCount={9420}
@@ -63,7 +64,12 @@ const UnregisteredCoursePage: React.FC = () => {
         <div className='flex mb-5'>
           {/*<div className='flex-col lg:flex lg:items-center w-full'> FIXME: adaptiv snizy*/}
           <div className='flex '>
-            <ReactPlayer url={video} controls={true} />
+            <ReactPlayer
+              url={
+                'http://127.0.0.1:9000/mybucket/09c40dae-3de3-4a46-811b-1f0fa27fbeb3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=root%2F20240609%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240609T090026Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=b742b9ff5853a6d01bf617fe3fc8e51d3fc1f0630761c2d21a837b56b4b9f200'
+              }
+              controls={true}
+            />
             <div className={'ml-6'}>
               <h1 className='text-3xl font-bold text-gray-900 max-w-2xl truncate mb-4'>
                 Обзор Frontend и Backend технологий

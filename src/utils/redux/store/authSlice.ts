@@ -18,7 +18,7 @@ interface RegisterUserData {
 
 interface RegisterUserResponse {
   token: string
-  userId: string // Предположим, что это строковое представление айди пользователя
+  userId: string
 }
 
 const initialState: AuthState = {

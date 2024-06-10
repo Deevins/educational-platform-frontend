@@ -2,9 +2,9 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 export interface Course {
+  id: string
   title: string
   description: string
-  url: string
 }
 
 const getRandomColor = () => {
@@ -31,12 +31,16 @@ const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)]
 }
 
-const CourseCardMini: React.FC<Course> = ({ title, description, url }) => {
+const CourseCardMini: React.FC<Course> = ({ title, description, id }) => {
   const color = getRandomColor()
+
+  if (!title) {
+    return null
+  }
 
   return (
     <div className='w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-4 hover:scale-110 transition-transform duration-300 ease-in-out hover:cursor-pointer'>
-      <NavLink to={url}>
+      <NavLink to={`/courses/course/${id}`}>
         <div
           className={`bg-red-500 p-6 rounded-lg shadow-md`}
           style={{ backgroundColor: color }}
