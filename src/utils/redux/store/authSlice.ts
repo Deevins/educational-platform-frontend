@@ -138,6 +138,7 @@ const authSlice = createSlice({
 
 export const setUserId = createAction<string>('user/setUserId')
 export const selectIsAuthenticated = (state: RootState) => state.auth.isLoggedIn
+export const selectUserID = (state: RootState) => state.auth.userId
 export const logout = createAction('auth/logout')
 
 export default authSlice.reducer

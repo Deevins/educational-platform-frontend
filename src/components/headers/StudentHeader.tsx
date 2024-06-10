@@ -1,15 +1,30 @@
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import logo from '/platform_logo.png'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import { Navbar } from '@/components/Navbar.tsx'
 import { useSelector } from 'react-redux'
-import { selectIsAuthenticated } from '@/utils/redux/store/authSlice.ts'
+import { selectIsAuthenticated, selectUserID } from '@/utils/redux/store/authSlice.ts'
+import useSWR from 'swr'
+import axios from 'axios'
 
-const StudentHeader = () => {
+interface UserExperience {
+  has_used: boolean
+}
+
+const fetcher = (url: string) => axios.get<UserExperience>(url).then((res) => res.data)
+
+const StudentHeader: React.FC = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const userID = useSelector(selectUserID)
+  const navigate = useNavigate()
+  const { data, error, isLoading } = useSWR(
+    `http://localhost:8080/users/has-user-tried-instructor/${userID}`,
+    fetcher
+  )
+
   const [isInstructorModeOpen, setIsInstructorModeOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -54,6 +69,24 @@ const StudentHeader = () => {
   //   fetchData()
   // }, [])
 
+  const handleClickInstructor = async () => {
+    if (!data?.has_used) {
+      try {
+        const result = await axios.post(
+          `http://localhost:8080/users/set-has-user-tried-instructor-to-true/${userID}`
+        )
+        console.log('result', result)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+      navigate('/teaching')
+    }
+  }
+
+  if (error) return <div>ошибка загрузки</div>
+  if (isLoading) return <div>загрузка...</div>
+
+  const final_route = data?.has_used ? '/instructor/courses' : '/teaching'
   return (
     <header className='bg-gray-200 text-black p-4 flex justify-center  lg:justify-between items-center shadow-xl'>
       <NavLink to={'/'} className='hidden lg:flex items-center sm:hidden'>
@@ -78,10 +111,12 @@ const StudentHeader = () => {
           onMouseLeave={handleMouseLeave}
         >
           <NavLink
-            to={'/teaching'}
+            to={final_route}
             className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
           >
-            <button onMouseEnter={openInstructorMode}>Преподаватель</button>
+            <button onMouseEnter={openInstructorMode} onClick={handleClickInstructor}>
+              Преподаватель
+            </button>
           </NavLink>
           <div ref={dialogRef}>
             {isHovered && isInstructorModeOpen && (
@@ -96,7 +131,7 @@ const StudentHeader = () => {
                   </p>
                   <p>Превратите свои знания в возможность и учите людей по всему миру.</p>
                   <NavLink
-                    to={'/teaching'}
+                    to={final_route}
                     className='block bg-black text-white rounded-lg px-4 py-2 mt-4 ml-2hover:bg-gray-800 mr-1'
                   >
                     Узнать подробнее

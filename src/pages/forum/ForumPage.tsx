@@ -333,105 +333,126 @@ const ForumPage: React.FC = () => {
   return (
     <div className='flex flex-col lg:flex-row justify-center min-h-screen'>
       <div className='w-full lg:w-3/4 p-4'>
-        <input
-          type='text'
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder='Search threads...'
-          className='w-full border border-gray-300 p-2 rounded mb-4'
-        />
-        {filteredThreads.length > 0 ? (
-          filteredThreads.map((thread) => (
-            <ThreadCard
-              key={thread.id}
-              title={thread.title}
-              author={thread.author}
-              createdDate={thread.createdDate}
-              lastReplyDate={thread.lastReplyDate}
-              repliesCount={thread.repliesCount}
-              tags={thread.tags}
-              onTagClick={handleTagClick}
+        <div className='flex flex-col items-center justify-center min-h-screen bg-white p-4'>
+          <div className='bg-yellow-300 rounded-lg p-6 text-center'>
+            <img
+              src='https://дом.зеленыйбульвар.рф/wp-content/uploads/2020/12/2785306490dd68af4cdc00b9242faeb9.jpg'
+              alt='Технические работы'
+              className='mx-auto mb-4'
             />
-          ))
-        ) : (
-          <div className='flex flex-col items-center justify-center h-full'>
-            <p className='text-center mb-4'>
-              Обсуждение по заданным фильтрам не найдено.
+            <h1 className='text-xl font-bold'>Технические работы</h1>
+          </div>
+          <div className='mt-6 text-center'>
+            <h2 className='text-2xl font-semibold'>
+              На сайте ведутся технические работы
+            </h2>
+            <p className='mt-4'>
+              На сайте ведутся технические работы. Возможно некорректное отображение
+              некоторых страниц. Приносим свои извинения за доставленные неудобства!
+              <br />
+              Скоро сайт будет работать в штатном режиме.
             </p>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className={'bg-red-500 text-white px-4 py-2 rounded'}
-            >
-              Начните новое обсуждение!
-            </button>
-          </div>
-        )}
-      </div>
-      <div className='w-full lg:w-1/4 p-4 border-l border-gray-200'>
-        <div className='mb-4'>
-          {activeTags.length > 0 && (
-            <div className={'flex'}>
-              {activeTags.map((tag, index) => (
-                <div
-                  key={index}
-                  className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-30 text-center'
-                >
-                  <span>{tag.title}</span>
-                  <button
-                    className='ml-2 text-xl text-right text-white'
-                    onClick={() => handleRemoveTag(tag)}
-                  >
-                    &times;
-                  </button>
-                </div>
-              ))}
-              <button
-                className={'py-1 px-2 bg-black text-white rounded-full'}
-                onClick={() => setActiveTags([])}
-              >
-                Очистить теги
-              </button>
-            </div>
-          )}
-        </div>
-        <div className='mb-4'>
-          <h2 className='text-lg font-semibold mb-2'>Теги</h2>
-          <div className='flex flex-wrap '>
-            {tags.map((tag) => (
-              <TagCard
-                key={tag.id}
-                tag={tag}
-                handleTagSelect={() => handleTagSelect(tag)}
-              />
-            ))}
           </div>
         </div>
-        <div className='mb-4'>
-          <button
-            onClick={() => setFilter('hot')}
-            className={`bg-gray-600 text-white px-4 py-2 mr-3  ${
-              filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            Горячие обсуждения
-          </button>
-          <button
-            onClick={() => setFilter('newest')}
-            className={`bg-gray-600 text-white px-4 py-2  ${
-              filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            Самые новые обсуждения
-          </button>
-        </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className={
-            'bg-white text-black border-2 shadow-md border-black px-4 py-2 rounded block hover:bg-gray-50'
-          }
-        >
-          Создайте новое обсуждение!
-        </button>
+        {/*  <input*/}
+        {/*    type='text'*/}
+        {/*    value={searchQuery}*/}
+        {/*    onChange={(e) => setSearchQuery(e.target.value)}*/}
+        {/*    placeholder='Search threads...'*/}
+        {/*    className='w-full border border-gray-300 p-2 rounded mb-4'*/}
+        {/*  />*/}
+        {/*  {filteredThreads.length > 0 ? (*/}
+        {/*    filteredThreads.map((thread) => (*/}
+        {/*      <ThreadCard*/}
+        {/*        key={thread.id}*/}
+        {/*        title={thread.title}*/}
+        {/*        author={thread.author}*/}
+        {/*        createdDate={thread.createdDate}*/}
+        {/*        lastReplyDate={thread.lastReplyDate}*/}
+        {/*        repliesCount={thread.repliesCount}*/}
+        {/*        tags={thread.tags}*/}
+        {/*        onTagClick={handleTagClick}*/}
+        {/*      />*/}
+        {/*    ))*/}
+        {/*  ) : (*/}
+        {/*    <div className='flex flex-col items-center justify-center h-full'>*/}
+        {/*      <p className='text-center mb-4'>*/}
+        {/*        Обсуждение по заданным фильтрам не найдено.*/}
+        {/*      </p>*/}
+        {/*      <button*/}
+        {/*        onClick={() => setShowCreateModal(true)}*/}
+        {/*        className={'bg-red-500 text-white px-4 py-2 rounded'}*/}
+        {/*      >*/}
+        {/*        Начните новое обсуждение!*/}
+        {/*      </button>*/}
+        {/*    </div>*/}
+        {/*  )}*/}
+        {/*</div>*/}
+        {/*<div className='w-full lg:w-1/4 p-4 border-l border-gray-200'>*/}
+        {/*  <div className='mb-4'>*/}
+        {/*    {activeTags.length > 0 && (*/}
+        {/*      <div className={'flex'}>*/}
+        {/*        {activeTags.map((tag, index) => (*/}
+        {/*          <div*/}
+        {/*            key={index}*/}
+        {/*            className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-30 text-center'*/}
+        {/*          >*/}
+        {/*            <span>{tag.title}</span>*/}
+        {/*            <button*/}
+        {/*              className='ml-2 text-xl text-right text-white'*/}
+        {/*              onClick={() => handleRemoveTag(tag)}*/}
+        {/*            >*/}
+        {/*              &times;*/}
+        {/*            </button>*/}
+        {/*          </div>*/}
+        {/*        ))}*/}
+        {/*        <button*/}
+        {/*          className={'py-1 px-2 bg-black text-white rounded-full'}*/}
+        {/*          onClick={() => setActiveTags([])}*/}
+        {/*        >*/}
+        {/*          Очистить теги*/}
+        {/*        </button>*/}
+        {/*      </div>*/}
+        {/*    )}*/}
+        {/*  </div>*/}
+        {/*  <div className='mb-4'>*/}
+        {/*    <h2 className='text-lg font-semibold mb-2'>Теги</h2>*/}
+        {/*    <div className='flex flex-wrap '>*/}
+        {/*      {tags.map((tag) => (*/}
+        {/*        <TagCard*/}
+        {/*          key={tag.id}*/}
+        {/*          tag={tag}*/}
+        {/*          handleTagSelect={() => handleTagSelect(tag)}*/}
+        {/*        />*/}
+        {/*      ))}*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*  <div className='mb-4'>*/}
+        {/*    <button*/}
+        {/*      onClick={() => setFilter('hot')}*/}
+        {/*      className={`bg-gray-600 text-white px-4 py-2 mr-3  ${*/}
+        {/*        filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''*/}
+        {/*      }`}*/}
+        {/*    >*/}
+        {/*      Горячие обсуждения*/}
+        {/*    </button>*/}
+        {/*    <button*/}
+        {/*      onClick={() => setFilter('newest')}*/}
+        {/*      className={`bg-gray-600 text-white px-4 py-2  ${*/}
+        {/*        filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''*/}
+        {/*      }`}*/}
+        {/*    >*/}
+        {/*      Самые новые обсуждения*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*  <button*/}
+        {/*    onClick={() => setShowCreateModal(true)}*/}
+        {/*    className={*/}
+        {/*      'bg-white text-black border-2 shadow-md border-black px-4 py-2 rounded block hover:bg-gray-50'*/}
+        {/*    }*/}
+        {/*  >*/}
+        {/*    Создайте новое обсуждение!*/}
+        {/*  </button>*/}
       </div>
       {showCreateModal && (
         <CreateThreadModal

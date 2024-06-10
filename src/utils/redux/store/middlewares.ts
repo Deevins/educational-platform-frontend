@@ -17,7 +17,7 @@ const userMiddleware: Middleware = (store) => (next) => (action: any) => {
       try {
         const decodedToken: CustomTokenPayload = jwtDecode(token)
         const userID = decodedToken.user_id
-        console.log(decodedToken, userID)
+        
         // Dispatch action to save user_id in Redux state
         store.dispatch(setUserId(userID))
       } catch (error) {

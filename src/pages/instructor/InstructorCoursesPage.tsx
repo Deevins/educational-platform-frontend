@@ -1,10 +1,26 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import useSWR from 'swr'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
+
+type AuthorCourse = {
+  id: number
+  title: string
+  avatar_url: string
+  status: string
+}
+const fetcher = (url: string) => axios.get<AuthorCourse[]>(url).then((res) => res.data)
 
 const InstructorCoursesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortBy, setSortBy] = useState<string>('date') // Default sorting by date
-
+  const userID = useSelector(selectUserID)
+  const { data, error, isLoading } = useSWR(
+    `http://localhost:8080/courses/get-all-courses-by-instructor-id/${userID}`,
+    fetcher
+  )
   // Обработчик для изменения значения поиска
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(event.target.value)
@@ -17,29 +33,32 @@ const InstructorCoursesPage: React.FC = () => {
   }
 
   // Пример тестовых данных для курсов
-  const courses = [
-    {
-      id: 1,
-      title: 'Разработка фуллстек приложений на React и Node.js',
-      imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
-      isDraft: true,
-      isPublic: false,
-      progress: 30,
-    },
-    {
-      id: 2,
-      title: 'Основы k8s и его практическое применение',
-      imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
-      isDraft: false,
-      isPublic: true,
-      progress: 70,
-    },
-  ]
+  // const courses = [
+  //   {
+  //     id: 1,
+  //     title: 'Разработка фуллстек приложений на React и Node.js',
+  //     imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
+  //     isDraft: true,
+  //     isPublic: false,
+  //     progress: 30,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Основы k8s и его практическое применение',
+  //     imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
+  //     isDraft: false,
+  //     isPublic: true,
+  //     progress: 70,
+  //   },
+  // ]
+
+  if (error) return <div>ошибка загрузки</div>
+  if (isLoading) return <div>загрузка...</div>
   return (
     <div className='relative flex'>
       {/* Main Content */}
       <div className='flex-1 flex flex-col items-center pl-20 md:pl-30'>
-        {courses.length === 0 ? (
+        {data?.length === 0 ? (
           <div className='shadow-xl border-2 border-gray-100 lg:w-8/12 h-32 flex justify-between items-center mt-20 px-10'>
             <h1 className='text-xl pr-16 lg:pr-32 py-32'>Перейти к созданию курса</h1>
             <button className='hover:bg-gray-700 text-white font-bold lg:px-20 py-4 px-10 bg-black'>
@@ -80,15 +99,14 @@ const InstructorCoursesPage: React.FC = () => {
         <div className='relative flex flex-col items-center lg:w-9/12 md:5/12'>
           <div className='flex-1 flex flex-col items-center lg:w-full lg:mr-32'>
             {/* Отображение карточек курсов */}
-            {courses.map((course) => (
+            {data?.map((course) => (
               <CourseCard
                 key={course.id}
                 id={course.id}
                 title={course.title}
-                imageSrc={course.imageSrc}
-                isDraft={course.isDraft}
-                isPublic={course.isPublic}
-                progress={course.progress}
+                imageSrc={course.avatar_url}
+                isDraft={course.status === 'draft'}
+                isPublic={course.status === 'public'}
               />
             ))}
           </div>
@@ -230,7 +248,6 @@ interface CourseCardProps {
   title: string
   isDraft: boolean
   isPublic: boolean
-  progress: number
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -239,7 +256,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   title,
   isDraft,
   isPublic,
-  progress,
 }) => {
   return (
     <div className='shadow-xl border-2 border-gray-100 flex flex-row items-stretch w-[100vh] lg:w-[100vh] md:w-[100vh] 2xl:w-full my-4 relative group h-40'>
@@ -264,12 +280,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
             <p>{isPublic ? 'Доступен всем' : 'Не доступен всем'}</p>
           </div>
         </div>
-        <div className='w-full bg-gray-200 rounded-full mb-4'>
-          <div
-            className='h-2 bg-fuchsia-500 rounded-full'
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
+        {/*<div className='w-full bg-gray-200 rounded-full mb-4'>*/}
+        {/*  <div*/}
+        {/*    className='h-2 bg-fuchsia-500 rounded-full'*/}
+        {/*    style={{ width: `${progress}%` }}*/}
+        {/*  ></div>*/}
+        {/*</div>*/}
       </div>
     </div>
   )
