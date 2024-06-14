@@ -20,7 +20,7 @@ const StudentHeader: React.FC = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const userID = useSelector(selectUserID)
   const navigate = useNavigate()
-  const { data, error, isLoading } = useSWR(
+  const { data } = useSWR(
     `http://localhost:8080/users/has-user-tried-instructor/${userID}`,
     fetcher
   )
@@ -82,9 +82,6 @@ const StudentHeader: React.FC = () => {
       navigate('/teaching')
     }
   }
-
-  if (error) return <div>ошибка загрузки</div>
-  if (isLoading) return <div>загрузка...</div>
 
   const final_route = data?.has_used ? '/instructor/courses' : '/teaching'
   return (

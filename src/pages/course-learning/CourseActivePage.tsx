@@ -6,6 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import TestSection from '@/pages/course-learning/TestSection.tsx'
 import { TestQuestion } from '@/pages/course-creation/curriculum/types.ts'
 import logo from '/platform_logo.png'
+import {
+  averageRating,
+  computeRatingDistribution,
+  Review,
+  ReviewList,
+} from '@/components/ReviewList.tsx'
 
 interface CourseSection {
   id: number
@@ -207,7 +213,7 @@ const CourseActivePage: React.FC = () => {
             ) : (
               <div className='flex justify-center items-center w-full h-full'>
                 <h1 className='text-2xl font-bold'>
-                  Please select a lecture or test from the list on the left.
+                  Выберите секцию с левой стороны страница для начала обучения.
                 </h1>
               </div>
             )}
@@ -234,7 +240,7 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
   const lectures = 12
   const videoLength = '2h 30m'
   return (
-    <div className={'ml-16'}>
+    <div className={' w-full '}>
       {activeTab === 'overview' && (
         <div className='mt-4'>
           <div>
@@ -329,8 +335,8 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
         </div>
       )}
       {activeTab === 'reviews' && (
-        <div className='mt-4 min-w-64 bg-gray-800'>
-          <ReviewsComponent />
+        <div className='mt-4 w-full '>
+          <ReviewList reviews={initialReviews} /> {/* TODO: wtf*/}
         </div>
       )}
     </div>
@@ -451,7 +457,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <div className='flex border-b lg:ml-40 w-full'>
+    <div className='flex border-b w-full'>
       <button
         className={`p-2 ${activeTab === 'overview' ? 'font-bold border-b-black border-b-2' : ''}`}
         onClick={() => setActiveTab('overview')}
@@ -481,41 +487,28 @@ const Header: React.FC = () => {
   )
 }
 
-interface Review {
-  id: number
-  author: string
-  content: string
-  name: string
-  date: string
-  rating: number
-}
-
 const initialReviews: Review[] = [
   {
-    id: 1,
-    author: 'John Doe',
-    content: 'Great course!',
-    name: '',
-    date: '2023-05-01',
+    full_name: 'John Doe',
+    review_text: 'Great course!',
+    created_at: '2023-05-01',
     rating: 5,
   },
   {
-    id: 2,
-    author: 'Jane Smith',
-    content: 'Learned a lot, highly recommend!',
-    name: '',
-    date: '2023-05-02',
+    full_name: 'Jane Smith',
+    review_text:
+      'Learned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommend!',
+    created_at: '2023-05-02',
     rating: 4,
   },
 ]
 
 export const ReviewsComponent: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>(initialReviews)
-  const [newReview, setNewReview] = useState({
-    author: '',
-    content: '',
-    name: '',
-    date: '',
+  const [newReview, setNewReview] = useState<Review>({
+    full_name: '',
+    review_text: '',
+    created_at: '',
     rating: 0,
   })
 
@@ -534,14 +527,13 @@ export const ReviewsComponent: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const newId = reviews.length > 0 ? reviews[reviews.length - 1].id + 1 : 1
+
     const reviewToAdd = {
-      id: newId,
       ...newReview,
       date: new Date().toISOString().split('T')[0],
     }
     setReviews([...reviews, reviewToAdd])
-    setNewReview({ author: '', content: '', name: '', date: '', rating: 0 })
+    setNewReview({ full_name: '', review_text: '', created_at: '', rating: 0 })
   }
 
   return (
@@ -561,7 +553,7 @@ export const ReviewsComponent: React.FC = () => {
             id='author'
             name='author'
             type='text'
-            value={newReview.author}
+            value={newReview.full_name}
             onChange={handleInputChange}
             className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
             placeholder='Ваше имя'
@@ -575,7 +567,7 @@ export const ReviewsComponent: React.FC = () => {
           <textarea
             id='content'
             name='content'
-            value={newReview.content}
+            value={newReview.review_text}
             onChange={handleInputChange}
             className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
             placeholder='Ваш отзыв'
@@ -590,7 +582,8 @@ export const ReviewsComponent: React.FC = () => {
             id='name'
             name='name'
             type='text'
-            value={newReview.name}
+            disabled={true}
+            value={newReview.full_name}
             onChange={handleInputChange}
             className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
             placeholder='Имя'
@@ -623,66 +616,6 @@ export const ReviewsComponent: React.FC = () => {
           </button>
         </div>
       </form>
-    </div>
-  )
-}
-const computeRatingDistribution = (reviews: Review[]) => {
-  const total = reviews.length
-  const countPerStar = Array(5).fill(0) // Five star rating system
-
-  reviews.forEach((review) => {
-    if (review.rating >= 1 && review.rating <= 5) {
-      countPerStar[review.rating - 1]++
-    }
-  })
-
-  const percentages = countPerStar.map((count) => (count / total) * 100)
-  return percentages.reverse() // Since we want 5-stars first
-}
-
-const averageRating = (reviews: Review[]) => {
-  const total = reviews.reduce((acc, review) => acc + review.rating, 0)
-  return (total / reviews.length).toFixed(1)
-}
-
-interface ReviewListProps {
-  reviews: Review[]
-}
-
-const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
-  const [visibleCount, setVisibleCount] = useState(10)
-
-  const loadMoreReviews = () => {
-    setVisibleCount((currentCount) => currentCount + 10)
-  }
-
-  return (
-    <div>
-      {reviews.slice(0, visibleCount).map((review) => (
-        <div key={review.id} className='mb-4 p-4 border-b last:border-b-0'>
-          <div className='flex items-center space-x-4'>
-            <div className='font-semibold'>{review.name}</div>
-            <div className='text-gray-500 text-sm'>{review.date}</div>
-          </div>
-          <div className='flex items-center mt-1'>
-            <div className='text-yellow-400'>
-              {Array(review.rating).fill('★').join('')}
-            </div>
-            <div className='text-sm text-gray-500 ml-2'>{review.rating.toFixed(1)}</div>
-          </div>
-          <p className='mt-2 text-gray-800'>{review.content}</p>
-        </div>
-      ))}
-      <div className={'flex items-center justify-center'}>
-        {visibleCount < reviews.length && (
-          <button
-            onClick={loadMoreReviews}
-            className='mt-4 px-6 py-2 text-black border-2 border-black  transition duration-300'
-          >
-            Load More Reviews
-          </button>
-        )}
-      </div>
     </div>
   )
 }

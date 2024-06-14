@@ -182,7 +182,8 @@ const mockData: Record<SearchPossibility, SearchResult[]> = {
       id: 1,
       type: 'course',
       title: 'Обучение Python',
-      image: 'https://flowbite.com/docs/images/logo.svg',
+      image:
+        'https://static-00.iconduck.com/assets.00/kubernetes-icon-512x497-9lzx72x4.png',
       rating: 4.0,
       enrollment: 100,
     },

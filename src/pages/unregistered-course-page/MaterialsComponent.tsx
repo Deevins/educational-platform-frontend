@@ -1,6 +1,11 @@
 import React from 'react'
+import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 
-export const MaterialsComponent: React.FC = () => {
+type MaterialsComponentProps = {
+  courseInfo: CourseInfo
+}
+
+export const MaterialsComponent: React.FC<MaterialsComponentProps> = () => {
   return (
     <div className='max-w-4xl mx-auto  p-6 bg-white rounded-xl shadow-md mb-8'>
       <h2 className='text-xl font-bold'>Требования</h2>

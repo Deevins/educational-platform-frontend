@@ -1,7 +1,12 @@
 import React from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
+import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 
-export const LearnComponent: React.FC = () => {
+type LearnComponentProps = {
+  courseInfo: CourseInfo
+}
+
+export const LearnComponent: React.FC<LearnComponentProps> = () => {
   // TODO: fix after connect api
   return (
     <div className='max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md'>

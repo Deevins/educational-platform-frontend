@@ -62,11 +62,6 @@ const router = createBrowserRouter([
         element: <CoursesSearchPage />,
         errorElement: <NotFoundPage />,
       },
-      // {
-      //   path: '/courses/my',
-      //   element: <UserCoursesPage />,
-      //   errorElement: <NotFoundPage />,
-      // },
       {
         path: '/forum',
         element: <ForumPage />,

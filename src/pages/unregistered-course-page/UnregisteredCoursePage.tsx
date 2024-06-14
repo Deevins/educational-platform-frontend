@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { GoVideo } from 'react-icons/go'
-import { Link, NavLink, useParams } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useParams } from 'react-router-dom'
 import { LearnComponent } from '@/pages/unregistered-course-page/LearnComponent.tsx'
 import { MaterialsComponent } from '@/pages/unregistered-course-page/MaterialsComponent.tsx'
-import { ReviewsComponent } from '@/pages/unregistered-course-page/ReviewsComponent.tsx'
 import { InstructorComponent } from '@/pages/unregistered-course-page/InstructorComponent.tsx'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { selectUserID } from '@/utils/redux/store/authSlice.ts'
+import useSWR from 'swr'
+import { Review, ReviewList } from '@/components/ReviewList.tsx'
 
 const instructorObject = {
   id: '2',
@@ -24,37 +25,87 @@ const instructorObject = {
     'Он специализируется на создании веб-приложений с ' +
     'использованием современных технологий.',
 }
+
+interface Instructor {
+  id: number
+  full_name: string
+  avatar_url: string
+  description: string
+  students_count: number
+}
+
+export interface CourseInfo {
+  id: number
+  title: string
+  subtitle: string
+  avatar_url: string
+  category: string
+  course_goals: string[]
+  created_at: string
+  description: string
+  instructor: Instructor
+  language: string
+  lectures_count: number
+  lectures_length: number
+  level: string
+  preview_video_URL: string
+  rating: number
+  requirements: string[]
+  reviews_count: number
+  status: string
+  students_count: number
+  target_audience: string[]
+  reviews: Review[]
+}
+
 type ParamsType = {
   courseID: string
 }
+
+type IsStudentRegistered = {
+  is_registered: boolean
+}
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const UnregisteredCoursePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('learn')
   const userID = useSelector(selectUserID)
   const { courseID } = useParams<ParamsType>()
-  const studentsCount = 6453
-  const instuctorUrl = '/users/user/2/profile'
-  const isStudentRegistered = false
+  // const [setCourse, Course] = useState<CourseInfo[]>()
+  const [isStudentRegistered, setIsStudentRegistered] = useState<boolean>(false)
+  const navigate = useNavigate()
+  const { data, error } = useSWR<CourseInfo>(
+    `http://localhost:8080/courses/get-full-course/${courseID}`,
+    fetcher
+  )
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/users/check-if-user-registered-to-course`, {
-        params: { userID, courseID },
-      })
+      .get<IsStudentRegistered>(
+        `http://localhost:8080/users/check-if-user-registered-to-course`,
+        {
+          params: { userID, courseID },
+        }
+      )
       .then((response) => {
-        console.log(response.data)
+        setIsStudentRegistered(response.data.is_registered)
+        console.log(isStudentRegistered)
       })
-    console.log('Course ID:', courseID)
   }, [courseID, userID])
+
+  if (!data) {
+    return <div>Loading...</div>
+  }
 
   const renderContent = () => {
     switch (activeSection) {
       case 'learn':
-        return <LearnComponent />
+        return <LearnComponent courseInfo={data} />
       case 'materials':
-        return <MaterialsComponent />
+        return <MaterialsComponent courseInfo={data} />
       case 'reviews':
-        return <ReviewsComponent />
+        return <ReviewList reviews={data.reviews} />
       case 'instructor':
         return (
           <InstructorComponent
@@ -68,14 +119,21 @@ const UnregisteredCoursePage: React.FC = () => {
           />
         )
       default:
-        return <LearnComponent />
+        return <LearnComponent courseInfo={data} />
     }
   }
 
-  const handleRegisterOnCourse = () => {
+  const handleRegisterOnCourse = async () => {
+    console.log(userID, courseID)
+    await axios.post(`http://localhost:8080/users/register-on-course`, {
+      userID,
+      courseID,
+    })
     console.log('Register on course')
-    // TODO: Implement registration on course functionality and redirect if successful
+    navigate(`/courses/course/${courseID}/learn/`)
   }
+
+  if (error) return <div>Failed to load</div>
 
   return (
     <div className={'lg:w-full min-h-screen'}>
@@ -83,60 +141,57 @@ const UnregisteredCoursePage: React.FC = () => {
         <div className='flex mb-5'>
           {/*<div className='flex-col lg:flex lg:items-center w-full'> FIXME: adaptiv snizy*/}
           <div className='flex '>
-            <ReactPlayer
-              url={
-                'http://127.0.0.1:9000/mybucket/09c40dae-3de3-4a46-811b-1f0fa27fbeb3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=root%2F20240609%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240609T090026Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=b742b9ff5853a6d01bf617fe3fc8e51d3fc1f0630761c2d21a837b56b4b9f200'
-              }
-              controls={true}
-            />
+            <ReactPlayer url={data.preview_video_URL} controls={true} />
             <div className={'ml-6'}>
-              <h1 className='text-3xl font-bold text-gray-900 max-w-2xl truncate mb-4'>
-                Обзор Frontend и Backend технологий
+              <h1 className='textdata-3xl font-bold text-gray-900 max-w-2xl truncate mb-4'>
+                {data.title}
               </h1>
               <div className={'flex flex-col justify-center'}>
                 <p className='text-xl text-gray-700 max-w-4xl truncate hover:text-clip mb-4'>
-                  Создание нано-проекта с использованием основных Web-технологий
+                  {data.subtitle}
                 </p>
-                <div className={'flex text-center items-center'}>
-                  <RatingComponent rating={4.9} totalRatings={606} />
-                  <p className={'ml-auto'}>{studentsCount} студентов</p>
+                <div className={'flex text-center items-center justify-center'}>
+                  <RatingComponent
+                    rating={data.rating}
+                    totalRatings={data.reviews_count}
+                  />
+                  <div className='text-gray-600'>|</div>
+                  <p className={'ml-auto'}> {data.students_count} студентов</p>
                 </div>
                 <p className={'flex items-center text-center'}>
                   <GoVideo className={'mr-2 mt-0.5'} />
-                  1ч 15 мин видеоматериала лекций
+                  {Math.floor(data.lectures_length / 60)}ч {data.lectures_count} мин
+                  видеоматериала лекций
                 </p>
                 <p>
                   Автор:{' '}
                   <NavLink
-                    to={instuctorUrl}
+                    to={`/users/user/${data.instructor.id}/profile`}
                     className={'hover:text-blue-500 text-purple-700'}
                   >
-                    {instructorObject.name}
+                    {data.instructor.full_name}
                   </NavLink>
                 </p>
               </div>
               {isStudentRegistered ? (
-                <Link to={''}>
+                <Link to={`/courses/course/${courseID}/learn/`}>
                   <button
                     className={
                       'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
                     }
-                    onClick={handleRegisterOnCourse}
                   >
                     Перейти к курсу
                   </button>
                 </Link>
               ) : (
-                <Link to={'/courses/course/:courseID/learn/lecture/15154208'}>
-                  <button
-                    className={
-                      'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
-                    }
-                  >
-                    {' '}
-                    Зарегистрироваться
-                  </button>
-                </Link>
+                <button
+                  className={
+                    'bg-black text-white py-2 w-full lg:mt-[23%] hover:bg-gray-800'
+                  }
+                  onClick={handleRegisterOnCourse}
+                >
+                  Зарегистрироваться
+                </button>
               )}
             </div>
           </div>
@@ -356,13 +411,13 @@ const InstructorCourses: React.FC = () => {
       </h1>
       <div className='bg-white p-6 shadow mt-4 grid grid-cols-3 gap-4 items-center'>
         {currentCourses.map((course) => (
-          <CourseCard key={course.courseId} {...course} />
+          <CourseCard key={course.courseId + Math.random()} {...course} />
         ))}
       </div>
       <div className='flex justify-center mt-4'>
         {pageNumbers.map((number) => (
           <button
-            key={number}
+            key={number + Math.random()}
             onClick={() => paginate(number)}
             className={`mx-1 px-3 py-1 border rounded ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-white'}`}
           >
@@ -384,15 +439,15 @@ const RatingComponent: React.FC<RatingComponentProps> = ({ rating, totalRatings 
   const halfStar = rating % 1 >= 0.5 ? 1 : 0
   const emptyStars = 5 - fullStars - halfStar
 
-  const fullStarsIcons = Array(fullStars).fill(
-    <FaStar className='text-yellow-500' key={fullStars + 50} />
-  )
+  const fullStarsIcons = Array(fullStars)
+    .fill(null)
+    .map((_, index) => <FaStar className='text-yellow-500' key={`full-${index}`} />)
   const halfStarIcon = halfStar ? (
-    <FaStarHalfAlt className='text-yellow-500' key={halfStar + 20} />
+    <FaStarHalfAlt className='text-yellow-500' key='half' />
   ) : null
-  const emptyStarsIcons = Array(emptyStars).fill(
-    <FaRegStar className='text-yellow-500' key={emptyStars + 30} />
-  )
+  const emptyStarsIcons = Array(emptyStars)
+    .fill(null)
+    .map((_, index) => <FaRegStar className='text-yellow-500' key={`empty-${index}`} />)
 
   return (
     <div className='flex items-center text-lg'>
