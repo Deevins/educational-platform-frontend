@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
+import axios from 'axios'
+
+interface ICreateBase {
+  course_id: number
+}
 
 // Компонент заголовка
 const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
@@ -47,6 +54,7 @@ const CheckBoxes: React.FC<{
     </>
   )
 }
+
 const techStack: string[] = [
   'Frontend',
   'Backend',
@@ -56,9 +64,11 @@ const techStack: string[] = [
   'Базы данных',
   'Прочие технологии',
 ]
+
 const SectionImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return <img src={src} alt={alt} className={'hidden lg:block'} />
 }
+
 type step = 1 | 2 | 3 | 4
 type OnboardingResponses = {
   [key in step]: string
@@ -77,8 +87,23 @@ const CourseBaseCreationPage: React.FC = () => {
     '3': '',
     '4': '',
   })
+  console.log(responses)
+  const userID = useSelector(selectUserID)
+
+  useEffect(() => {
+    if (selectedOption) {
+      setResponses((prevResponses) => ({
+        ...prevResponses,
+        [currentStep]: selectedOption,
+      }))
+    }
+  }, [selectedOption, currentStep])
 
   const handleContinue = () => {
+    console.log(isContinueDisabled())
+    if (isContinueDisabled()) {
+      return
+    }
     setCurrentStep((prevStep) => prevStep + 1)
     setSelectedOption('')
     setIsCheckboxSelected(false)
@@ -90,53 +115,37 @@ const CourseBaseCreationPage: React.FC = () => {
   }
 
   const handleOptionChange = (option: string) => {
-    setResponses(
-      (prevResponses) =>
-        ({ ...prevResponses, [currentStep]: option }) as OnboardingResponses
-    )
-    console.log(responses)
     setSelectedOption(option)
     setIsCheckboxSelected(true)
   }
 
   const handleInputChange = (value: string) => {
-    setResponses(
-      (prevResponses) =>
-        ({ ...prevResponses, [currentStep]: value }) as OnboardingResponses
-    )
+    console.log(responses)
+    setResponses((prevResponses) => ({
+      ...prevResponses,
+      [currentStep]: value,
+    }))
     setIsInputFilled(true)
     setIsCheckboxSelected(true)
   }
 
-  interface ServerResponse {
-    status: number
-    data: { message: string; courseID: number }
-  }
-
-  // Функция для замоканного запроса на сервер
-  const mockServerRequest = (response: ServerResponse): Promise<ServerResponse> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response)
-      }, 1000) // Задержка 1 секунда для имитации запроса
-    })
-  }
   const useCourseCreateHandler = async () => {
-    // TODO: make request to api to create course and after success redirect to new created course edit page
     setLoading(true)
     try {
-      // Замоканный запрос на сервер (можно заменить на реальный endpoint)
-      const mockedResponse: ServerResponse = {
-        status: 200, // Измените на 500, чтобы проверить обработку ошибки
-        data: { message: 'Success', courseID: 523233 },
-      }
-
-      // Моковый запрос, который заменяет реальный запрос
-      const response = await mockServerRequest(mockedResponse)
+      const response = await axios.post<ICreateBase>(
+        'http://localhost:8080/courses/create-base',
+        {
+          author_id: userID,
+          type: responses[1],
+          title: responses[2],
+          category_id: 1,
+          time_planned: responses[4],
+        }
+      )
 
       if (response.status === 200) {
         // Редирект на нужную страницу
-        navigate(`/instructor/courses/course/${response.data.courseID}/manage/goals`)
+        navigate(`/instructor/courses/course/${response.data.course_id}/manage/goals`)
       } else {
         // Обработка других кодов ответа
         console.error('Unexpected response:', response)
@@ -145,10 +154,32 @@ const CourseBaseCreationPage: React.FC = () => {
       // Обработка ошибок запроса
       console.error('Error:', error)
     }
+
     setLoading(false)
   }
 
-  const isContinueDisabled = isCheckboxSelected || isInputFilled
+  const isContinueDisabled = (): boolean => {
+    if (currentStep === 1 && isCheckboxSelected) {
+      return false
+    }
+
+    if (currentStep === 2 && isInputFilled) {
+      return false
+    }
+
+    if (currentStep === 3 && isCheckboxSelected) {
+      return false
+    }
+
+    if (currentStep === 4 && isCheckboxSelected) {
+      return false
+    }
+
+    return true
+  }
+
+  // const isContinueDisabled = !isCheckboxSelected || !isInputFilled
+  // console.log(!isCheckboxSelected, !isInputFilled, isContinueDisabled)
 
   return (
     <div className='flex flex-col h-screen'>
@@ -182,7 +213,6 @@ const CourseBaseCreationPage: React.FC = () => {
             handleInputChange={handleInputChange}
           />
         )}
-        {}
         {currentStep === 2 && (
           <PageSection
             title={'У вас уже есть рабочее название курса?'}
@@ -235,16 +265,18 @@ const CourseBaseCreationPage: React.FC = () => {
         {currentStep < 4 ? (
           <button
             onClick={handleContinue}
-            disabled={!isContinueDisabled}
+            disabled={isContinueDisabled()}
             className={`bg-black px-4 py-2 rounded-md ${
-              isContinueDisabled ? 'hover:bg-gray-600' : 'cursor-not-allowed bg-gray-500'
+              isContinueDisabled()
+                ? 'cursor-not-allowed bg-gray-500'
+                : 'hover:bg-gray-600'
             }`}
           >
             Продолжить
           </button>
         ) : (
           <button
-            className={`border-black px-4 py-2 border-2 bg-black ${!isContinueDisabled ? 'cursor-not-allowed bg-gray-500' : 'hover:bg-gray-600 hover:cursor-pointer'} `}
+            className={`border-black px-4 py-2 border-2 bg-black ${loading ? 'cursor-not-allowed bg-gray-500' : 'hover:bg-gray-600'}`}
             disabled={loading}
             onClick={useCourseCreateHandler}
           >
@@ -275,6 +307,7 @@ type PageSectionProps = {
   handleOptionChange: (option: string) => void
   handleInputChange: (value: string) => void
 }
+
 const PageSection: React.FC<PageSectionProps> = ({
   title,
   checkBoxHeader,
@@ -343,6 +376,7 @@ const TextInputSection: React.FC<{
     </div>
   )
 }
+
 type DropdownProps = {
   title: string
   desc: string
@@ -369,6 +403,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     onChange(option)
     toggleDropdown()
   }
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
