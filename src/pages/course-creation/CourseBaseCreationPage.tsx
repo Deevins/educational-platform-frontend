@@ -8,6 +8,11 @@ interface ICreateBase {
   course_id: number
 }
 
+interface ICategory {
+  id: number
+  name: string
+}
+
 // Компонент заголовка
 const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
   return <h2 className='text-3xl font-bold mb-10'>{title}</h2>
@@ -55,16 +60,6 @@ const CheckBoxes: React.FC<{
   )
 }
 
-const techStack: string[] = [
-  'Frontend',
-  'Backend',
-  'Fullstack',
-  'Мобильная разработка',
-  'Инфраструктура и DevOps',
-  'Базы данных',
-  'Прочие технологии',
-]
-
 const SectionImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return <img src={src} alt={alt} className={'hidden lg:block'} />
 }
@@ -87,7 +82,7 @@ const CourseBaseCreationPage: React.FC = () => {
     '3': '',
     '4': '',
   })
-  console.log(responses)
+  const [categories, setCategories] = useState<ICategory[]>([])
   const userID = useSelector(selectUserID)
 
   useEffect(() => {
@@ -99,8 +94,15 @@ const CourseBaseCreationPage: React.FC = () => {
     }
   }, [selectedOption, currentStep])
 
+  useEffect(() => {
+    axios
+      .get<ICategory[]>('http://localhost:8080/directories/categories')
+      .then((response) => {
+        setCategories(response.data)
+      })
+  }, [])
+
   const handleContinue = () => {
-    console.log(isContinueDisabled())
     if (isContinueDisabled()) {
       return
     }
@@ -120,7 +122,6 @@ const CourseBaseCreationPage: React.FC = () => {
   }
 
   const handleInputChange = (value: string) => {
-    console.log(responses)
     setResponses((prevResponses) => ({
       ...prevResponses,
       [currentStep]: value,
@@ -138,13 +139,12 @@ const CourseBaseCreationPage: React.FC = () => {
           author_id: userID,
           type: responses[1],
           title: responses[2],
-          category_id: 1,
+          category_title: responses[3],
           time_planned: responses[4],
         }
       )
 
       if (response.status === 200) {
-        // Редирект на нужную страницу
         navigate(`/instructor/courses/course/${response.data.course_id}/manage/goals`)
       } else {
         // Обработка других кодов ответа
@@ -177,9 +177,6 @@ const CourseBaseCreationPage: React.FC = () => {
 
     return true
   }
-
-  // const isContinueDisabled = !isCheckboxSelected || !isInputFilled
-  // console.log(!isCheckboxSelected, !isInputFilled, isContinueDisabled)
 
   return (
     <div className='flex flex-col h-screen'>
@@ -229,7 +226,7 @@ const CourseBaseCreationPage: React.FC = () => {
         )}
         {currentStep === 3 && (
           <Dropdown
-            options={techStack}
+            options={categories.map((category) => category.name)}
             selectedOption={selectedOption}
             onChange={handleOptionChange}
             title={'Какая категория лучше всего подходит к теме вашего будущего курса?'}
@@ -248,7 +245,6 @@ const CourseBaseCreationPage: React.FC = () => {
             }
             checkBoxHeader={'Расширяйте свою аудиторию?'}
             options={[
-              // TODO: fix options fetch from API
               'Сейчас я очень занят (0–2 часа)',
               'Я буду уделять этому посильное время (2–4 часов)',
               'У меня достаточно времени (более 5 часов)',
