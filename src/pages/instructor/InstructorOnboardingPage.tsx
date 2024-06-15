@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-
-import item_1 from '/create_course_1.png'
 import axios from 'axios'
-import { selectUserID } from '@/utils/redux/store/authSlice.ts'
 import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
+import item_1 from '/create_course_1.png'
 
-// Компонент заголовка
 const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
   return <h2 className='text-3xl font-bold mb-10'>{title}</h2>
 }
@@ -56,6 +54,7 @@ const CheckBoxes: React.FC<{
 const SectionImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return <img src={src} alt={alt} className={'hidden lg:block'} />
 }
+
 type step = 1 | 2 | 3
 type OnboardingResponses = {
   [key in step]: string
@@ -73,6 +72,15 @@ const InstructorOnboardingPage: React.FC = () => {
   const userID = useSelector(selectUserID)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (selectedOption) {
+      setResponses((prevResponses) => ({
+        ...prevResponses,
+        [currentStep]: selectedOption,
+      }))
+    }
+  }, [selectedOption, currentStep])
+
   const handleContinue = () => {
     setCurrentStep((prevStep) => prevStep + 1)
     setSelectedOption('')
@@ -84,11 +92,6 @@ const InstructorOnboardingPage: React.FC = () => {
   }
 
   const handleOptionChange = (option: string) => {
-    setResponses(
-      (prevResponses) =>
-        ({ ...prevResponses, [currentStep]: option }) as OnboardingResponses
-    )
-    console.log(responses)
     setSelectedOption(option)
     setIsCheckboxSelected(true)
   }
@@ -147,7 +150,6 @@ const InstructorOnboardingPage: React.FC = () => {
             handleOptionChange={handleOptionChange}
           />
         )}
-        {}
         {currentStep === 2 && (
           <PageSection
             title={'Создайте курс'}
@@ -248,4 +250,5 @@ const PageSection: React.FC<PageSectionProps> = ({
     </div>
   )
 }
+
 export default InstructorOnboardingPage
