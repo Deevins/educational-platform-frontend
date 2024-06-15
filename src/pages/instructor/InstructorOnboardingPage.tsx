@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 import item_1 from '/create_course_1.png'
 import axios from 'axios'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
+import { useSelector } from 'react-redux'
 
 // Компонент заголовка
 const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
@@ -59,11 +61,6 @@ type OnboardingResponses = {
   [key in step]: string
 }
 
-// UserID                int32  `json:"user_id"`
-// HasVideoKnowledge     bool   `json:"has_video_knowledge"`
-// HasPreviousExperience bool   `json:"has_previous_experience"`
-// CurrentAudienceCount  string `json:"current_audience_count"`
-
 const InstructorOnboardingPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [selectedOption, setSelectedOption] = useState<string>('')
@@ -73,6 +70,8 @@ const InstructorOnboardingPage: React.FC = () => {
     '2': '',
     '3': '',
   })
+  const userID = useSelector(selectUserID)
+  const navigate = useNavigate()
 
   const handleContinue = () => {
     setCurrentStep((prevStep) => prevStep + 1)
@@ -97,16 +96,16 @@ const InstructorOnboardingPage: React.FC = () => {
   const handlerReadyClick = async () => {
     try {
       const repackedResponses = {
-        user_id: 1,
+        user_id: userID,
         video_knowledge: responses[2],
         previous_experience: responses[1],
         current_audience_count: responses[3],
       }
-      const result = await axios.post(
+      await axios.post(
         `http://localhost:8080/users/add-user-teaching-experience`,
         repackedResponses
       )
-      console.log('result', result.status)
+      navigate(`/instructor/courses`)
     } catch (error) {
       console.error('Error fetching data:', error)
     }

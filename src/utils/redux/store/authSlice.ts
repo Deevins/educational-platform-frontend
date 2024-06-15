@@ -5,6 +5,7 @@ interface AuthState {
   token: string | null
   userId: string | null
   error: string | null
+  role: string | null
   isLoggedIn: boolean
   status: 'ready' | 'loading' | 'failed'
 }
@@ -25,6 +26,7 @@ const initialState: AuthState = {
   token: localStorage.getItem('token'),
   userId: null,
   error: null,
+  role: null,
   isLoggedIn: localStorage.getItem('token') !== null,
   status: 'ready',
 }
@@ -47,7 +49,7 @@ export const login = createAsyncThunk(
         throw new Error(errorData.message)
       }
 
-      const data: { token: string; user_id: string } = await response.json()
+      const data: { token: string; user_id: string; role: string } = await response.json()
       localStorage.setItem('token', data.token)
       return data
     } catch (error) {
@@ -67,6 +69,7 @@ export const registerUserAsync = createAsyncThunk(
           'Content-Type': 'application/json',
         },
       })
+      console.log(response)
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -90,6 +93,7 @@ const authSlice = createSlice({
     clearToken: (state) => {
       state.token = null
       state.userId = null
+      state.role = null
       state.isLoggedIn = false
     },
   },
@@ -99,9 +103,10 @@ const authSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(login.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.token = action.payload.token
         state.userId = action.payload.user_id
-        console.log(action.payload.token, action.payload.user_id)
+        state.role = action.payload.role
         state.isLoggedIn = true
         state.status = 'ready'
       })
@@ -133,12 +138,18 @@ const authSlice = createSlice({
     builder.addCase(setUserId, (state, action) => {
       state.userId = action.payload
     })
+    builder.addCase(setUserRole, (state, action) => {
+      state.role = action.payload
+    })
   },
 })
 
 export const setUserId = createAction<string>('user/setUserId')
+export const setUserRole = createAction<string>('user/setUserRole')
+
 export const selectIsAuthenticated = (state: RootState) => state.auth.isLoggedIn
 export const selectUserID = (state: RootState) => state.auth.userId
+export const selectRole = (state: RootState) => state.auth.role
 export const logout = createAction('auth/logout')
 
 export default authSlice.reducer

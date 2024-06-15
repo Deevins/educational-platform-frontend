@@ -20,7 +20,7 @@ const InstructorCoursesPage: React.FC = () => {
   const [results, setResults] = useState<AuthorCourse[]>([])
   const [isSearching, setIsSearching] = useState<boolean>(false)
   const { data, error, isLoading } = useSWR(
-    `http://localhost:8080/courses/get-all-courses-by-instructor-id/${userID}`,
+    `http://localhost:8080/users/get-all-courses-by-instructor-id/${userID}`,
     fetcher
   )
   // Обработчик для изменения значения поиска
@@ -61,26 +61,6 @@ const InstructorCoursesPage: React.FC = () => {
     setSortBy(event.target.value)
     setSearchTerm('')
   }
-
-  // Пример тестовых данных для курсов
-  // const courses = [
-  //   {
-  //     id: 1,
-  //     title: 'Разработка фуллстек приложений на React и Node.js',
-  //     imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
-  //     isDraft: true,
-  //     isPublic: false,
-  //     progress: 30,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Основы k8s и его практическое применение',
-  //     imageSrc: 'https://s.udemycdn.com/course/200_H/placeholder.jpg',
-  //     isDraft: false,
-  //     isPublic: true,
-  //     progress: 70,
-  //   },
-  // ]
 
   if (error) return <div>ошибка загрузки</div>
   if (isLoading) return <div>загрузка...</div>

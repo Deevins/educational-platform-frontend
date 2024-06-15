@@ -23,11 +23,8 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
   avatarURL,
 }) => {
   return (
-    <Link
-      to={`/users/user/${id}/profile`}
-      className='max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md'
-    >
-      <div>
+    <div className='max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md'>
+      <Link to={`/users/user/${id}/profile`}>
         <div className='flex items-center space-x-4'>
           <img src={avatarURL} alt={name} className='w-24 h-24 rounded-full' />
           <div>
@@ -42,8 +39,8 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
             </div>
           </div>
         </div>
-        <p className='mt-4 text-gray-800'>{description}</p>
-      </div>
-    </Link>
+      </Link>
+      <p className='mt-4 text-gray-800'>{description}</p>
+    </div>
   )
 }

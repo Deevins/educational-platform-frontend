@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 export interface Course {
@@ -46,7 +46,9 @@ const CourseCardMini: React.FC<Course> = ({ title, description, id }) => {
           style={{ backgroundColor: color }}
         >
           <h3 className='text-lg font-bold'>{title}</h3>
-          <p className='mt-2'>{description}</p>
+          <div className='mt-2'>
+            <TruncatedText text={description} maxLength={50} />
+          </div>
         </div>
       </NavLink>
     </div>
@@ -54,3 +56,31 @@ const CourseCardMini: React.FC<Course> = ({ title, description, id }) => {
 }
 
 export default CourseCardMini
+
+const TruncatedText: React.FC<{ text: string; maxLength: number }> = ({
+  text,
+  maxLength,
+}) => {
+  const [isHovered, setIsHovered] = useState(false)
+
+  const handleMouseEnter = () => setIsHovered(true)
+  const handleMouseLeave = () => setIsHovered(false)
+
+  const displayText =
+    isHovered || text.length <= maxLength ? text : `${text.substring(0, maxLength)}...`
+
+  return (
+    <div
+      className='relative group'
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <p className='whitespace-nowrap overflow-hidden overflow-ellipsis'>{displayText}</p>
+      {isHovered && text.length > maxLength && (
+        <div className='absolute bg-white border p-2 rounded shadow-lg z-10 max-w-xs'>
+          {text}
+        </div>
+      )}
+    </div>
+  )
+}

@@ -130,7 +130,7 @@ const CourseList: React.FC<CourseListProps> = ({ filters }) => {
           className={`bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 ${currentPage === 1 ? 'bg-black opacity-95' : ''} rounded-l hover:${currentPage === 1 ? 'cursor-not-allowed' : ''}  `}
           disabled={currentPage === 1}
         >
-          Previous
+          Предыдущая страница
         </button>
         <span className='px-4 py-2'>{`Page ${currentPage} of ${Math.ceil(data.length / coursesPerPage)}`}</span>
         <button
@@ -138,7 +138,7 @@ const CourseList: React.FC<CourseListProps> = ({ filters }) => {
           className={`bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r hover:${currentPage === Math.ceil(data.length / coursesPerPage) ? 'cursor-not-allowed' : ''}`}
           disabled={currentPage === Math.ceil(data.length / coursesPerPage)}
         >
-          Next
+          Следующая страница
         </button>
       </div>
     </div>
