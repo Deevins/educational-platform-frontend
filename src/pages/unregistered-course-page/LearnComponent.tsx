@@ -6,32 +6,17 @@ type LearnComponentProps = {
   courseInfo: CourseInfo
 }
 
-export const LearnComponent: React.FC<LearnComponentProps> = () => {
-  // TODO: fix after connect api
+export const LearnComponent: React.FC<LearnComponentProps> = ({ courseInfo }) => {
   return (
     <div className='max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md'>
       <h2 className='text-lg font-bold'>В конце этого курса вы сможете:</h2>
       <ul className={'flex flex-col'}>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>Frontend</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>Backend</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>HTML</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>CSS</p>
-        </li>
-        <li className={'flex text-center items-center'}>
-          <AiOutlineCheck className={'mr-2'} />
-          <p className={'pb-1'}>JavaScript</p>
-        </li>
+        {courseInfo.course_goals.map((goal, index) => (
+          <li key={index} className={'flex text-center items-center'}>
+            <AiOutlineCheck className={'mr-2'} />
+            <p className={'pb-1'}>{goal}</p>
+          </li>
+        ))}
       </ul>
     </div>
   )

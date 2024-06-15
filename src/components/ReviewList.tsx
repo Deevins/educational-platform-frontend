@@ -43,6 +43,10 @@ export const ReviewList: React.FC<ReviewListProps> = ({ reviews }) => {
   const sortReviews = (order: 'asc' | 'desc') => {
     setSortOrder(order)
   }
+  
+  if (reviews === null || reviews.length === 0) {
+    return <div>No reviews yet</div>
+  }
 
   const sortedReviews = [...reviews].sort((a, b) => {
     const dateA = new Date(a.created_at).getTime()

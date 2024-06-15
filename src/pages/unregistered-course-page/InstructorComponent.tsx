@@ -1,6 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+interface InstructorInfoProps {
+  id: number
+  name: string
+  rating: number
+  reviewCount: number
+  studentCount: number
+  courseCount: number
+  description: string
+  avatarURL: string
+}
+
 export const InstructorComponent: React.FC<InstructorInfoProps> = ({
   id,
   name,
@@ -9,6 +20,7 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
   studentCount,
   courseCount,
   description,
+  avatarURL,
 }) => {
   return (
     <Link
@@ -17,11 +29,7 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
     >
       <div>
         <div className='flex items-center space-x-4'>
-          <img
-            src='https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50'
-            alt={name}
-            className='w-24 h-24 rounded-full'
-          />
+          <img src={avatarURL} alt={name} className='w-24 h-24 rounded-full' />
           <div>
             <h1 className='text-xl font-bold'>{name}</h1>
             <div className='flex items-center mt-1'>
@@ -38,14 +46,4 @@ export const InstructorComponent: React.FC<InstructorInfoProps> = ({
       </div>
     </Link>
   )
-}
-
-interface InstructorInfoProps {
-  id: string
-  name: string
-  rating: number
-  reviewCount: number
-  studentCount: number
-  courseCount: number
-  description: string
 }

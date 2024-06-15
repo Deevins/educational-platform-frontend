@@ -12,26 +12,24 @@ import { selectUserID } from '@/utils/redux/store/authSlice.ts'
 import useSWR from 'swr'
 import { Review, ReviewList } from '@/components/ReviewList.tsx'
 
-const instructorObject = {
-  id: '2',
-  name: 'Александр Мордов',
-  avatar: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
-  rating: 4.9,
-  totalRatings: 606,
-  studentsCount: 6453,
-  description:
-    'Александр Мордов - опытный разработчик, ' +
-    'который работает в индустрии более 10 лет. ' +
-    'Он специализируется на создании веб-приложений с ' +
-    'использованием современных технологий.',
-}
-
 interface Instructor {
   id: number
   full_name: string
   avatar_url: string
   description: string
   students_count: number
+  courses_count: number
+  ratings_count: number
+  rating: number
+  courses: InstructorCourseInfo[]
+}
+
+interface InstructorCourseInfo {
+  id: number
+  title: string
+  avatar_url: string
+  rating: number
+  reviews_count: number
 }
 
 export interface CourseInfo {
@@ -72,14 +70,12 @@ const UnregisteredCoursePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('learn')
   const userID = useSelector(selectUserID)
   const { courseID } = useParams<ParamsType>()
-  // const [setCourse, Course] = useState<CourseInfo[]>()
   const [isStudentRegistered, setIsStudentRegistered] = useState<boolean>(false)
   const navigate = useNavigate()
   const { data, error } = useSWR<CourseInfo>(
     `http://localhost:8080/courses/get-full-course/${courseID}`,
     fetcher
   )
-
   useEffect(() => {
     axios
       .get<IsStudentRegistered>(
@@ -90,7 +86,6 @@ const UnregisteredCoursePage: React.FC = () => {
       )
       .then((response) => {
         setIsStudentRegistered(response.data.is_registered)
-        console.log(isStudentRegistered)
       })
   }, [courseID, userID])
 
@@ -109,13 +104,14 @@ const UnregisteredCoursePage: React.FC = () => {
       case 'instructor':
         return (
           <InstructorComponent
-            id={instructorObject.id}
-            name=' Александр Мордов'
-            rating={4.4}
-            reviewCount={859}
-            studentCount={9420}
-            courseCount={13}
-            description='Я — Игромистр. Моё призвание — показать понятный процесс создания игровых и прикладных программ, с нуля до результата.'
+            id={data.instructor.id}
+            name={data.instructor.full_name}
+            rating={data.instructor.rating}
+            reviewCount={data.instructor.ratings_count}
+            studentCount={data.instructor.students_count}
+            courseCount={data.instructor.courses_count}
+            description={data.instructor.description}
+            avatarURL={data.instructor.avatar_url}
           />
         )
       default:
@@ -124,12 +120,11 @@ const UnregisteredCoursePage: React.FC = () => {
   }
 
   const handleRegisterOnCourse = async () => {
-    console.log(userID, courseID)
     await axios.post(`http://localhost:8080/users/register-on-course`, {
       userID,
       courseID,
     })
-    console.log('Register on course')
+
     navigate(`/courses/course/${courseID}/learn/`)
   }
 
@@ -225,7 +220,10 @@ const UnregisteredCoursePage: React.FC = () => {
           </button>
         </div>
         {renderContent()}
-        <InstructorCourses />
+        <InstructorCourses
+          instructor_id={data.instructor.id}
+          courses={data.instructor.courses}
+        />
       </div>
     </div>
   )
@@ -234,164 +232,56 @@ const UnregisteredCoursePage: React.FC = () => {
 export default UnregisteredCoursePage
 
 interface CourseProps {
-  courseId: string // Unique identifier for each course
+  course_id: number // Unique identifier for each course
   image: string
   title: string
   rating: number
   reviews: number
-  lectureLength: number
 }
 
 const CourseCard: React.FC<CourseProps> = ({
-  courseId,
+  course_id,
   image,
   title,
   rating,
   reviews,
-  lectureLength,
 }) => {
   return (
-    <NavLink
-      to={`/courses/course/${courseId}`}
-      className='no-underline flex justify-center w-full h-full'
-    >
+    <div className='no-underline flex justify-center w-full h-full '>
       <div className='bg-white p-4 w-5/12 rounded-lg shadow-md flex flex-col items-center hover:bg-gray-100 text-black transition duration-300 ease-in-out transform hover:scale-105'>
-        <img src={image} alt={title} className='w-24 h-24 mb-2' />
-        <div className='text-center flex flex-col justify-center'>
-          <h3 className='text-sm font-bold'>{title}</h3>
-          <p className='text-xs'>{`${rating} ⭐ (${reviews})`}</p>
-          <p className='text-xs'>всего {lectureLength} ч лекций</p>
-        </div>
+        <NavLink to={`/courses/course/${course_id}`}>
+          <img src={image} alt={title} className='w-24 h-24 mb-2' />
+          <div className='text-center flex flex-col justify-center'>
+            <h3 className='text-sm font-bold'>{title}</h3>
+            <p className='text-xs'>{`${rating} ⭐ (${reviews})`}</p>
+          </div>
+        </NavLink>
       </div>
-    </NavLink>
+    </div>
   )
 }
 
-interface Course {
-  courseId: string
-  image: string
-  title: string
-  rating: number
-  reviews: number
-  lectureLength: number
+type InstructorCoursesProps = {
+  instructor_id: number
+  courses: InstructorCourseInfo[]
 }
 
-const InstructorCourses: React.FC = () => {
+const InstructorCourses: React.FC<InstructorCoursesProps> = ({
+  instructor_id,
+  courses,
+}) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6
 
-  const courses: Course[] = [
-    {
-      courseId: '1123',
-      image: 'https://via.placeholder.com/150',
-      title: 'Introduction to Programming',
-      rating: 4.7,
-      reviews: 123,
-      lectureLength: 12,
-    },
-    {
-      courseId: '26',
-      image: 'https://via.placeholder.com/150',
-      title: 'Advanced Mathematics',
-      rating: 4.8,
-      reviews: 289,
-      lectureLength: 15,
-    },
-    {
-      courseId: '213',
-      image: 'https://via.placeholder.com/150',
-      title: 'Data Science Basics',
-      rating: 4.6,
-      reviews: 450,
-      lectureLength: 10,
-    },
-    {
-      courseId: '424',
-      image: 'https://via.placeholder.com/150',
-      title: 'Machine Learning 101',
-      rating: 4.9,
-      reviews: 605,
-      lectureLength: 8,
-    },
-    {
-      courseId: '55',
-      image: 'https://via.placeholder.com/150',
-      title: 'Web Development Fundamentals',
-      rating: 4.5,
-      reviews: 732,
-      lectureLength: 20,
-    },
-    {
-      courseId: '12',
-      image: 'https://via.placeholder.com/150',
-      title: 'Introduction to AI',
-      rating: 4.4,
-      reviews: 198,
-      lectureLength: 6,
-    },
-    {
-      courseId: '11',
-      image: 'https://via.placeholder.com/150',
-      title: 'Cybersecurity Basics',
-      rating: 4.7,
-      reviews: 345,
-      lectureLength: 9,
-    },
-    {
-      courseId: '13',
-      image: 'https://via.placeholder.com/150',
-      title: 'Digital Marketing 101',
-      rating: 4.8,
-      reviews: 423,
-      lectureLength: 11,
-    },
-    {
-      courseId: '6',
-      image: 'https://via.placeholder.com/150',
-      title: 'Graphic Design for Beginners',
-      rating: 4.6,
-      reviews: 510,
-      lectureLength: 14,
-    },
-    {
-      courseId: '7',
-      image: 'https://via.placeholder.com/150',
-      title: 'Photography Essentials',
-      rating: 4.7,
-      reviews: 215,
-      lectureLength: 7,
-    },
-    {
-      courseId: '8',
-      image: 'https://via.placeholder.com/150',
-      title: 'Business Management',
-      rating: 4.5,
-      reviews: 328,
-      lectureLength: 13,
-    },
-    {
-      courseId: '9',
-      image: 'https://via.placeholder.com/150',
-      title: 'Public Speaking Mastery',
-      rating: 4.9,
-      reviews: 602,
-      lectureLength: 5,
-    },
-    {
-      courseId: '10',
-      image: 'https://via.placeholder.com/150',
-      title: 'Creative Writing Workshop',
-      rating: 4.8,
-      reviews: 409,
-      lectureLength: 8,
-    },
-  ]
+  if (courses === null || courses.length === 0) {
+    return <div>No other courses yet</div>
+  }
+
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentCourses = courses.slice(indexOfFirstItem, indexOfLastItem)
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
-  const instructorID = 2
 
   const pageNumbers = []
   for (let i = 1; i <= Math.ceil(courses.length / itemsPerPage); i++) {
@@ -403,7 +293,7 @@ const InstructorCourses: React.FC = () => {
       <h1 className={'border-b-2 border-black pb-4 font-semibold mt-16'}>
         Другие курсы от{' '}
         <NavLink
-          to={`/users/user/${instructorID}/profile`}
+          to={`/users/user/${instructor_id}/profile`}
           className={'hover:text-blue-500 text-purple-700'}
         >
           инструктора:
@@ -411,7 +301,14 @@ const InstructorCourses: React.FC = () => {
       </h1>
       <div className='bg-white p-6 shadow mt-4 grid grid-cols-3 gap-4 items-center'>
         {currentCourses.map((course) => (
-          <CourseCard key={course.courseId + Math.random()} {...course} />
+          <CourseCard
+            key={course.id + Math.random()}
+            course_id={course.id}
+            rating={course.rating}
+            title={course.title}
+            image={course.avatar_url}
+            reviews={course.reviews_count}
+          />
         ))}
       </div>
       <div className='flex justify-center mt-4'>

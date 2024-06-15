@@ -140,6 +140,10 @@ const UserPage: React.FC = () => {
     openModal()
   }
 
+  if (!userID) {
+    return <div>Пользователь не найден</div>
+  }
+
   const handleSave = async () => {
     if (updatedUser) {
       const userToUpdate: UserToUpdate = {
@@ -188,10 +192,12 @@ const UserPage: React.FC = () => {
   if (error) return <div>ошибка загрузки</div>
   if (isLoading) return <div>загрузка...</div>
 
+  const isSelfProfile = user?.id === parseInt(userID)
+
   return (
     <>
       <div className='min-h-screen bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
-        {user ? (
+        {user && (
           <>
             <div className='flex items-center mb-4'>
               <div className='relative'>
@@ -217,7 +223,7 @@ const UserPage: React.FC = () => {
               </div>
             </div>
             <hr className='my-4 border-t border-gray-300' />
-            {user.id === 1 && (
+            {isSelfProfile && (
               <button
                 className='bg-blue-500 text-white px-4 py-2 rounded'
                 onClick={handleEditClick}
@@ -230,27 +236,27 @@ const UserPage: React.FC = () => {
               <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
               <p className='text-black mb-4'>{user.description}</p>
             </div>
-            <div className='mt-8'>
-              <div className='flex justify-between items-center mb-4'>
-                <button
-                  className={`px-4 py-2 rounded ${
-                    currentMainTab === 'courses'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-300 text-gray-800'
-                  }`}
-                  onClick={() => handleMainTabChange('courses')}
-                >
-                  Курсы
-                </button>
-              </div>
+            {isSelfProfile && (
+              <div className='mt-8'>
+                <div className='flex justify-between items-center mb-4'>
+                  <button
+                    className={`px-4 py-2 rounded ${
+                      currentMainTab === 'courses'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-300 text-gray-800'
+                    }`}
+                    onClick={() => handleMainTabChange('courses')}
+                  >
+                    Курсы
+                  </button>
+                </div>
 
-              {currentMainTab === 'courses' && (
-                <CoursesList courses={courses} user={user} />
-              )}
-            </div>
+                {currentMainTab === 'courses' && (
+                  <CoursesList courses={courses} user={user} />
+                )}
+              </div>
+            )}
           </>
-        ) : (
-          <p className='p-8'>Загрузка...</p>
         )}
       </div>
 
