@@ -17,7 +17,11 @@ type TestComponentProps = {
   onUpdate: (id: number, title: string, componentType: SectionComponentType) => void
 }
 
-const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => {
+const TestComponent: React.FC<TestComponentProps> = ({
+  testData,
+  onUpdate,
+  onRemove,
+}) => {
   const [data, setData] = useState(testData)
   const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
   const [questions, setQuestions] = useState(testData.questions)
@@ -25,6 +29,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => 
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null)
   const [isQuestionsVisible, setIsQuestionsVisible] = useState(false) // Состояние видимости вопросов
   const { courseID } = useParams()
+  const [editMode, setEditMode] = useState(false)
 
   const handleAddQuestion = (newQuestion: api_question) => {
     const updatedQuestions =
@@ -66,6 +71,14 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => 
     setIsQuestionsVisible(!isQuestionsVisible)
   }
 
+  const removeTest = () => {
+    onRemove(testData.test_id, 'test')
+  }
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode)
+  }
+
   return (
     <>
       <div
@@ -81,8 +94,11 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => 
           <span
             className={`flex scale-90 items-center ml-2 ${editButtonsVisible ? 'visible' : 'hidden'} `}
           >
-            <MdModeEdit className={'mr-4 hover:cursor-pointer'} />
-            <FaTrash className={'mr-4 hover:cursor-pointer'} />
+            <MdModeEdit
+              className={'mr-4 hover:cursor-pointer'}
+              onClick={toggleEditMode}
+            />
+            <FaTrash className={'mr-4 hover:cursor-pointer'} onClick={removeTest} />
           </span>
         </div>
         <div className={'flex items-center justify-center hover:cursor-pointer'}>

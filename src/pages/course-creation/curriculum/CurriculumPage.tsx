@@ -29,7 +29,7 @@ const CurriculumPage = () => {
     }
 
     fetchData()
-  }, [triggerReload])
+  }, [triggerReload, stateSections])
 
   const handleSectionCreate = async (title: string, description: string) => {
     await axios.post(`http://localhost:8080/courses/create-section/${courseID}`, {

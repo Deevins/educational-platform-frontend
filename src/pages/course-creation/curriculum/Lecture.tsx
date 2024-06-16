@@ -6,6 +6,8 @@ import {
   api_lecture,
   SectionComponentType,
 } from '@/pages/course-creation/curriculum/types.ts'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 type Video = {
   name: string
@@ -28,6 +30,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
   const [editMode, setEditMode] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [video, setVideo] = useState<Video | null>(null)
+  const courseID = useParams<{ courseID: string }>().courseID
 
   const toggleEditMode = () => {
     setEditMode(!editMode)
@@ -42,15 +45,28 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null
+    const file = event.target.files?.[0]
     if (file) {
-      const newVideo: Video = {
-        name: file.name,
-        type: 'Video',
-        status: '0%', // Placeholder for upload status
-        date: new Date().toLocaleDateString(),
+      const formData = new FormData()
+      formData.append('file', file)
+
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/courses/update-lecture-video-url/${courseID}/${lectureData.id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+
+        if (response.status === 200) {
+          console.log('Video uploaded successfully:', response)
+        }
+      } catch (error) {
+        console.error('Error uploading Video:', error)
       }
-      setVideo(newVideo)
     }
   }
 

@@ -150,7 +150,6 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
         break
       case 'test':
         try {
-          console.log(id, newTitle, componentType)
           await axios.post(`http://localhost:8080/courses/update-test-title/${id}`, {
             title: newTitle,
           })
