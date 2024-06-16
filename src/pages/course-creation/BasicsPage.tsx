@@ -41,47 +41,52 @@ const BasicsPage: React.FC = () => {
   ]
 
   useEffect(() => {
-    axios.get<ILevel[]>('http://localhost:8080/directories/levels').then((response) => {
-      const levelOptions = response.data.map((level) => ({
-        value: level.id.toString(),
-        label: level.name,
-      }))
-      setLevels(levelOptions)
-    })
+    const fetchData = async () => {
+      try {
+        const [
+          categoriesResponse,
+          levelsResponse,
+          courseBasicInfoResponse,
+          courseResponse,
+        ] = await Promise.all([
+          axios.get<ICategory[]>('http://localhost:8080/directories/categories'),
+          axios.get<ILevel[]>('http://localhost:8080/directories/levels'),
+          axios.get<IBasicInfo>(
+            `http://localhost:8080/courses/get-course-basic-info/${courseID}`
+          ),
+          axios.get(`http://localhost:8080/courses/get-full-course/${courseID}`),
+        ])
+        setCategories(
+          categoriesResponse.data.map((category) => ({
+            value: category.id.toString(),
+            label: category.name,
+          }))
+        )
 
-    axios
-      .get<ICategory[]>('http://localhost:8080/directories/categories')
-      .then((response) => {
-        const categoryOptions = response.data.map((category) => ({
-          value: category.id.toString(),
-          label: category.name,
-        }))
-        setCategories(categoryOptions)
-      })
-      .catch((error) => console.error('Error fetching categories:', error))
+        setLevels(
+          levelsResponse.data.map((level) => ({
+            value: level.id.toString(),
+            label: level.name,
+          }))
+        )
 
-    axios
-      .get(`http://localhost:8080/courses/get-full-course/${courseID}`)
-      .then((response) => {
-        setImageUrl(response.data.avatar_url)
-        setVideoUrl(response.data.preview_video_URL)
-      })
-  }, [])
-
-  useEffect(() => {
-    axios
-      .get<IBasicInfo>(`http://localhost:8080/courses/get-course-basic-info/${courseID}`)
-      .then((response) => {
         const { title, subtitle, description, language, level, category_title } =
-          response.data
+          courseBasicInfoResponse.data
         setCourseTitle(title)
         setCourseSubtitle(subtitle)
         setMainSubject(description)
         setLanguage(language)
         setLevel(level)
         setCategory(category_title)
-      })
-      .catch((error) => console.error('Error fetching course info:', error))
+
+        setImageUrl(courseResponse.data.avatar_url)
+        setVideoUrl(courseResponse.data.preview_video_URL)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
   }, [courseID])
 
   const uploadImage = async (file: File) => {
@@ -134,14 +139,6 @@ const BasicsPage: React.FC = () => {
 
   const handleSaveBasicInfo = async () => {
     try {
-      console.log({
-        title: courseTitle,
-        subtitle: courseSubtitle,
-        description: mainSubject,
-        language,
-        level,
-        category: category,
-      })
       await axios.put(
         `http://localhost:8080/courses/update-course-basic-info/${courseID}`,
         {
@@ -165,38 +162,26 @@ const BasicsPage: React.FC = () => {
         label='Заголовок курса'
         value={courseTitle}
         placeholder='Fullstack разработка ReactJS + Golang'
-        onChange={(e) => {
-          setCourseTitle(e.target.value)
-          console.log(e.target.value)
-        }}
+        onChange={(e) => setCourseTitle(e.target.value)}
       />
       <InputField
         label='Подзаголовок курса'
         value={courseSubtitle}
         placeholder='Введите подзаголовок курса'
-        onChange={(e) => {
-          setCourseSubtitle(e.target.value)
-          console.log(e.target.value)
-        }}
+        onChange={(e) => setCourseSubtitle(e.target.value)}
       />
       <InputField
         label='Описание курса'
         value={mainSubject}
         placeholder='Введите описание...'
-        onChange={(e) => {
-          setMainSubject(e.target.value)
-          console.log(e.target.value)
-        }}
+        onChange={(e) => setMainSubject(e.target.value)}
       />
       <div className={'flex justify-between'}>
         <div className={'self-start w-[48%]'}>
           <SelectField
             label='Язык'
             value={language}
-            onChange={(e) => {
-              setLanguage(e.target.value)
-              console.log(e.target.value)
-            }}
+            onChange={(e) => setLanguage(e.target.value)}
             options={languageOptions}
           />
         </div>
@@ -204,10 +189,7 @@ const BasicsPage: React.FC = () => {
           <SelectField
             label='Уровень'
             value={level}
-            onChange={(e) => {
-              setLevel(e.target.value)
-              console.log(e.target.value)
-            }}
+            onChange={(e) => setLevel(e.target.value)}
             options={levels}
           />
         </div>
@@ -215,10 +197,7 @@ const BasicsPage: React.FC = () => {
       <SelectField
         label='Категория'
         value={category}
-        onChange={(e) => {
-          setCategory(e.target.value)
-          console.log(e.target.value)
-        }}
+        onChange={(e) => setCategory(e.target.value)}
         options={categories}
       />
       <div className={'text-center w-full'}>
@@ -353,25 +332,22 @@ interface SelectFieldProps {
   options: { value: string; label: string }[]
 }
 
-const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, options }) => {
-  console.log(options)
-  return (
-    <div className='w-full mb-6 '>
-      <label className='block text-gray-700 text-sm font-bold mb-2'>{label}</label>
-      <select
-        value={value}
-        onChange={onChange}
-        className='border-2 border-b-gray-400 block appearance-none w-full bg-white border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline'
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-}
+const SelectField: React.FC<SelectFieldProps> = ({ label, value, onChange, options }) => (
+  <div className='w-full mb-6 '>
+    <label className='block text-gray-700 text-sm font-bold mb-2'>{label}</label>
+    <select
+      value={value}
+      onChange={onChange}
+      className='border-2 border-b-gray-400 block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline'
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  </div>
+)
 
 interface InputFieldProps {
   label: string

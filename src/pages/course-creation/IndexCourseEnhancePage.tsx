@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom'
 import CourseEditLayout from '@/layouts/CourseEditLayout.tsx'
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const IndexCourseEnhancePage: React.FC = () => {
   return (
@@ -52,12 +53,14 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     setIsModalOpen(true)
-    setTimeout(() => {
-      setIsModalOpen(false)
-      navigate('/instructor/courses')
-    }, 1500)
+    await axios
+      .post(`http://localhost:8080/courses/send-for-approval/${courseID}`)
+      .then(() => {
+        setIsModalOpen(false)
+        navigate('/instructor/courses')
+      })
   }
 
   return (
