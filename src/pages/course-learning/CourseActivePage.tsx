@@ -104,7 +104,7 @@ const courseData: CourseSection[] = [
 
 const questions: TestQuestion[] = [
   {
-    question: 'Question 1: What is React?',
+    question_body: 'Question 1: What is React?',
     answers: [
       {
         answer: 'Library',
@@ -130,7 +130,7 @@ const questions: TestQuestion[] = [
     ],
   },
   {
-    question: 'Question 2: What is useState used for in React?',
+    question_body: 'Question 2: What is useState used for in React?',
     answers: [
       {
         answer: 'State management',

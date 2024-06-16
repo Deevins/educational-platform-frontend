@@ -5,6 +5,7 @@ import {
   api_answer,
   api_question,
   api_test,
+  SectionComponentType,
   TestAnswer,
 } from '@/pages/course-creation/curriculum/types.ts'
 import { MdModeEdit } from 'react-icons/md'
@@ -12,8 +13,8 @@ import { Link, useParams } from 'react-router-dom'
 
 type TestComponentProps = {
   testData: api_test
-  onRemove: (serial: number) => void
-  onUpdate: (serial: number, title: string) => void
+  onRemove: (id: number, componentType: SectionComponentType) => void
+  onUpdate: (id: number, title: string, componentType: SectionComponentType) => void
 }
 
 const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => {
@@ -40,7 +41,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => 
   }
 
   useEffect(() => {
-    onUpdate(data.serial_number, data.test_name)
+    onUpdate(data.test_id, data.test_name, 'test')
   }, [questions, data])
 
   const handleEditQuestion = (index: number) => {

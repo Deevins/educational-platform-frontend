@@ -2,7 +2,10 @@ import React, { useState } from 'react'
 import { FaCheckCircle, FaTrash } from 'react-icons/fa'
 import { MdModeEdit } from 'react-icons/md'
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from 'react-icons/io'
-import { api_lecture } from '@/pages/course-creation/curriculum/types.ts'
+import {
+  api_lecture,
+  SectionComponentType,
+} from '@/pages/course-creation/curriculum/types.ts'
 
 type Video = {
   name: string
@@ -12,8 +15,8 @@ type Video = {
 }
 type LectureComponentProps = {
   lectureData: api_lecture
-  onRemove: (serial: number) => void
-  onUpdate: (serial: number, title: string) => void
+  onRemove: (id: number, componentType: SectionComponentType) => void
+  onUpdate: (id: number, title: string, componentType: SectionComponentType) => void
 }
 
 const LectureComponent: React.FC<LectureComponentProps> = ({
@@ -23,23 +26,19 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
 }) => {
   const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
   const [editMode, setEditMode] = useState(false)
-  const [title, setTitle] = useState(lectureData.title)
   const [isExpanded, setIsExpanded] = useState(false)
   const [video, setVideo] = useState<Video | null>(null)
 
   const toggleEditMode = () => {
-    if (editMode && title !== lectureData.title) {
-      onUpdate(lectureData.id, title)
-    }
     setEditMode(!editMode)
   }
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value)
+    onUpdate(lectureData.id, event.target.value, 'lecture')
   }
 
   const removeLecture = () => {
-    onRemove(lectureData.id)
+    onRemove(lectureData.id, 'lecture')
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,14 +67,14 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
           {editMode ? (
             <input
               type='text'
-              value={title}
+              value={lectureData.title}
               onChange={handleTitleChange}
               onBlur={toggleEditMode}
               className='border-2 border-gray-300 p-1'
               autoFocus
             />
           ) : (
-            <p onClick={toggleEditMode}>{title}</p>
+            <p onClick={toggleEditMode}>{lectureData.title}</p>
           )}
           {editButtonsVisible && (
             <span className='flex scale-90 items-center ml-2'>

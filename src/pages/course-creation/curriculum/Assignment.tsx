@@ -2,7 +2,6 @@ import React from 'react'
 import { FaCheckCircle, FaTrash } from 'react-icons/fa'
 import { MdModeEdit } from 'react-icons/md'
 import { IoIosArrowDown, IoMdAdd } from 'react-icons/io'
-import { SectionAssignment } from '@/pages/course-creation/curriculum/types.ts'
 
 type AssignmentComponentProps = {
   assignmentData: SectionAssignment
