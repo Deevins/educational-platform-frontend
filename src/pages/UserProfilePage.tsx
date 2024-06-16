@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import PhoneInput from 'react-phone-input-2'
@@ -111,6 +111,7 @@ const UserPage: React.FC = () => {
   const [, setPhoneNumber] = useState('')
   const { isOpen, openModal, closeModal, ref } = useModal()
   const [isOnline, setIsOnline] = useState(true)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { data, error, isLoading } = useSWR(
     `http://localhost:8080/users/get-one/${userID}`,
     fetcher
@@ -134,10 +135,50 @@ const UserPage: React.FC = () => {
       setUser(data)
       setUpdatedUser(data)
     }
-  }, [isLoading])
+  }, [isLoading, data])
 
   const handleEditClick = () => {
     openModal()
+  }
+
+  const handleAvatarClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && user) {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/users/upload-avatar/${user.id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+
+        if (response.status === 200) {
+          const updatedAvatarUrl = response.data.avatar_url
+          setUser((prevUser) => ({
+            ...prevUser!,
+            avatar_url: updatedAvatarUrl,
+          }))
+          setUpdatedUser((prevUser) => ({
+            ...prevUser!,
+            avatar_url: updatedAvatarUrl,
+          }))
+        }
+      } catch (error) {
+        console.error('Error uploading avatar:', error)
+      }
+    }
   }
 
   if (!userID) {
@@ -157,13 +198,12 @@ const UserPage: React.FC = () => {
         'http://localhost:8080/users/update-user-info',
         userToUpdate
       )
-      // Save updated user data (not implemented in this example)
       if (res.status === 200) {
         console.log('User data updated successfully')
         setUser({ ...updatedUser })
       }
     }
-    closeModal() // Закрываем модальное окно при сохранении
+    closeModal()
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -201,10 +241,17 @@ const UserPage: React.FC = () => {
           <>
             <div className='flex items-center mb-4'>
               <div className='relative'>
-                <Avatar className={'w-16 h-16 mr-4'}>
+                <Avatar className={'w-16 h-16 mr-4'} onClick={handleAvatarClick}>
                   <AvatarImage src={user.avatar_url} />
                   <AvatarFallback>{user.full_name}</AvatarFallback>
                 </Avatar>
+                <input
+                  type='file'
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleAvatarChange}
+                  accept='image/*'
+                />
                 <div
                   className={`absolute bottom-0 right-4 w-4 h-4 rounded-full ${
                     isOnline ? 'bg-green-500' : 'bg-gray-500'

@@ -5,12 +5,17 @@ import { Button } from '@radix-ui/themes'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout, selectRole, selectUserID } from '@/utils/redux/store/authSlice.ts'
+import useSWR from 'swr'
+import axios from 'axios'
+import { IUser } from '@/pages/UserProfilePage.tsx'
 
 interface MenuItem {
   label: string
   onClick?: () => void
   showCondition: boolean
 }
+
+const fetcher = (url: string) => axios.get<IUser>(url).then((res) => res.data)
 
 const AvatarMenu: React.FC = () => {
   const dispatch = useDispatch()
@@ -22,6 +27,11 @@ const AvatarMenu: React.FC = () => {
 
   const userRole = useSelector(selectRole)
   const userID = useSelector(selectUserID)
+  const { data, error, isLoading } = useSWR(
+    `http://localhost:8080/users/get-one/${userID}`,
+    fetcher
+  )
+  console.log(error, isLoading)
 
   const handleLogout = () => {
     dispatch(logout())
@@ -73,11 +83,6 @@ const AvatarMenu: React.FC = () => {
         navigate(`/users/user/${userID}/profile`)
       },
     },
-    // {
-    // label: `Тема сайта ${theme === 'light' ? 'Светлая' : 'Темная'}`,
-    // onClick: handleThemeSwitch,
-    // to: '',
-    // },
     {
       label: 'Курсы на проверку',
       showCondition: userRole === 'MODERATOR' || userRole === 'ADMIN',
@@ -98,7 +103,9 @@ const AvatarMenu: React.FC = () => {
           onMouseLeave={handleMouseLeave}
         >
           <Avatar className={'hover:scale-[135%] scale-125 mr-16'}>
-            <AvatarImage src={'https://github.com/shadcn.png'} />
+            <AvatarImage
+              src={`${data?.avatar_url ? data?.avatar_url : 'https://github.com/shadcn.png'}`}
+            />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </Button>

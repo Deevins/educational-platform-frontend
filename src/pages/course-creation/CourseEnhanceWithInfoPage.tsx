@@ -161,21 +161,15 @@ const CourseDetails: React.FC = () => {
   const handleSubmit = async () => {
     const data = gatherData()
     try {
-      const response = await axios.put(
-        `http://localhost:8080/courses/update-course-goals/${courseID}`,
-        {
-          goals: data.goals,
-          requirements: data.requirements,
-          target_audience: data.target_audience,
-        }
-      )
-      if (response.status === 200) {
-        alert('Данные успешно отправлены')
-      }
+      await axios.put(`http://localhost:8080/courses/update-course-goals/${courseID}`, {
+        goals: data.goals,
+        requirements: data.requirements,
+        target_audience: data.target_audience,
+      })
     } catch (error) {
-      alert('Произошла ошибка при отправке данных')
-    } finally {
-      setQuestions(initialQuestions)
+      alert(
+        'Произошла ошибка при отправке данных. Проверьте консоль для получения дополнительной информации.'
+      )
     }
   }
 
