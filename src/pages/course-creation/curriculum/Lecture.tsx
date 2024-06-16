@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaCheckCircle, FaTrash } from 'react-icons/fa'
 import { MdModeEdit } from 'react-icons/md'
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from 'react-icons/io'
@@ -8,13 +8,8 @@ import {
 } from '@/pages/course-creation/curriculum/types.ts'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import ReactPlayer from 'react-player'
 
-type Video = {
-  name: string
-  type: string
-  status: string
-  date: string
-}
 type LectureComponentProps = {
   lectureData: api_lecture
   onRemove: (id: number, componentType: SectionComponentType) => void
@@ -29,8 +24,18 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
   const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
   const [editMode, setEditMode] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [video, setVideo] = useState<Video | null>(null)
+  const [videoRemoved, setVideoRemoved] = useState(false)
+  const [videoUploaded, setVideoUploaded] = useState(false)
+  const [videoURL, setVideoURL] = useState<string>('')
   const courseID = useParams<{ courseID: string }>().courseID
+
+  useEffect(() => {
+    setVideoURL('')
+  }, [videoRemoved])
+
+  useEffect(() => {
+    setVideoURL(lectureData.video_url)
+  }, [videoUploaded])
 
   const toggleEditMode = () => {
     setEditMode(!editMode)
@@ -51,7 +56,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
       formData.append('file', file)
 
       try {
-        const response = await axios.post(
+        const response = await axios.post<{ video_url: string }>(
           `http://localhost:8080/courses/update-lecture-video-url/${courseID}/${lectureData.id}`,
           formData,
           {
@@ -63,6 +68,8 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
 
         if (response.status === 200) {
           console.log('Video uploaded successfully:', response)
+          setVideoUploaded((prev) => !prev)
+          setVideoURL(response.data.video_url)
         }
       } catch (error) {
         console.error('Error uploading Video:', error)
@@ -129,18 +136,26 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
               className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300 cursor-pointer'
             >
               <IoMdAdd />
-              <p className='pb-0.5'>{video ? 'заменить видео' : 'загрузить видео'}</p>
+              <p className='pb-0.5'>{videoURL ? 'заменить видео' : 'загрузить видео'}</p>
             </label>
           </div>
-          {video && (
+          {videoURL && (
             <div className='flex justify-between mt-2'>
-              <span>{video.name}</span>
-              <span>{video.type}</span>
-              <span>{video.status}</span>
-              <span>{video.date}</span>
-              <button onClick={() => setVideo(null)} className='hover:bg-gray-300 p-1'>
-                Удалить
-              </button>
+              <div className='w-full max-w-xl flex content-center justify-between'>
+                <ReactPlayer url={videoURL} controls width='60%' height='auto' />
+                <button
+                  onClick={async () => {
+                    setVideoURL('')
+                    await axios.post(
+                      `http://localhost:8080/courses/remove-lecture-video/${courseID}/${lectureData.id}`
+                    )
+                    setVideoRemoved((prev) => !prev)
+                  }}
+                  className='hover:bg-gray-300 py-1 px-4 bg-gray-200 border-black border-[1px] hover:cursor-pointer ml-4 h-12 mt-[10%]'
+                >
+                  Удалить
+                </button>
+              </div>
             </div>
           )}
         </div>
