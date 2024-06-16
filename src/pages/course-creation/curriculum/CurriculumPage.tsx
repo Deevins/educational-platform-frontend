@@ -10,18 +10,20 @@ import { Section } from '@/pages/course-creation/curriculum/Section.tsx'
 
 const sections: SectionType[] = [
   {
-    sectionNum: 1,
-    title: 'Введение',
-    description: 'Введение в курс',
+    serial_number: 1,
+    section_title: 'Введение',
+    section_description: 'Введение в курс',
     lectures: [
       {
-        componentSerial: 1,
+        serial_number: 1,
         type: 'lecture',
         title: 'Лекция 1',
         description: 'lecture1  desc',
+        video_url: '',
       },
       {
-        componentSerial: 2,
+        video_url: '',
+        serial_number: 2,
         type: 'lecture',
         title: 'Лекция 2',
         description: 'lecture1  desc',
@@ -29,9 +31,9 @@ const sections: SectionType[] = [
     ],
     tests: [
       {
-        componentSerial: 1,
+        serial_number: 1,
         type: 'test',
-        title: 'Тест 1',
+        test_name: 'Тест 1',
         description: 'test1 desc',
         questions: [
           // {
@@ -58,17 +60,39 @@ const sections: SectionType[] = [
 const CurriculumPage = () => {
   const [isSectionCreationActive, setIsSectionCreationActive] = React.useState(false)
   const [stateSections, setStateSections] = React.useState<SectionType[]>(sections)
+  // const { courseID } = useParams<{ courseID: string }>()
+
+  // useEffect(() => {
+  //   // Fetch sections from API
+  //
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get<api_section[]>(
+  //         `http://localhost:8080/courses/get-course-materials/${courseID}`
+  //       )
+  //
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error)
+  //     }
+  //   }
+  //
+  //   fetchData()
+  //
+  //
+  //
+  //
+  //   console.log(response)
+  // }, [stateSections])
 
   const handleSectionCreate = (title: string, description: string) => {
     setStateSections((prev) => [
       ...prev,
       {
-        sectionNum: prev.length + 1,
-        title: title,
-        description: description,
+        serial_number: prev.length + 1,
+        section_description: description,
+        section_title: title,
         lectures: [],
         tests: [],
-        assignments: [],
       },
     ])
 
@@ -99,10 +123,10 @@ const CurriculumPage = () => {
       {stateSections.map((section, index) => (
         <Section
           key={index}
-          description={section.description}
-          sectionNum={section.sectionNum}
-          title={section.title}
+          section_description={section.section_description}
+          section_title={section.section_title}
           lectures={section.lectures}
+          serial_number={section.serial_number}
           tests={section.tests}
         />
       ))}

@@ -3,7 +3,6 @@ import { MdModeEdit } from 'react-icons/md'
 import { FaPlus, FaTrash } from 'react-icons/fa'
 import { IoMdClose } from 'react-icons/io'
 import {
-  SectionAssignment,
   SectionComponentType,
   SectionLecture,
   SectionTest,
@@ -25,7 +24,7 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
   sectionType,
   lectureData,
   testData,
-  onUpdate, // These props need to be part of SectionComponentProps
+  onUpdate,
   onRemove,
 }) => {
   switch (sectionType) {
@@ -42,17 +41,25 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
       break
     case 'test':
       if (testData) {
-        return <TestComponent testData={testData} />
+        return (
+          <TestComponent testData={testData} onUpdate={onUpdate} onRemove={onRemove} />
+        )
       }
       break
   }
   return null // Ensure all paths return a value
 }
 
-const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) => {
-  const [items, setItems] = React.useState<
-    SectionLecture[] | SectionTest[] | SectionAssignment[]
-  >([...lectures, ...tests])
+const Section: React.FC<SectionType> = ({
+  section_title,
+  tests,
+  lectures,
+  serial_number,
+}) => {
+  const [items, setItems] = React.useState<(SectionLecture | SectionTest)[]>([
+    ...lectures,
+    ...tests,
+  ])
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
 
@@ -89,25 +96,29 @@ const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) 
       description: string
     },
     componentType: SectionComponentType
-  ): Promise<SectionLecture | SectionTest | SectionAssignment> => {
+  ): Promise<SectionLecture | SectionTest> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        let newItem: SectionLecture | SectionTest | SectionAssignment
+        let newItem: SectionLecture | SectionTest
         switch (componentType) {
           case 'lecture':
+            console.log('lectures:', lectures)
+            console.log('items:', items)
+            console.log('component:', component)
             newItem = {
-              componentSerial: lectures.length + 1,
+              serial_number: lectures.length + 1,
               type: componentType,
               title: component.title,
               description: component.description,
+              video_url: '',
             }
             setItems((prevItems) => [...prevItems, newItem]) // Update items state
             break
           case 'test':
             newItem = {
-              componentSerial: tests.length + 1,
+              serial_number: tests.length + 1,
               type: componentType,
-              title: component.title,
+              test_name: component.title,
               description: component.description,
               questions: [],
             }
@@ -124,14 +135,17 @@ const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) 
 
   const onUpdate = (serial: number, newTitle: string) => {
     setItems(
-      items.map((item) =>
-        item.componentSerial === serial ? { ...item, title: newTitle } : item
-      )
+      items.map((item) => {
+        if (item.serial_number === serial) {
+          return { ...item, title: newTitle }
+        }
+        return item
+      })
     )
   }
 
   const onRemove = (serial: number) => {
-    setItems(items.filter((item) => item.componentSerial !== serial))
+    setItems(items.filter((item) => item.serial_number !== serial))
   }
 
   return (
@@ -141,8 +155,8 @@ const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) 
         onMouseEnter={() => setIsTitleButtonsShown(true)}
         onMouseLeave={() => setIsTitleButtonsShown(false)}
       >
-        <h1 className={'font-bold mr-2'}>Часть {sectionNum}:</h1>
-        <p>{title}</p>
+        <h1 className={'font-bold mr-2'}>Часть {serial_number}:</h1>
+        <p>{section_title}</p>
         <span
           className={`flex scale-90 items-center ml-2 ${isTitleButtonsShown ? 'visible' : 'hidden'} `}
         >

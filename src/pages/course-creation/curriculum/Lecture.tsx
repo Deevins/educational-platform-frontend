@@ -29,7 +29,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
 
   const toggleEditMode = () => {
     if (editMode && title !== lectureData.title) {
-      onUpdate(lectureData.componentSerial, title)
+      onUpdate(lectureData.serial_number, title)
     }
     setEditMode(!editMode)
   }
@@ -39,7 +39,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
   }
 
   const removeLecture = () => {
-    onRemove(lectureData.componentSerial)
+    onRemove(lectureData.serial_number)
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +64,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
       <div className='flex items-center justify-between w-full'>
         <div className='flex items-center'>
           <FaCheckCircle className='ml-2 mr-1' />
-          <p className='mr-2'>Лекция {lectureData.componentSerial}:</p>
+          <p className='mr-2'>Лекция {lectureData.serial_number}:</p>
           {editMode ? (
             <input
               type='text'

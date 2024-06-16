@@ -11,9 +11,11 @@ import { Link, useParams } from 'react-router-dom'
 
 type TestComponentProps = {
   testData: SectionTest
+  onRemove: (serial: number) => void
+  onUpdate: (serial: number, title: string) => void
 }
 
-const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
+const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => {
   const [data, setData] = useState(testData)
   const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
   const [questions, setQuestions] = useState(testData.questions)
@@ -21,7 +23,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null)
   const [isQuestionsVisible, setIsQuestionsVisible] = useState(false) // Состояние видимости вопросов
   const { courseID } = useParams()
-  console.log(courseID)
+
   const handleAddQuestion = (newQuestion: TestQuestion) => {
     const updatedQuestions =
       selectedQuestionIndex !== null
@@ -35,6 +37,10 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
     setIsQuestionModalOpen(false)
     setSelectedQuestionIndex(null)
   }
+
+  useEffect(() => {
+    onUpdate(data.serial_number, data.test_name)
+  }, [questions, data])
 
   const handleEditQuestion = (index: number) => {
     setSelectedQuestionIndex(index)
@@ -68,7 +74,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
         <div className='flex items-center'>
           <FaCheckCircle className='mr-2 ml-2' />
           <p>
-            Тест {data.componentSerial}: {data.title}
+            Тест {data.serial_number}: {data.test_name}
           </p>
           <span
             className={`flex scale-90 items-center ml-2 ${editButtonsVisible ? 'visible' : 'hidden'} `}
@@ -174,7 +180,7 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
       <div className={'flex flex-col w-full'}>
         <div className={'flex'}>
           <span>
-            {index + 1}. {question.question} (несколько вариантов ответа)
+            {index + 1}. {question.question_body} (несколько вариантов ответа)
           </span>
           {areEditButtonsVisible && (
             <div className={'flex items-center mr-4  ml-auto'}>
@@ -197,10 +203,13 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
 const QuestionModal: React.FC<{
   isOpen: boolean
   onClose: () => void
-  onSave: (question: TestQuestion) => void
+  onSave: (question: { question_body: string; answers: TestAnswer[] }) => void
   initialData?: TestQuestion
 }> = ({ isOpen, onClose, onSave, initialData }) => {
-  const [question, setQuestion] = useState<string>('')
+  const [question, setQuestion] = useState<TestQuestion>({
+    question_body: '',
+    answers: [],
+  })
   const [answers, setAnswers] = useState<TestAnswer[]>([
     {
       answer: '',
@@ -213,10 +222,10 @@ const QuestionModal: React.FC<{
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset'
     if (initialData) {
-      setQuestion(initialData.question)
+      setQuestion(initialData)
       setAnswers(initialData.answers)
     } else {
-      setQuestion('')
+      setQuestion({ question_body: '', answers: [] })
       setAnswers([{ answer: '', answerIsCorrect: false, answerDescription: '' }])
     }
     return () => {
@@ -261,7 +270,7 @@ const QuestionModal: React.FC<{
       return
     }
     // Сохраняем вопрос и ответы
-    onSave({ question, answers })
+    onSave({ ...question, answers })
     onClose()
   }
   if (!isOpen) return null
@@ -285,8 +294,8 @@ const QuestionModal: React.FC<{
         <div className='my-4'>
           <label className='block text-sm font-medium text-gray-700'>Вопрос</label>
           <textarea
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            value={question.question_body}
+            onChange={(e) => setQuestion({ ...question, question_body: e.target.value })}
             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
             rows={3}
           />
