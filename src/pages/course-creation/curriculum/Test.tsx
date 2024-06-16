@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { FaCheckCircle, FaTrash } from 'react-icons/fa'
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from 'react-icons/io'
 import {
-  SectionTest,
+  api_answer,
+  api_question,
+  api_test,
   TestAnswer,
-  TestQuestion,
 } from '@/pages/course-creation/curriculum/types.ts'
 import { MdModeEdit } from 'react-icons/md'
 import { Link, useParams } from 'react-router-dom'
 
 type TestComponentProps = {
-  testData: SectionTest
+  testData: api_test
   onRemove: (serial: number) => void
   onUpdate: (serial: number, title: string) => void
 }
@@ -24,7 +25,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => 
   const [isQuestionsVisible, setIsQuestionsVisible] = useState(false) // Состояние видимости вопросов
   const { courseID } = useParams()
 
-  const handleAddQuestion = (newQuestion: TestQuestion) => {
+  const handleAddQuestion = (newQuestion: api_question) => {
     const updatedQuestions =
       selectedQuestionIndex !== null
         ? questions.map((question, index) =>
@@ -156,7 +157,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData, onUpdate }) => 
 export default TestComponent
 
 type TestQuestionProps = {
-  question: TestQuestion
+  question: api_question
   index: number
   handleEditQuestion: (index: number) => void
   handleDeleteQuestion: (index: number) => void
@@ -203,20 +204,20 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
 const QuestionModal: React.FC<{
   isOpen: boolean
   onClose: () => void
-  onSave: (question: { question_body: string; answers: TestAnswer[] }) => void
-  initialData?: TestQuestion
+  onSave: (question: { question_body: string; answers: api_answer[] }) => void
+  initialData?: api_question
 }> = ({ isOpen, onClose, onSave, initialData }) => {
-  const [question, setQuestion] = useState<TestQuestion>({
+  const [question, setQuestion] = useState<api_question>({
     question_body: '',
     answers: [],
   })
-  const [answers, setAnswers] = useState<TestAnswer[]>([
+  const [answers, setAnswers] = useState<api_answer[]>([
     {
-      answer: '',
-      answerIsCorrect: false,
-      answerDescription: '',
+      response_text: '',
+      is_correct: false,
+      description: '',
     },
-    { answer: '', answerIsCorrect: false, answerDescription: '' },
+    { response_text: '', is_correct: false, description: '' },
   ])
 
   useEffect(() => {
@@ -226,7 +227,7 @@ const QuestionModal: React.FC<{
       setAnswers(initialData.answers)
     } else {
       setQuestion({ question_body: '', answers: [] })
-      setAnswers([{ answer: '', answerIsCorrect: false, answerDescription: '' }])
+      setAnswers([{ response_text: '', is_correct: false, description: '' }])
     }
     return () => {
       document.body.style.overflow = 'unset'
@@ -234,10 +235,7 @@ const QuestionModal: React.FC<{
   }, [initialData, isOpen])
 
   const handleAddAnswer = () => {
-    setAnswers([
-      ...answers,
-      { answer: '', answerIsCorrect: false, answerDescription: '' },
-    ])
+    setAnswers([...answers, { response_text: '', is_correct: false, description: '' }])
   }
 
   const handleAnswerChange = (
@@ -253,19 +251,19 @@ const QuestionModal: React.FC<{
 
   const handleToggleCorrectAnswer = (index: number) => {
     const newAnswers = answers.map((answer, i) =>
-      i === index ? { ...answer, answerIsCorrect: !answer.answerIsCorrect } : answer
+      i === index ? { ...answer, answerIsCorrect: !answer.is_correct } : answer
     )
     setAnswers(newAnswers)
   }
 
   const handleSubmit = () => {
     // Проверяем, что все обязательные поля заполнены
-    if (!question || answers.some((a) => !a.answer)) {
+    if (!question || answers.some((a) => !a.response_text)) {
       alert('Пожалуйста заполните все необходимые поля.')
       return
     }
     // Проверяем, что хотя бы один ответ отмечен как правильный
-    if (!answers.some((a) => a.answerIsCorrect)) {
+    if (!answers.some((a) => a.is_correct)) {
       alert('Пожалуйста выберите хотя бы один правильный ответ.')
       return
     }
@@ -306,19 +304,19 @@ const QuestionModal: React.FC<{
             <div className='flex items-center'>
               <input
                 type='checkbox'
-                checked={answer.answerIsCorrect}
+                checked={answer.is_correct}
                 onChange={() => handleToggleCorrectAnswer(index)}
                 className='mr-2'
               />
               <input
                 type='text'
-                value={answer.answer}
+                value={answer.response_text}
                 onChange={(e) => handleAnswerChange(index, 'answer', e.target.value)}
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
               />
             </div>
             <textarea
-              value={answer.answerDescription}
+              value={answer.description}
               onChange={(e) =>
                 handleAnswerChange(index, 'answerDescription', e.target.value)
               }

@@ -3,10 +3,10 @@ import { MdModeEdit } from 'react-icons/md'
 import { FaPlus, FaTrash } from 'react-icons/fa'
 import { IoMdClose } from 'react-icons/io'
 import {
+  api_lecture,
+  api_section,
+  api_test,
   SectionComponentType,
-  SectionLecture,
-  SectionTest,
-  SectionType,
 } from '@/pages/course-creation/curriculum/types.ts'
 import LectureComponent from '@/pages/course-creation/curriculum/Lecture.tsx'
 import TestComponent from '@/pages/course-creation/curriculum/Test.tsx'
@@ -14,8 +14,8 @@ import { Modal } from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
 
 interface SectionComponentProps {
   sectionType: SectionComponentType
-  lectureData?: SectionLecture
-  testData?: SectionTest
+  lectureData?: api_lecture
+  testData?: api_test
   onRemove: (serial: number) => void
   onUpdate: (serial: number, title: string) => void
 }
@@ -50,15 +50,15 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
   return null // Ensure all paths return a value
 }
 
-const Section: React.FC<SectionType> = ({
-  section_title,
-  tests,
-  lectures,
-  serial_number,
-}) => {
-  const [items, setItems] = React.useState<(SectionLecture | SectionTest)[]>([
-    ...lectures,
-    ...tests,
+interface SectionProps {
+  section: api_section
+  onSectionUpdate: () => void // Новый пропс
+}
+
+const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
+  const [items, setItems] = React.useState<(api_lecture | api_test)[]>([
+    ...section.lectures,
+    ...section.tests,
   ])
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
@@ -82,6 +82,7 @@ const Section: React.FC<SectionType> = ({
       .finally(() => {
         setIsModalOpen(false)
         setIsComponentAdditionActive(false)
+        onSectionUpdate()
       })
   }
 
@@ -96,17 +97,21 @@ const Section: React.FC<SectionType> = ({
       description: string
     },
     componentType: SectionComponentType
-  ): Promise<SectionLecture | SectionTest> => {
+  ): Promise<api_lecture | api_test> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        let newItem: SectionLecture | SectionTest
+        let newItem: api_lecture | api_test
         switch (componentType) {
           case 'lecture':
-            console.log('lectures:', lectures)
+            console.log('lectures:', section.lectures)
             console.log('items:', items)
             console.log('component:', component)
             newItem = {
-              serial_number: lectures.length + 1,
+              id: section.lectures.length + 1,
+              test_name: component.title,
+              questions: [],
+              test_id: 0,
+              serial_number: section.lectures.length + 1,
               type: componentType,
               title: component.title,
               description: component.description,
@@ -116,7 +121,11 @@ const Section: React.FC<SectionType> = ({
             break
           case 'test':
             newItem = {
-              serial_number: tests.length + 1,
+              test_id: section.tests.length + 1,
+              title: component.title,
+              video_url: '',
+
+              serial_number: section.tests.length + 1,
               type: componentType,
               test_name: component.title,
               description: component.description,
@@ -149,14 +158,14 @@ const Section: React.FC<SectionType> = ({
   }
 
   return (
-    <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2'}>
+    <div className={'border-2 border-black mt-10 min-h-8 bg-gray-100 py-4 px-2'}>
       <div
         className={'flex mb-8 w-full'}
         onMouseEnter={() => setIsTitleButtonsShown(true)}
         onMouseLeave={() => setIsTitleButtonsShown(false)}
       >
-        <h1 className={'font-bold mr-2'}>Часть {serial_number}:</h1>
-        <p>{section_title}</p>
+        <h1 className={'font-bold mr-2'}>Часть {section.serial_number}:</h1>
+        <p>{section.section_title}</p>
         <span
           className={`flex scale-90 items-center ml-2 ${isTitleButtonsShown ? 'visible' : 'hidden'} `}
         >
@@ -169,8 +178,8 @@ const Section: React.FC<SectionType> = ({
         <SectionComponent
           key={index}
           sectionType={item.type}
-          lectureData={item as SectionLecture}
-          testData={item as SectionTest}
+          lectureData={item as api_lecture}
+          testData={item as api_test}
           onUpdate={onUpdate}
           onRemove={onRemove}
         />

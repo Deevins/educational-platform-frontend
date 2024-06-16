@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { FaCheckCircle, FaTrash } from 'react-icons/fa'
 import { MdModeEdit } from 'react-icons/md'
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from 'react-icons/io'
-import { SectionLecture } from '@/pages/course-creation/curriculum/types.ts'
+import { api_lecture } from '@/pages/course-creation/curriculum/types.ts'
 
 type Video = {
   name: string
@@ -11,7 +11,7 @@ type Video = {
   date: string
 }
 type LectureComponentProps = {
-  lectureData: SectionLecture
+  lectureData: api_lecture
   onRemove: (serial: number) => void
   onUpdate: (serial: number, title: string) => void
 }
@@ -29,7 +29,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
 
   const toggleEditMode = () => {
     if (editMode && title !== lectureData.title) {
-      onUpdate(lectureData.serial_number, title)
+      onUpdate(lectureData.id, title)
     }
     setEditMode(!editMode)
   }
@@ -39,7 +39,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
   }
 
   const removeLecture = () => {
-    onRemove(lectureData.serial_number)
+    onRemove(lectureData.id)
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,103 +1,52 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { IoMdAdd } from 'react-icons/io'
 import React, { useEffect, useState } from 'react'
 import { ImCross } from 'react-icons/im'
 import {
+  api_section,
   SectionComponentType,
-  SectionType,
 } from '@/pages/course-creation/curriculum/types.ts'
 import { Section } from '@/pages/course-creation/curriculum/Section.tsx'
-
-const sections: SectionType[] = [
-  {
-    serial_number: 1,
-    section_title: 'Введение',
-    section_description: 'Введение в курс',
-    lectures: [
-      {
-        serial_number: 1,
-        type: 'lecture',
-        title: 'Лекция 1',
-        description: 'lecture1  desc',
-        video_url: '',
-      },
-      {
-        video_url: '',
-        serial_number: 2,
-        type: 'lecture',
-        title: 'Лекция 2',
-        description: 'lecture1  desc',
-      },
-    ],
-    tests: [
-      {
-        serial_number: 1,
-        type: 'test',
-        test_name: 'Тест 1',
-        description: 'test1 desc',
-        questions: [
-          // {
-          //   question: 'Вопрос 1',
-          //   answers: [
-          //     {
-          //       answer: 'Ответ 1',
-          //       answerDescription: 'Описание ответа 1',
-          //       answerIsCorrect: true,
-          //     },
-          //     {
-          //       answer: 'Ответ 2',
-          //       answerDescription: 'Описание ответа 2',
-          //       answerIsCorrect: false,
-          //     },
-          //   ],
-          // },
-        ],
-      },
-    ],
-  },
-]
+import axios from 'axios'
 
 const CurriculumPage = () => {
   const [isSectionCreationActive, setIsSectionCreationActive] = React.useState(false)
-  const [stateSections, setStateSections] = React.useState<SectionType[]>(sections)
-  // const { courseID } = useParams<{ courseID: string }>()
+  const [stateSections, setStateSections] = React.useState<api_section[]>([])
+  const [triggerReload, setTriggerReload] = useState(false) // Новое состояние
+  const { courseID } = useParams<{ courseID: string }>()
 
-  // useEffect(() => {
-  //   // Fetch sections from API
-  //
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get<api_section[]>(
-  //         `http://localhost:8080/courses/get-course-materials/${courseID}`
-  //       )
-  //
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error)
-  //     }
-  //   }
-  //
-  //   fetchData()
-  //
-  //
-  //
-  //
-  //   console.log(response)
-  // }, [stateSections])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<api_section[]>(
+          `http://localhost:8080/courses/get-course-materials/${courseID}`
+        )
 
-  const handleSectionCreate = (title: string, description: string) => {
-    setStateSections((prev) => [
-      ...prev,
-      {
-        serial_number: prev.length + 1,
-        section_description: description,
-        section_title: title,
-        lectures: [],
-        tests: [],
-      },
-    ])
+        setStateSections(response.data)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
 
+    fetchData()
+  }, [triggerReload])
+
+  const handleSectionCreate = async (title: string, description: string) => {
+    await axios.post(`http://localhost:8080/courses/create-section/${courseID}`, {
+      title: title,
+      description: description,
+    })
+
+    setTriggerReload(!triggerReload) // Триггерим useEffect для обновления данных
     setIsSectionCreationActive(!isSectionCreationActive)
   }
+
+  // Функция для триггера лута новых секций и изменений после изменения чего-либо
+  const handleSectionUpdate = () => {
+    setTriggerReload(!triggerReload) // Функция для триггера
+  }
+
+  const sortedSections = stateSections.sort((a, b) => a.serial_number - b.serial_number)
 
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl w-full'>
@@ -120,15 +69,8 @@ const CurriculumPage = () => {
         </Link>{' '}
         для выстраивания структуры материалов и понятной маркировки разделов и лекций.
       </p>
-      {stateSections.map((section, index) => (
-        <Section
-          key={index}
-          section_description={section.section_description}
-          section_title={section.section_title}
-          lectures={section.lectures}
-          serial_number={section.serial_number}
-          tests={section.tests}
-        />
+      {sortedSections.map((section, index) => (
+        <Section key={index} section={section} onSectionUpdate={handleSectionUpdate} />
       ))}
 
       <div
