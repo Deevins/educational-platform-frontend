@@ -247,11 +247,14 @@ const CourseCard: React.FC<CourseProps> = ({
   reviews,
 }) => {
   return (
-    <div className='no-underline flex justify-center w-full h-full '>
+    <div className='flex justify-center w-full h-full'>
       <div className='bg-white p-4 w-5/12 rounded-lg shadow-md flex flex-col items-center hover:bg-gray-100 text-black transition duration-300 ease-in-out transform hover:scale-105'>
-        <NavLink to={`/courses/course/${course_id}`}>
+        <NavLink
+          to={`/courses/course/${course_id}`}
+          className='flex flex-col items-center'
+        >
           <img src={image} alt={title} className='w-24 h-24 mb-2' />
-          <div className='text-center flex flex-col justify-center'>
+          <div className='text-center'>
             <h3 className='text-sm font-bold'>{title}</h3>
             <p className='text-xs'>{`${rating} ⭐ (${reviews})`}</p>
           </div>

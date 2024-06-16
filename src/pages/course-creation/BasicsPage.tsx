@@ -35,6 +35,7 @@ const BasicsPage: React.FC = () => {
   const [isImageLoading, setIsImageLoading] = useState(false)
   const [isVideoLoading, setIsVideoLoading] = useState(false)
   const [user, setUser] = useState<IUser | null>(null)
+  const [showPopup, setShowPopup] = useState(false)
   const { courseID } = useParams<{ courseID: string }>()
   const userID = useSelector(selectUserID)
 
@@ -156,13 +157,15 @@ const BasicsPage: React.FC = () => {
           category: category,
         }
       )
+      setShowPopup(true)
+      setTimeout(() => setShowPopup(false), 3000) // Скрыть всплывающее окно через 3 секунды
     } catch (error) {
       console.error('Error saving basic info:', error)
     }
   }
 
   return (
-    <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
+    <div className='relative mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-2xl font-bold mb-4'>Целевая страница курса</h1>
       <InputField
         label='Заголовок курса'
@@ -243,11 +246,22 @@ const BasicsPage: React.FC = () => {
         isLoading={isVideoLoading}
       />
       <Profile user={user} />
+      {showPopup && <Popup message='Информация успешно сохранена!' />}
     </div>
   )
 }
 
 export default BasicsPage
+
+interface PopupProps {
+  message: string
+}
+
+const Popup: React.FC<PopupProps> = ({ message }) => (
+  <div className='fixed bottom-4 right-4 bg-green-500 text-white p-3 rounded shadow-lg'>
+    {message}
+  </div>
+)
 
 interface ImageUploadFieldProps {
   label: string

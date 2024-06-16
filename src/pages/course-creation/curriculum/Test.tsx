@@ -322,13 +322,13 @@ const QuestionModal: React.FC<{
         <div className={'flex justify-between'}>
           <button
             onClick={handleAddAnswer}
-            className='px-4 py-2 bg-gray-300 text-black hover:bg-gray-400'
+            className='px-4 py-2 bg-black text-white hover:bg-gray-600'
           >
             Добавить ответ
           </button>
           <button
             onClick={handleSubmit}
-            className='px-4 py-2 bg-black text-white hover:bg-gray-800'
+            className='px-4 py-2 bg-black text-white hover:bg-gray-600'
           >
             Сохранить
           </button>

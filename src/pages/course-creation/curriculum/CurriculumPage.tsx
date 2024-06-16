@@ -80,19 +80,14 @@ const CurriculumPage = () => {
       <h1 className='text-2xl font-bold mb-4'>Учебный план</h1>
       <hr className='border-t border-gray-400 mb-8 w-full opacity-75' />
       <p>
-        Начните составлять свой курс, создав разделы, лекции и практические задания
-        (тесты, упражнения по написанию кода, задания).
-      </p>
-      <p>
-        Начните составлять свой курс, создав разделы, лекции и практические задания тесты,
-        упражнения по написанию кода и задания{'  '}
+        Начните составлять свой курс, создав секции, лекции, практические задания и тесты
         <Link
           to={'/course-creation/plan-your-practice-activities/'}
           className={'text-blue-700 underline pb-4'}
         >
-          (тесты, упражнения по написанию кода и задания).
+          (тесты, упражнения по написанию кода и задания){'  '}
         </Link>
-        Используйте{' '}
+        . Используйте{' '}
         <Link
           to={'/course-creation/outline-your-course/'}
           className={'text-blue-700 underline pb-4'}
@@ -125,13 +120,20 @@ const CurriculumPage = () => {
             <ImCross className={'rotate-180 opacity-60 scale-50'} />
           </button>
         ) : (
-          <button
-            className={`w-12 h-8 rounded border-dotted ml-4 bg-gray-100
-           border-2 border-green hover:cursor-pointer hover:bg-gray-200 flex justify-center items-center visible `}
+          <div
+            className={
+              'bg-gray-100 flex align-middle rounded-sm px-2 py-1 hover:cursor-pointer hover:bg-gray-200'
+            }
             onClick={() => setIsSectionCreationActive(true)}
           >
-            <IoMdAdd />
-          </button>
+            <button
+              className={`w-12 h-8 rounded border-dotted bg-white
+             flex justify-center items-center visible `}
+            >
+              <IoMdAdd />
+            </button>
+            <p className={'ml-4 mt-0.5'}>Добавить секцию</p>
+          </div>
         )}
       </div>
 
