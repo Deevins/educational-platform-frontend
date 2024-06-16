@@ -5,6 +5,7 @@ import ReactPlayer from 'react-player'
 import { ICategory } from '@/pages/course-creation/CourseBaseCreationPage.tsx'
 import { useSelector } from 'react-redux'
 import { selectUserID } from '@/utils/redux/store/authSlice.ts'
+import { IUser } from '@/pages/UserProfilePage.tsx'
 
 interface IBasicInfo {
   title: string
@@ -33,7 +34,9 @@ const BasicsPage: React.FC = () => {
   const [levels, setLevels] = useState<{ value: string; label: string }[]>([])
   const [isImageLoading, setIsImageLoading] = useState(false)
   const [isVideoLoading, setIsVideoLoading] = useState(false)
+  const [user, setUser] = useState<IUser | null>(null)
   const { courseID } = useParams<{ courseID: string }>()
+  const userID = useSelector(selectUserID)
 
   const languageOptions = [
     { value: '1', label: 'Русский' },
@@ -48,6 +51,7 @@ const BasicsPage: React.FC = () => {
           levelsResponse,
           courseBasicInfoResponse,
           courseResponse,
+          userResponse,
         ] = await Promise.all([
           axios.get<ICategory[]>('http://localhost:8080/directories/categories'),
           axios.get<ILevel[]>('http://localhost:8080/directories/levels'),
@@ -55,6 +59,7 @@ const BasicsPage: React.FC = () => {
             `http://localhost:8080/courses/get-course-basic-info/${courseID}`
           ),
           axios.get(`http://localhost:8080/courses/get-full-course/${courseID}`),
+          axios.get<IUser>(`http://localhost:8080/users/get-one/${userID}`),
         ])
         setCategories(
           categoriesResponse.data.map((category) => ({
@@ -69,6 +74,7 @@ const BasicsPage: React.FC = () => {
             label: level.name,
           }))
         )
+        setUser(userResponse.data)
 
         const { title, subtitle, description, language, level, category_title } =
           courseBasicInfoResponse.data
@@ -236,7 +242,7 @@ const BasicsPage: React.FC = () => {
         }}
         isLoading={isVideoLoading}
       />
-      <Profile fullName='Nnnnnnnnnnnnnnnnn' isFilled={false} />
+      <Profile user={user} />
     </div>
   )
 }
@@ -375,18 +381,18 @@ const InputField: React.FC<InputFieldProps> = ({
 )
 
 interface ProfileAlertProps {
-  fullName: string
-  isFilled: boolean
+  user: IUser | null
 }
 
-const Profile: React.FC<ProfileAlertProps> = ({ fullName, isFilled }) => {
-  const userID = useSelector(selectUserID)
+const Profile: React.FC<ProfileAlertProps> = ({ user }) => {
+  const isFilled = user?.avatar_url && user?.description
+
   return (
     <div
       className={`p-4 ${!isFilled ? 'bg-red-100 border-l-4 border-red-500 text-red-700' : 'bg-white'}`}
       role='alert'
     >
-      <h3 className='text-lg font-bold text-black'>Профили преподавателя</h3>
+      <h3 className='text-lg font-bold text-black'>Профиль преподавателя</h3>
       {!isFilled ? (
         <>
           <p>
@@ -400,42 +406,36 @@ const Profile: React.FC<ProfileAlertProps> = ({ fullName, isFilled }) => {
         </>
       ) : null}
       <div className='flex items-center mt-4'>
-        <div className='flex-shrink-0'>
-          <Link to={`/profiles/23/}`}>
-            <span className='block bg-gray-400 h-8 w-8 rounded-full overflow-hidden'>
-              <span className='text-white text-sm font-medium flex items-center justify-center h-full w-full'>
-                N
-              </span>
-            </span>
-          </Link>
-          {isFilled ? (
-            <span className='ml-2 text-red-500'>
-              <i className='fas fa-exclamation-circle'></i>
-            </span>
-          ) : null}
-        </div>
-        <div className='ml-3'>
-          <Link to={`/users/user/${userID}/profile`}>
-            <p className='text-sm leading-5 font-medium text-purple-600 hover:cursor-pointer'>
-              {fullName}
-            </p>
-          </Link>
-          {!isFilled ? (
-            <>
-              <p className='text-sm leading-5 text-gray-500'>Неполная информация</p>
-              <p className='text-sm leading-5 text-gray-500'>
-                Требуется фото преподавателя.
-              </p>
-              <Link
-                to='/instructor/profile/basic-information/'
-                className='text-sm leading-5 underline text-blue-500 hover:text-blue-800'
-              >
-                Обновите свой профиль
-              </Link>
-            </>
-          ) : null}
-        </div>
+        <Link to={`/users/user/${user?.id}/profile`} className='flex items-center'>
+          <span className='block h-8 w-8 rounded-full overflow-hidden'>
+            <img
+              src={user?.avatar_url || 'https://via.placeholder.com/32'}
+              alt='Аватар'
+              className='w-full h-full object-cover'
+            />
+          </span>
+          <span className='ml-3 text-sm leading-5 font-medium text-purple-600 hover:cursor-pointer'>
+            {user?.full_name || 'Имя пользователя'}
+          </span>
+        </Link>
+        {!isFilled && (
+          <span className='ml-2 text-red-500'>
+            <i className='fas fa-exclamation-circle'></i>
+          </span>
+        )}
       </div>
+      {!isFilled && (
+        <div className='ml-11 mt-2'>
+          <p className='text-sm leading-5 text-gray-500'>Неполная информация</p>
+          <p className='text-sm leading-5 text-gray-500'>Требуется фото преподавателя.</p>
+          <Link
+            to={`/users/user/${user?.id}/profile`}
+            className='text-sm leading-5 underline text-blue-500 hover:text-blue-800'
+          >
+            Обновите свой профиль
+          </Link>
+        </div>
+      )}
     </div>
   )
 }

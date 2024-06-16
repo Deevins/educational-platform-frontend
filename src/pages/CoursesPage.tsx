@@ -66,7 +66,11 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
           <div className='mt-2 text-yellow-500'>{`Рейтинг: ${course.rating} (${course.reviews_count} отзывов)`}</div>
           <div className='mt-1'>{`Преподаватель: ${course.author_full_name}`}</div>
           <div className='mt-1'>{`Минут лекций: ${course.lectures_length}, Количество лекций: ${course.lectures_count}`}</div>
-          <div className='mt-1'>{`Уровень начальной подготовки: ${course.level}`}</div>
+          <div className='mt-1'>{`Уровень начальной подготовки: ${
+            (parseInt(course.level) === 1 ? 'Начальный' : '') ||
+            (parseInt(course.level) === 2 ? 'Средний' : '') ||
+            (parseInt(course.level) === 3 ? 'Продвинутый' : '')
+          }`}</div>
         </div>
       </Link>
     </div>
