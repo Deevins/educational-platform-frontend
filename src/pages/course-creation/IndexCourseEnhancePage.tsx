@@ -84,7 +84,7 @@ const Sidebar: React.FC = () => {
         </div>
       ))}
       <button
-        className='bg-purple-600 text-white font-semibold p-2 mt-4 w-full py-4 hover:bg-purple-700'
+        className='bg-gray-600 text-white font-semibold p-2 mt-4 w-full py-4 hover:bg-gray-700'
         onClick={handleButtonClick}
       >
         Отправить на проверку

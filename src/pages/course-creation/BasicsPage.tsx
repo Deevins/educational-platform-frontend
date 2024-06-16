@@ -1,5 +1,21 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import axios from 'axios'
+import { ICategory } from '@/pages/course-creation/CourseBaseCreationPage.tsx'
+
+interface IBasicInfo {
+  title: string
+  subtitle: string
+  description: string
+  language: string
+  level: string
+  category_title: string
+}
+
+interface ILevel {
+  id: number
+  name: string
+}
 
 const BasicsPage: React.FC = () => {
   const [courseTitle, setCourseTitle] = useState('')
@@ -10,28 +26,50 @@ const BasicsPage: React.FC = () => {
   const [mainSubject, setMainSubject] = useState('')
   const [imageUrl, setImageUrl] = useState<string>('')
   const [videoUrl, setVideoUrl] = useState<string>('')
+  const [categories, setCategories] = useState<{ value: string; label: string }[]>([])
+  const [levels, setLevels] = useState<{ value: string; label: string }[]>([])
+  const { courseID } = useParams<{ courseID: string }>()
 
   const languageOptions = [
-    { value: 'ru', label: 'Русский' },
-    { value: 'en', label: 'Английский' },
+    { value: '1', label: 'Русский' },
+    { value: '2', label: 'Английский' },
   ]
 
-  const levelOptions = [
-    { value: 'junior', label: 'Начальный уровень' },
-    { value: 'middle', label: 'Средний уровень' },
-    { value: 'senior', label: 'Высокий уровень' },
-    { value: 'all', label: 'Все уровени' },
-  ]
+  useEffect(() => {
+    axios
+      .get<ICategory[]>('http://localhost:8080/directories/categories')
+      .then((response) => {
+        const categoryOptions = response.data.map((category) => ({
+          value: category.id.toString(),
+          label: category.name,
+        }))
+        console.log(categoryOptions)
+        setCategories(categoryOptions)
+      })
 
-  const categoryOptions = [
-    { value: '1', label: 'Frontend' },
-    { value: '2', label: 'Backend' },
-    { value: '3', label: 'Fullstack' },
-    { value: '4', label: 'Мобильная разработка' },
-    { value: '5', label: 'Инфраструктура и DevOps' },
-    { value: '6', label: 'Базы данных' },
-    { value: '7', label: 'Прочие технологии' },
-  ]
+    axios.get<ILevel[]>('http://localhost:8080/directories/levels').then((response) => {
+      const levelOptions = response.data.map((level) => ({
+        value: level.id.toString(),
+        label: level.name,
+      }))
+      console.log(levelOptions)
+      setLevels(levelOptions)
+    })
+  }, [])
+
+  useEffect(() => {
+    axios
+      .get<IBasicInfo>(`http://localhost:8080/courses/get-course-basic-info/${courseID}`)
+      .then((response) => {
+        setCourseTitle(response.data.title)
+        setCourseSubtitle(response.data.subtitle)
+        setMainSubject(response.data.description)
+        setLanguage(response.data.language)
+        setLevel(response.data.level)
+        setCategory(response.data.category_title)
+        console.log(response.data)
+      })
+  }, [])
 
   const uploadFile = async (file: File, type: 'image' | 'video') => {
     const formData = new FormData()
@@ -88,7 +126,7 @@ const BasicsPage: React.FC = () => {
             label='Уровень '
             value={level}
             onChange={(e) => setLevel(e.target.value)}
-            options={levelOptions}
+            options={levels}
           />
         </div>
       </div>
@@ -96,12 +134,17 @@ const BasicsPage: React.FC = () => {
         label='Категория'
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        options={categoryOptions}
+        options={categories}
       />
-
+      <div className={'text-center w-full'}>
+        <button className={'bg-black text-gray-100 py-2 px-3'}>Сохранить</button>
+      </div>
       <FileUploadField
         url={imageUrl}
         label='Изображение курса'
+        description={
+          'Размещение проморолика ― это быстрый и эффективный способ для ознакомления студентов с содержанием вашего курса. Студенты, которые рассматривают возможность прохождения вашего курса, с большей вероятностью зарегистрируются на него, если ваше рекламное видео сделано качественно.'
+        }
         onChange={(e) => {
           const file = e.target.files ? e.target.files[0] : null
           if (file) {
@@ -112,6 +155,9 @@ const BasicsPage: React.FC = () => {
       <FileUploadField
         url={videoUrl}
         label='Рекламное видео'
+        description={
+          'Загрузите изображение своего курса здесь. Чтобы загрузка была успешной, оно должно соответствовать стандартам качества изображений курсов. Важные требования: 750×422 пикселей; jpg, jpeg, gif, png, без текста на изображении.'
+        }
         onChange={(e) => {
           const file = e.target.files ? e.target.files[0] : null
           if (file) {
@@ -119,7 +165,7 @@ const BasicsPage: React.FC = () => {
           }
         }}
       />
-      <Profile fullName='Nnnnnnnnnnnnnnnnn' isFilled={true} />
+      <Profile fullName='Nnnnnnnnnnnnnnnnn' isFilled={false} />
     </div>
   )
 }
@@ -129,10 +175,16 @@ export default BasicsPage
 interface FileUploadFieldProps {
   label: string
   url: string
+  description: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const FileUploadField: React.FC<FileUploadFieldProps> = ({ label, url, onChange }) => {
+const FileUploadField: React.FC<FileUploadFieldProps> = ({
+  label,
+  url,
+  onChange,
+  description,
+}) => {
   return (
     <div className='mb-6 flex items-end '>
       <div className={'pl-[4%]'}>
@@ -144,12 +196,7 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({ label, url, onChange 
         />
       </div>
       <div className={'flex flex-col h-[24vh] justify-end w-[50%] '}>
-        <p>
-          Размещение проморолика ― это быстрый и эффективный способ для ознакомления
-          студентов с содержанием вашего курса. Студенты, которые рассматривают
-          возможность прохождения вашего курса, с большей вероятностью зарегистрируются на
-          него, если ваше рекламное видео сделано качественно.
-        </p>
+        <p>{description}</p>
         <input
           type='file'
           onChange={onChange}
@@ -210,19 +257,18 @@ const InputField: React.FC<InputFieldProps> = ({
 )
 
 interface ProfileAlertProps {
-  fullName: string // ФИО пользователя
-  isFilled: boolean // Состояние заполнения профиля
+  fullName: string
+  isFilled: boolean
 }
 
 const Profile: React.FC<ProfileAlertProps> = ({ fullName, isFilled }) => {
-  isFilled = !isFilled
   return (
     <div
-      className={`p-4 ${isFilled ? 'bg-red-100 border-l-4 border-red-500 text-red-700' : 'bg-white'}`}
+      className={`p-4 ${!isFilled ? 'bg-red-100 border-l-4 border-red-500 text-red-700' : 'bg-white'}`}
       role='alert'
     >
       <h3 className='text-lg font-bold text-black'>Профили преподавателя</h3>
-      {isFilled ? (
+      {!isFilled ? (
         <>
           <p>
             Все доступные для просмотра преподаватели этого курса должны заполнить свой
@@ -255,7 +301,7 @@ const Profile: React.FC<ProfileAlertProps> = ({ fullName, isFilled }) => {
               {fullName}
             </p>
           </Link>
-          {isFilled ? (
+          {!isFilled ? (
             <>
               <p className='text-sm leading-5 text-gray-500'>Неполная информация</p>
               <p className='text-sm leading-5 text-gray-500'>

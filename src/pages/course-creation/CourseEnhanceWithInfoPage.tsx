@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HiOutlinePlus } from 'react-icons/hi'
+import axios from 'axios'
+import { useParams } from 'react-router-dom'
 
 const CourseEnhanceWithInfoPage: React.FC = () => {
   return (
@@ -66,6 +68,52 @@ const initialQuestions: QA[] = [
 const CourseDetails: React.FC = () => {
   const [questions, setQuestions] = useState<QA[]>(initialQuestions)
 
+  const { courseID } = useParams<{ courseID: string }>()
+
+  useEffect(() => {
+    axios
+      .get<{
+        goals: string[]
+        requirements: string[]
+        target_audience: string[]
+      }>(`http://localhost:8080/courses/get-course-goals/${courseID}`)
+      .then((response) => {
+        const { goals, requirements, target_audience } = response.data
+        const newQuestions = questions.map((q) => {
+          if (q.id === 1) {
+            return {
+              ...q,
+              answers: goals.map((goal) => ({
+                answer: goal,
+                placeholder: 'Введите ответ...',
+              })),
+            }
+          } else if (q.id === 2) {
+            return {
+              ...q,
+              answers: requirements.map((requirement) => ({
+                answer: requirement,
+                placeholder: 'Введите ответ...',
+              })),
+            }
+          } else if (q.id === 3) {
+            return {
+              ...q,
+              answers: target_audience.map((audience) => ({
+                answer: audience,
+                placeholder: 'Введите ответ...',
+              })),
+            }
+          }
+          return q
+        })
+        setQuestions(newQuestions)
+      })
+      .catch((error) => {
+        console.error('Error fetching course goals:', error)
+      })
+  }, [courseID])
+
   const handleAddAnswer = (id: number) => {
     const newQuestions = questions.map((q) => {
       if (q.id === id) {
@@ -103,6 +151,34 @@ const CourseDetails: React.FC = () => {
     setQuestions(newQuestions)
   }
 
+  const gatherData = () => {
+    const goals = questions[0].answers.map((a) => a.answer)
+    const requirements = questions[1].answers.map((a) => a.answer)
+    const target_audience = questions[2].answers.map((a) => a.answer)
+    return { goals, requirements, target_audience }
+  }
+
+  const handleSubmit = async () => {
+    const data = gatherData()
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/courses/update-course-goals/${courseID}`,
+        {
+          goals: data.goals,
+          requirements: data.requirements,
+          target_audience: data.target_audience,
+        }
+      )
+      if (response.status === 200) {
+        alert('Данные успешно отправлены')
+      }
+    } catch (error) {
+      alert('Произошла ошибка при отправке данных')
+    } finally {
+      setQuestions(initialQuestions)
+    }
+  }
+
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl'>
       <h1 className='text-xl font-bold mb-4'>Целевые учащиеся</h1>
@@ -124,6 +200,12 @@ const CourseDetails: React.FC = () => {
           onRemoveAnswer={handleRemoveAnswer}
         />
       ))}
+      <button
+        className='mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600'
+        onClick={handleSubmit}
+      >
+        Отправить данные
+      </button>
     </div>
   )
 }
