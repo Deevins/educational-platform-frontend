@@ -63,6 +63,7 @@ export type api_test = {
 }
 
 export type api_question = {
+  id: number
   question_body: string
   answers: api_answer[]
 }

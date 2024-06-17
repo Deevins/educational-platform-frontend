@@ -4,7 +4,7 @@ import { MdModeEdit } from 'react-icons/md'
 import { IoIosArrowDown, IoMdAdd } from 'react-icons/io'
 
 type AssignmentComponentProps = {
-  assignmentData: SectionAssignment
+  assignmentData: never
 }
 // TODO: implement AssignmentComponent if have time( im dying)
 const AssignmentComponent: React.FC<AssignmentComponentProps> = ({ assignmentData }) => {
