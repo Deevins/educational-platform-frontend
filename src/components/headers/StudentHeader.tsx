@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import logo from '/platform_logo.png'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button.tsx'
@@ -7,23 +7,29 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import { Navbar } from '@/components/Navbar.tsx'
 import { useSelector } from 'react-redux'
 import { selectIsAuthenticated, selectUserID } from '@/utils/redux/store/authSlice.ts'
-import useSWR from 'swr'
 import axios from 'axios'
 
 interface UserExperience {
   has_used: boolean
 }
 
-const fetcher = (url: string) => axios.get<UserExperience>(url).then((res) => res.data)
-
 const StudentHeader: React.FC = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const userID = useSelector(selectUserID)
   const navigate = useNavigate()
-  const { data } = useSWR(
-    `http://localhost:8080/users/has-user-tried-instructor/${userID}`,
-    fetcher
-  )
+  const [data, setData] = useState<UserExperience>({ has_used: false })
+  useEffect(() => {
+    const getHasUserTried = async () => {
+      if (userID) {
+        const res = await axios.get<UserExperience>(
+          `http://localhost:8080/users/has-user-tried-instructor/${userID}`
+        )
+        setData(res.data)
+      }
+    }
+
+    getHasUserTried()
+  }, [])
 
   const [isInstructorModeOpen, setIsInstructorModeOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -107,14 +113,16 @@ const StudentHeader: React.FC = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <NavLink
-            to={final_route}
-            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
-          >
-            <button onMouseEnter={openInstructorMode} onClick={handleClickInstructor}>
-              Преподаватель
-            </button>
-          </NavLink>
+          {isAuthenticated && (
+            <NavLink
+              to={final_route}
+              className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
+            >
+              <button onMouseEnter={openInstructorMode} onClick={handleClickInstructor}>
+                Преподаватель
+              </button>
+            </NavLink>
+          )}
           <div ref={dialogRef}>
             {isHovered && isInstructorModeOpen && !data?.has_used && (
               <div

@@ -28,7 +28,7 @@ const AvatarMenu: React.FC = () => {
   const userRole = useSelector(selectRole)
   const userID = useSelector(selectUserID)
   const { data, error, isLoading } = useSWR(
-    `http://localhost:8080/users/get-one/${userID}`,
+    `http://localhost:8080/users/get-one/${userID && userID}`,
     fetcher
   )
 
