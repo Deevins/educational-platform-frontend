@@ -140,7 +140,7 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
             </label>
           </div>
           {videoURL && (
-            <div className='flex justify-between mt-2'>
+            <div className='flex justify-between mt-2 w-full'>
               <div className='w-full max-w-xl flex content-center justify-between'>
                 <ReactPlayer url={videoURL} controls width='60%' height='auto' />
                 <button
@@ -151,9 +151,9 @@ const LectureComponent: React.FC<LectureComponentProps> = ({
                     )
                     setVideoRemoved((prev) => !prev)
                   }}
-                  className='hover:bg-gray-300 py-1 px-4 bg-gray-200 border-black border-[1px] hover:cursor-pointer ml-4 h-12 mt-[10%]'
+                  className='hover:bg-gray-300 py-1 px-4 bg-gray-200 border-black border-[1px] hover:cursor-pointer ml-4  h-12 mt-[10%]'
                 >
-                  Удалить
+                  Удалить запись лекции
                 </button>
               </div>
             </div>

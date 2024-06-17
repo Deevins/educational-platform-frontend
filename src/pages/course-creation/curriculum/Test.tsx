@@ -28,10 +28,10 @@ const TestComponent: React.FC<TestComponentProps> = ({
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null)
   const [isQuestionsVisible, setIsQuestionsVisible] = useState(false) // Состояние видимости вопросов
-  const { courseID } = useParams()
   const [editMode, setEditMode] = useState(false)
+  const { courseID } = useParams()
 
-  const handleAddQuestion = (newQuestion: api_question) => {
+  const handleAddQuestions = (newQuestion: api_question) => {
     const updatedQuestions =
       selectedQuestionIndex !== null
         ? questions.map((question, index) =>
@@ -102,6 +102,7 @@ const TestComponent: React.FC<TestComponentProps> = ({
           </span>
         </div>
         <div className={'flex items-center justify-center hover:cursor-pointer'}>
+          {/*ЗДЕСЬ БЛОК ЕСЛИ ВОПРОСОВ В ТЕСТЕ НЕТ*/}
           {questions.length === 0 && (
             <button
               className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300'
@@ -127,13 +128,14 @@ const TestComponent: React.FC<TestComponentProps> = ({
             setIsQuestionModalOpen(false)
             setSelectedQuestionIndex(null)
           }}
-          onSave={handleAddQuestion}
+          onSave={handleAddQuestions}
           initialData={
             selectedQuestionIndex !== null ? questions[selectedQuestionIndex] : undefined
           }
         />
       </div>
 
+      {/*ЗДЕСЬ БЛОК, ЕСЛИ В ТЕСТЕ УЖЕ ЕСТЬ ВОПРОСЫ*/}
       {isQuestionsVisible && questions.length > 0 ? (
         <div className='flex flex-col ml-16 border-2 border-t-0 border-black mb-6'>
           <div className={'flex py-4 px-2 items-center bg-white'}>
@@ -187,7 +189,9 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
   handleEditQuestion,
 }) => {
   const [areEditButtonsVisible, setAreEditButtonsVisible] = React.useState(false)
-
+  useEffect(() => {
+    console.log(question, index)
+  }, [])
   return (
     <div
       key={index}
@@ -218,6 +222,7 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
   )
 }
 
+// используется для добавления вопросов в пустой тест
 const QuestionModal: React.FC<{
   isOpen: boolean
   onClose: () => void

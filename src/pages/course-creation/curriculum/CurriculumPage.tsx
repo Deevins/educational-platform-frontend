@@ -21,7 +21,6 @@ const CurriculumPage = () => {
         const response = await axios.get<api_section[]>(
           `http://localhost:8080/courses/get-course-materials/${courseID}`
         )
-
         setStateSections(response.data)
       } catch (error) {
         console.error('Error fetching data:', error)
@@ -29,7 +28,7 @@ const CurriculumPage = () => {
     }
 
     fetchData()
-  }, [triggerReload, stateSections])
+  }, [triggerReload])
 
   const handleSectionCreate = async (title: string, description: string) => {
     await axios.post(`http://localhost:8080/courses/create-section/${courseID}`, {
