@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { NavLink, useParams } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
@@ -12,153 +12,8 @@ import {
 } from '@/components/ReviewList.tsx'
 import useSWR from 'swr'
 import { api_lecture, api_section } from '@/pages/course-creation/curriculum/types.ts'
-
-// interface CourseSection {
-//   id: number
-//   title: string
-//   duration: string
-//   lectures: Lecture[]
-//   tests: Test[]
-// }
-//
-// interface Lecture {
-//   id: number
-//   title: string
-//   duration: string
-//   description?: string
-//   videoUrl: string
-// }
-//
-// interface Test {
-//   id: number
-//   title: string
-//   isAlreadyPassed: boolean
-//   attempts: number
-// }
-
-// Sample data for courses, including lectures and tests
-// const courseData: CourseSection[] = [
-//   {
-//     id: 1,
-//     title: 'Секция 1: Frontend - разработка',
-//     duration: '2h 14m',
-//     lectures: [
-//       {
-//         id: 123,
-//         title: 'Лекция 1: Начало!',
-//         duration: '1h 34m',
-//         videoUrl: 'https://youtu.be/gb7gMluAeao?list=PLcvhF2Wqh7DNVy1OCUpG3i5lyxyBWhGZ8',
-//         description:
-//           'В данной лекции мы начнём наше погружение в мир интерфейсов и разработки адаптивных дизайнов.',
-//       },
-//       {
-//         id: 321,
-//         title: 'Лекция 2: Продолжение',
-//         duration: '2h 40m',
-//         videoUrl: video,
-//         description:
-//           'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
-//       },
-//     ],
-//     tests: [
-//       {
-//         id: 456,
-//         attempts: 2,
-//         isAlreadyPassed: false,
-//         title: 'Тест по пройденному материалу',
-//       },
-//     ],
-//   },
-//   {
-//     id: 1,
-//     title: 'Секция 2: Занимаемся бэкендом',
-//     duration: '4h 14m',
-//     lectures: [
-//       {
-//         id: 123,
-//         title: 'Part 1: Basic Framework Writing',
-//         duration: '1h 34m',
-//         videoUrl: 'https://youtu.be/6wbckQjhA4Y',
-//         description:
-//           'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
-//       },
-//       {
-//         id: 321,
-//         title: 'Part 2: User Interface Development',
-//         duration: '2h 40m',
-//         videoUrl: video,
-//         description:
-//           'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
-//       },
-//     ],
-//     tests: [
-//       {
-//         id: 456,
-//         attempts: 2,
-//         isAlreadyPassed: false,
-//         title: 'Framework Basics Test',
-//       },
-//     ],
-//   },
-// ]
-//
-// const questions: TestQuestion[] = [
-//   {
-//     question_body: 'Question 1: What is React?',
-//     answers: [
-//       {
-//         answer: 'Library',
-//         answerIsCorrect: true,
-//         answerDescription: 'React is a JavaScript library for building user interfaces.',
-//       },
-//       {
-//         answer: 'Framework',
-//         answerIsCorrect: false,
-//         answerDescription: "React is not considered a framework; it's a library.",
-//       },
-//       {
-//         answer: 'Application',
-//         answerIsCorrect: false,
-//         answerDescription:
-//           'React is used to build applications, not an application itself.',
-//       },
-//       {
-//         answer: 'Language',
-//         answerIsCorrect: false,
-//         answerDescription: 'React is a library, not a programming language.',
-//       },
-//     ],
-//   },
-//   {
-//     question_body: 'Question 2: What is useState used for in React?',
-//     answers: [
-//       {
-//         answer: 'State management',
-//         answerIsCorrect: true,
-//         answerDescription:
-//           'useState is a Hook that allows you to have state variables in functional components.',
-//       },
-//       {
-//         answer: 'Data fetching',
-//         answerIsCorrect: false,
-//         answerDescription:
-//           'Data fetching is typically handled by other means like useEffect or dedicated libraries.',
-//       },
-//       {
-//         answer: 'Performing calculations',
-//         answerIsCorrect: false,
-//         answerDescription:
-//           'Calculations can be done directly in the component or useEffect.',
-//       },
-//       {
-//         answer: 'None of the above',
-//         answerIsCorrect: false,
-//         answerDescription:
-//           'useState is specifically used for state management in functional components.',
-//       },
-//     ],
-//   },
-// ]
+import axios from 'axios'
+import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -170,6 +25,7 @@ const CourseActivePage: React.FC = () => {
     item: number
   } | null>(null)
   const [activeTab, setActiveTab] = useState<string>('overview')
+  const [course, setCourse] = useState<CourseInfo>()
   const { courseID } = useParams<{ courseID: string }>()
 
   const { data, error, isLoading } = useSWR<api_section[]>(
@@ -177,7 +33,18 @@ const CourseActivePage: React.FC = () => {
     fetcher
   )
 
-  console.log(data)
+  useEffect(() => {
+    const getCourse = async () => {
+      const response = await axios.get<CourseInfo>(
+        `http://localhost:8080/courses/get-full-course/${courseID}`
+      )
+      console.log(response.data)
+
+      setCourse(response.data)
+    }
+
+    getCourse()
+  }, [])
 
   const toggleSection = (index: number) => {
     const currentIndex = openSections.indexOf(index)
@@ -203,6 +70,7 @@ const CourseActivePage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>
   if (error) return <div>Error loading course data</div>
   if (!data) return <div>No course data found</div>
+  if (!course) return <div>Loading...</div>
 
   return (
     <div className='flex flex-col ml-[15%] mt-[3%]'>
@@ -232,13 +100,13 @@ const CourseActivePage: React.FC = () => {
             ) : (
               <div className='flex justify-center items-center w-full h-full'>
                 <h1 className='text-2xl font-bold'>
-                  Выберите секцию с левой стороны страница для начала обучения.
+                  Выберите секцию с левой стороны страницы для начала обучения.
                 </h1>
               </div>
             )}
           </div>
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-          <DetailContent activeTab={activeTab} />
+          <DetailContent activeTab={activeTab} course={course} />
         </div>
       </div>
     </div>
@@ -249,107 +117,81 @@ export default CourseActivePage
 
 interface DetailContentProps {
   activeTab: string
+  course: CourseInfo
 }
 
-const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
-  const description =
-    'Изучаем теорию PHP--->Пишем свой фреймворк--->Создаем CMS интернет-магазина-->Мастер веб-разработки на PHP'
-  const levels = ['Новичок', 'Продвинутый', 'Гуру', 'Все уровни']
-  const studentCount = 2128
-  const lectures = 12
-  const videoLength = '2h 30m'
+const DetailContent: React.FC<DetailContentProps> = ({ activeTab, course }) => {
   return (
     <div className={' w-full '}>
       {activeTab === 'overview' && (
         <div className='mt-4'>
           <div>
-            <h2 className='text-xl font-bold mb-4'>Об этом курсе:</h2>
-            <p className='mb-4'>{description}</p>
+            <p className='mb-4'></p>
           </div>
-          <div className='border-y-2 border-gray-300 flex flex-col md:flex-row min-h-32'>
+          <div className='border-b-2 border-gray-300 flex flex-col md:flex-row min-h-32'>
             <h2 className='mr-4 md:mr-16 mt-4'>Подробные данные:</h2>
             <div className='mr-4 md:mr-16 mt-4 flex flex-col md:flex-row'>
               <ul className='flex flex-col'>
                 <li>
-                  <strong>Уровень навыков</strong>: {levels[0]}
+                  <strong>Уровень навыков</strong>: {course.level}
                 </li>
                 <li>
-                  <strong>Студентов</strong>: {studentCount}
+                  <strong>Студентов</strong>: {course.students_count}
                 </li>
               </ul>
               <ul className='flex flex-col mt-4 md:mt-0 md:ml-8'>
                 <li>
-                  <strong>Лекций</strong>: {lectures}
+                  <strong>Лекций</strong>: {course.lectures_count}
                 </li>
                 <li>
-                  <strong>Общая длина видео</strong>: {videoLength}
+                  <strong>Общая длина видео</strong>: {course.lectures_length}
                 </li>
               </ul>
             </div>
           </div>
 
           <div className='flex flex-col md:flex-row min-h-8 mt-4'>
-            <h2 className='ml-8 md:mr-16'>
-              <strong>Описание</strong>:
-            </h2>
+            <h2 className='ml-8 md:mr-16 text-xl font-bold mb-4'>Об этом курсе:</h2>
           </div>
           <div className='mr-4 md:mr-16 flex flex-col  ml-36'>
             {/* // TODO: Add description here via html */}
-            13.04.2022 Вышло новое большое обновление курса! Включает в себя React 18й
-            версии. Этот курс направлен на подробное изучение JavaScript без воды, но
-            главное - немедленное применение его на практике. Это значит, что вы получите
-            материал для работы и мы вместе будем создавать реальные проекты шаг за шагом.
-            Вторая часть курса - это изучение самой популярной библиотеки на основе
-            JavaScript - React.js со всеми необходимыми технологиями (в том числе и Redux)
-            Для кого подойдет этот курс? Если вы ничего не знаете про программирование, но
-            хотите начать Если вы новичок в JavaScript и хотите быстро его освоить и
-            начать уже применять в работе Если вы начали своё обучение с JQuery или
-            другого инструмента, но вам не хватает знаний основ Если вы хотите научить
-            создавать web-приложения Если вы хотите освоить библиотеку React на реальных
-            проектах Что внутри курса? Теория - это хорошо, но без практики результата не
-            будет. Поэтому каждый теоретический блок заканчивается практикой, где вы
-            будете писать приложение, интерактивные элементы на сайте и тд. Все материалы
-            для работы будут предоставлены. На все вопросы внутри курса отвечаю лично как
-            можно быстрее. Так же есть телеграм канал для вопросов и обсуждений. Все
-            обновления курса бесплатны и в автоматическом режиме. мы изучим основы
-            программирования и алгоритмов мы изучим основы объектно ориентированного
-            программирования мы изучим основные концепции и принципы JavaScript, от самых
-            простых до самых сложных мы научимся работать с такими популярными
-            технологиями как AJAX, JSON и тд мы научимся работать с Git и GitHub мы
-            научимся работать с npm, Babel, Browserify, Webpack, Heroku, Firebase и тд
-            подумаем, какой фрэймворк или библиотеку выбрать в дальнейшем. Познакомимся с
-            React, Angular, Vue, Jquery мы изучим библиотеку React и создадим 4 приложения
-            на её основе мы изучим различные архитектурные подходы при построении
-            web-приложений мы научимся работать с Redux и интегрировать этот инструмент в
-            наши приложения
+            {course.description}
           </div>
           <div className='mt-8 ml-4'>
-            <h2>
-              <strong>Чему вы научитесь:</strong>
-            </h2>
-            <ul className='list-disc pl-8 md:pl-32'>
-              <li>Узнаете основы программирования и алгоритмов</li>
-              <li>Узнаете основные концепции и принципы JavaScript</li>
-              {/* Дополнительные пункты */}
-            </ul>
-            <h2 className='mt-6'>
-              <strong>
-                Существуют ли у курса какие-либо (предварительные) требования?
-              </strong>
-            </h2>
-            <ul className='list-disc pl-8 md:pl-32'>
-              <li>Базовые навыки HTML, CSS</li>
-              <li>Любой редактор кода</li>
-              {/* Дополнительные пункты */}
-            </ul>
-            <h2 className='mt-8'>
-              <strong>Для кого этот курс:</strong>
-            </h2>
-            <ul className='list-disc pl-8 md:pl-32'>
-              <li>Для тех, кто желает выучить JS с нуля</li>
-              <li>Для тех, кто хочет применить знания на реальных проектах</li>
-              {/* Дополнительные пункты */}
-            </ul>
+            <>
+              <h2>
+                <strong>Чему вы научитесь:</strong>
+              </h2>
+              <ul className='list-disc pl-8 md:pl-32'>
+                {course.course_goals.map((goal, index) => (
+                  <li key={index}>{goal}</li>
+                ))}
+              </ul>
+            </>
+            <>
+              <h2 className='mt-6'>
+                <strong>
+                  Существуют ли у курса какие-либо (предварительные) требования?
+                </strong>
+              </h2>
+              <ul className='list-disc pl-8 md:pl-32'>
+                {course.requirements.map((goal, index) => (
+                  <li key={index}>{goal}</li>
+                ))}
+              </ul>
+            </>
+
+            <>
+              <h2 className='mt-8'>
+                <strong>Для кого этот курс:</strong>
+              </h2>
+
+              <ul className='list-disc pl-8 md:pl-32'>
+                {course.target_audience.map((goal, index) => (
+                  <li key={index}>{goal}</li>
+                ))}
+              </ul>
+            </>
           </div>
         </div>
       )}
@@ -492,6 +334,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
     </div>
   )
 }
+
 const Header: React.FC = () => {
   return (
     <div className='bg-gray-800 text-white h-16 flex items-center px-4 fixed top-0 left-0 w-full'>
@@ -570,7 +413,7 @@ export const ReviewsComponent: React.FC = () => {
           </label>
           <input
             id='author'
-            name='author'
+            name='full_name'
             type='text'
             value={newReview.full_name}
             onChange={handleInputChange}
@@ -585,27 +428,11 @@ export const ReviewsComponent: React.FC = () => {
           </label>
           <textarea
             id='content'
-            name='content'
+            name='review_text'
             value={newReview.review_text}
             onChange={handleInputChange}
             className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
             placeholder='Ваш отзыв'
-            required
-          />
-        </div>
-        <div className='mb-4'>
-          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='name'>
-            Ваше имя
-          </label>
-          <input
-            id='name'
-            name='name'
-            type='text'
-            disabled={true}
-            value={newReview.full_name}
-            onChange={handleInputChange}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            placeholder='Имя'
             required
           />
         </div>
