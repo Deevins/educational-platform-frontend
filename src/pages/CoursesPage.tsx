@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useSWR from 'swr'
 
-interface Course {
+export interface Course {
   id: string
   title: string
   subtitle: string
@@ -14,6 +14,7 @@ interface Course {
   lectures_count: number
   level: string
   course_avatar_url: string
+  created_date: string
 }
 
 const CoursesPage: React.FC = () => {

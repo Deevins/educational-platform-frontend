@@ -340,7 +340,6 @@ const ForumPage: React.FC = () => {
               alt='Технические работы'
               className='mx-auto mb-4'
             />
-            <h1 className='text-xl font-bold'>Технические работы</h1>
           </div>
           <div className='mt-6 text-center'>
             <h2 className='text-2xl font-semibold'>

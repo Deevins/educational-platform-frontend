@@ -116,7 +116,7 @@ const StudentHeader: React.FC = () => {
             </button>
           </NavLink>
           <div ref={dialogRef}>
-            {isHovered && isInstructorModeOpen && (
+            {isHovered && isInstructorModeOpen && !data?.has_used && (
               <div
                 className='absolute left-0 mt-8 w-full lg:w-64 bg-white border border-gray-300 rounded-lg shadow-lg'
                 onMouseLeave={closeStudentMode}
