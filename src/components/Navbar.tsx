@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Dropdown, { DropdownElem } from '@/components/Dropdown.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Link, NavLink } from 'react-router-dom'
+import axios from 'axios'
 
 type NavBarElem = {
   title: string
@@ -13,16 +14,7 @@ const menuItemsData: NavBarElem[] = [
   {
     title: 'Курсы',
     url: '/courses/all',
-    submenu: [
-      // {
-      //   title: 'Все курсы',
-      //   url: '/courses/all',
-      // },
-      // {
-      //   title: 'Мои курсы',
-      //   url: '/courses/my',
-      // },
-    ],
+    submenu: [],
   },
   {
     title: 'Форум',
@@ -151,16 +143,14 @@ const MenuItem = ({ item }: Props) => {
 
 type Course = {
   id: number
-  type: 'course'
   title: string
-  image: string
+  course_avatar_url: string
   rating: number
-  enrollment: number
+  students_count: number
 }
 
 type Thread = {
   id: number
-  type: 'thread'
   title: string
   createdDate: string
   lastResponseDate: string
@@ -176,90 +166,91 @@ interface SearchDialogProps {
   onClickFunc: () => void
 }
 
-const mockData: Record<SearchPossibility, SearchResult[]> = {
-  courses: [
-    {
-      id: 1,
-      type: 'course',
-      title: 'Обучение Python',
-      image: 'https://flowbite.com/docs/images/logo.svg',
-      rating: 4.0,
-      enrollment: 100,
-    },
-    {
-      id: 2,
-      type: 'course',
-      title: 'Разработка на React + Redux',
-      image: 'https://flowbite.com/docs/images/logo.svg',
-      rating: 4.8,
-      enrollment: 600,
-    },
-    {
-      id: 3,
-      type: 'course',
-      title: 'Разработка микросервисов на Go',
-      image: 'https://flowbite.com/docs/images/logo.svg',
-      rating: 4.2,
-      enrollment: 150,
-    },
-  ],
-  threads: [
-    {
-      id: 1,
-      type: 'thread',
-      title: 'Тред 1',
-      createdDate: '2024-05-10',
-      lastResponseDate: '2024-05-15',
-      replyCount: 10,
-      lastResponder: 'someone 1',
-    },
-    {
-      id: 2,
-      type: 'thread',
-      title: 'Тред 2',
-      createdDate: '2024-05-11',
-      lastResponseDate: '2024-05-16',
-      replyCount: 8,
-      lastResponder: 'someone 2',
-    },
-    {
-      id: 3,
-      type: 'thread',
-      title: 'Тред 3',
-      createdDate: '2024-05-12',
-      lastResponseDate: '2024-05-17',
-      replyCount: 15,
-      lastResponder: 'someone 3',
-    },
-    {
-      id: 4,
-      type: 'thread',
-      title: 'Тред 4',
-      createdDate: '2024-05-10',
-      lastResponseDate: '2024-05-15',
-      replyCount: 10,
-      lastResponder: 'someone 1',
-    },
-    {
-      id: 5,
-      type: 'thread',
-      title: 'Тред 5',
-      createdDate: '2024-05-11',
-      lastResponseDate: '2024-05-16',
-      replyCount: 8,
-      lastResponder: 'someone 2',
-    },
-    {
-      id: 6,
-      type: 'thread',
-      title: 'Тред 6',
-      createdDate: '2024-05-12',
-      lastResponseDate: '2024-05-17',
-      replyCount: 15,
-      lastResponder: 'someone 3',
-    },
-  ],
-}
+// const mockData: Record<SearchPossibility, SearchResult[]> = {
+//   courses: [
+//     {
+//       id: 1,
+//       type: 'course',
+//       title: 'Обучение Python',
+//       image:
+//         'https://static-00.iconduck.com/assets.00/kubernetes-icon-512x497-9lzx72x4.png',
+//       rating: 4.0,
+//       enrollment: 100,
+//     },
+//     {
+//       id: 2,
+//       type: 'course',
+//       title: 'Разработка на React + Redux',
+//       image: 'https://flowbite.com/docs/images/logo.svg',
+//       rating: 4.8,
+//       enrollment: 600,
+//     },
+//     {
+//       id: 3,
+//       type: 'course',
+//       title: 'Разработка микросервисов на Go',
+//       image: 'https://flowbite.com/docs/images/logo.svg',
+//       rating: 4.2,
+//       enrollment: 150,
+//     },
+//   ],
+//   threads: [
+//     {
+//       id: 1,
+//       type: 'thread',
+//       title: 'Тред 1',
+//       createdDate: '2024-05-10',
+//       lastResponseDate: '2024-05-15',
+//       replyCount: 10,
+//       lastResponder: 'someone 1',
+//     },
+//     {
+//       id: 2,
+//       type: 'thread',
+//       title: 'Тред 2',
+//       createdDate: '2024-05-11',
+//       lastResponseDate: '2024-05-16',
+//       replyCount: 8,
+//       lastResponder: 'someone 2',
+//     },
+//     {
+//       id: 3,
+//       type: 'thread',
+//       title: 'Тред 3',
+//       createdDate: '2024-05-12',
+//       lastResponseDate: '2024-05-17',
+//       replyCount: 15,
+//       lastResponder: 'someone 3',
+//     },
+//     {
+//       id: 4,
+//       type: 'thread',
+//       title: 'Тред 4',
+//       createdDate: '2024-05-10',
+//       lastResponseDate: '2024-05-15',
+//       replyCount: 10,
+//       lastResponder: 'someone 1',
+//     },
+//     {
+//       id: 5,
+//       type: 'thread',
+//       title: 'Тред 5',
+//       createdDate: '2024-05-11',
+//       lastResponseDate: '2024-05-16',
+//       replyCount: 8,
+//       lastResponder: 'someone 2',
+//     },
+//     {
+//       id: 6,
+//       type: 'thread',
+//       title: 'Тред 6',
+//       createdDate: '2024-05-12',
+//       lastResponseDate: '2024-05-17',
+//       replyCount: 15,
+//       lastResponder: 'someone 3',
+//     },
+//   ],
+// }
 
 const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
   const [searchOption, setSearchOption] = useState<SearchPossibility>('courses')
@@ -279,23 +270,44 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
 
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
-      const data = mockData[searchOption].filter((item) =>
-        getItemName(item).toLowerCase().includes(text.toLowerCase())
-      )
-      setSearchResults(data)
+      // const data = mockData[searchOption].filter((item) =>
+      //   getItemName(item).toLowerCase().includes(text.toLowerCase())
+      // )
+      switch (searchOption) {
+        case 'courses':
+          axios
+            .get<
+              SearchResult[]
+            >(`http://localhost:8080/courses/search-courses-by-title/${text.toLowerCase()}`)
+            .then((res) => {
+              setSearchResults(res.data as Course[])
+            })
+          break
+        case 'threads':
+          axios
+            .get(
+              `http://localhost:8080/forum/threads/search-threads-by-title/${text.toLowerCase()}`
+            )
+            .then((res) => {
+              setSearchResults(res.data as Thread[])
+            })
+          break
+      }
+
+      // setSearchResults(data)
     }, 1000)
   }
 
-  const getItemName = (item: SearchResult): string => {
-    switch (item.type) {
-      case 'course':
-        return (item as Course).title
-      case 'thread':
-        return (item as Thread).title
-      default:
-        return ''
-    }
-  }
+  // const getItemName = (item: SearchResult): string => {
+  //   switch (item.type) {
+  //     case 'course':
+  //       return (item as Course).title
+  //     case 'thread':
+  //       return (item as Thread).title
+  //     default:
+  //       return ''
+  //   }
+  // }
 
   return (
     <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-2/3 lg:w-1/2 bg-white rounded-lg shadow-lg overflow-hidden'>
@@ -327,7 +339,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
           ))}
         </div>
         <div className='mt-4 space-y-4'>
-          {searchResults.length > 0 ? (
+          {searchResults?.length > 0 ? (
             <div className='search-results'>
               {searchResults.map((result, index) => (
                 <div
@@ -337,12 +349,12 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
                   }}
                   className='search-result-card border border-gray-300 rounded-lg overflow-hidden mt-4 cursor-pointer hover:bg-gray-100'
                 >
-                  {result.type === 'course' && (
+                  {searchOption === 'courses' && (
                     <Link to={`/courses/course/${(result as Course).id}`}>
                       <CourseCard course={result as Course} />
                     </Link>
                   )}
-                  {result.type === 'thread' && (
+                  {searchOption === 'threads' && (
                     <Link to={`/forum/threads/thread/${(result as Thread).id}`}>
                       <ThreadCard thread={result as Thread} />
                     </Link>
@@ -360,14 +372,19 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ onClickFunc }) => {
 }
 
 const CourseCard: React.FC<{ course: Course }> = ({ course }) => {
+  console.log(course)
   return (
     <div className='flex p-4'>
-      <img src={course.image} alt={course.title} className='w-16 h-16 mr-4' />
+      <img
+        src={course?.course_avatar_url}
+        alt={course?.title}
+        className='w-16 h-16 mr-4'
+      />
       <div>
-        <h3 className='text-lg font-semibold'>{course.title}</h3>
+        <h3 className='text-lg font-semibold items-start'>{course?.title}</h3>
         <div className='flex items-center'>
-          <span className='mr-2'>Средний рейтинг: {course.rating}</span>
-          <span>Количество участников: {course.enrollment}</span>
+          <span className='mr-2'>Средний рейтинг: {course?.rating}</span>
+          <span>Количество участников: {course?.students_count}</span>
         </div>
       </div>
     </div>

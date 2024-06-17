@@ -8,7 +8,7 @@ const store = configureStore({
 })
 
 // Dispatch action to initialize user_id when the application starts
-store.dispatch({ type: 'INITIALIZE_USER_ID' })
+store.dispatch({ type: 'INITIALIZE_USER' })
 
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>

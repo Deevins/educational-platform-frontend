@@ -9,8 +9,10 @@ const LogOutPage = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
+      localStorage.removeItem('token')
       navigate('/')
     }
+    localStorage.removeItem('token')
   }, [isAuthenticated, navigate])
   return (
     <div className='flex justify-center items-center'>

@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { BsAwardFill, BsChatLeftHeart, BsFeather } from 'react-icons/bs'
 import { useSelector } from 'react-redux'
 import { selectIsAuthenticated } from '@/utils/redux/store/authSlice.ts'
+import useSWR from 'swr'
+import axios from 'axios'
 
 interface ImageBlockProps {
   icon: IconType
@@ -171,9 +173,22 @@ const StartBlock: React.FC = () => {
   )
 }
 
+interface MetaInfo {
+  courses_count: number
+  registrations_count: number
+  students_count: number
+}
+
+const fetcher = (url: string) => axios.get<MetaInfo>(url).then((res) => res.data)
+
 const FirstTimeInstructorPage = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  // const userID = useSelector(selectUserID)
   const navigate = useNavigate()
+  const { data, error, isLoading } = useSWR(
+    'http://localhost:8080/directories/meta-counts',
+    fetcher
+  )
 
   const startTeaching = () => {
     if (!isAuthenticated) {
@@ -182,6 +197,9 @@ const FirstTimeInstructorPage = () => {
       navigate('/teaching/onboarding/teaching-experience')
     }
   }
+
+  if (error) return <div>ошибка загрузки</div>
+  if (isLoading) return <div>загрузка...</div>
 
   return (
     <>
@@ -224,9 +242,9 @@ const FirstTimeInstructorPage = () => {
       </div>
       <div className='bg-purple-600 text-white py-16 '>
         <div className='flex justify-center'>
-          <Column amount='10+' label='Студентов' />
-          <Column amount='100+' label='Регистраций' />
-          <Column amount='100+' label='Стран' />
+          <Column amount={`${data?.students_count}+`} label='Студентов' />
+          <Column amount={`${data?.registrations_count}+`} label='Регистраций' />
+          <Column amount={`${data?.courses_count}+`} label='Курсов' />
         </div>
       </div>
       <StartBlock />

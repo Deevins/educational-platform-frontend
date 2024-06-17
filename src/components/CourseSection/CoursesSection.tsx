@@ -3,7 +3,7 @@ import CourseCardMini, { Course } from '@/components/CourseSection/CourseCardMin
 import { NavLink } from 'react-router-dom'
 
 interface CoursesSectionProps {
-  courses: Course[]
+  courses?: Course[]
 }
 
 const CoursesSection: React.FC<CoursesSectionProps> = ({ courses }) => {
@@ -11,9 +11,8 @@ const CoursesSection: React.FC<CoursesSectionProps> = ({ courses }) => {
     <div className='container mx-auto py-8'>
       <ArrowLink title={'Все курсы'} />
       <div className='flex flex-wrap'>
-        {courses.map((course, index) => (
-          <CourseCardMini key={index} {...course} />
-        ))}
+        {courses?.length === 0 && <div>Курсов пока нет</div>}
+        {courses?.map((course, index) => <CourseCardMini key={index} {...course} />)}
       </div>
     </div>
   )

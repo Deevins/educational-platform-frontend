@@ -1,15 +1,36 @@
-import { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import logo from '/platform_logo.png'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button.tsx'
 import AvatarMenu from '@/components/AvatarMenu.tsx'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import { Navbar } from '@/components/Navbar.tsx'
 import { useSelector } from 'react-redux'
-import { selectIsAuthenticated } from '@/utils/redux/store/authSlice.ts'
+import { selectIsAuthenticated, selectUserID } from '@/utils/redux/store/authSlice.ts'
+import axios from 'axios'
 
-const StudentHeader = () => {
+interface UserExperience {
+  has_used: boolean
+}
+
+const StudentHeader: React.FC = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const userID = useSelector(selectUserID)
+  const navigate = useNavigate()
+  const [data, setData] = useState<UserExperience>({ has_used: false })
+  useEffect(() => {
+    const getHasUserTried = async () => {
+      if (userID) {
+        const res = await axios.get<UserExperience>(
+          `http://localhost:8080/users/has-user-tried-instructor/${userID}`
+        )
+        setData(res.data)
+      }
+    }
+
+    getHasUserTried()
+  }, [])
+
   const [isInstructorModeOpen, setIsInstructorModeOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -54,6 +75,21 @@ const StudentHeader = () => {
   //   fetchData()
   // }, [])
 
+  const handleClickInstructor = async () => {
+    if (!data?.has_used) {
+      try {
+        const result = await axios.post(
+          `http://localhost:8080/users/set-has-user-tried-instructor-to-true/${userID}`
+        )
+        console.log('result', result)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+      navigate('/teaching')
+    }
+  }
+
+  const final_route = data?.has_used ? '/instructor/courses' : '/teaching'
   return (
     <header className='bg-gray-200 text-black p-4 flex justify-center  lg:justify-between items-center shadow-xl'>
       <NavLink to={'/'} className='hidden lg:flex items-center sm:hidden'>
@@ -77,14 +113,18 @@ const StudentHeader = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <NavLink
-            to={'/teaching'}
-            className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
-          >
-            <button onMouseEnter={openInstructorMode}>Преподаватель</button>
-          </NavLink>
+          {isAuthenticated && (
+            <NavLink
+              to={final_route}
+              className='text-black rounded-lg px-4 py-2 mr-4 transition duration-200 hover:bg-gray-100 hover:cursor-pointer hover:text-purple-700 z-50'
+            >
+              <button onMouseEnter={openInstructorMode} onClick={handleClickInstructor}>
+                Преподаватель
+              </button>
+            </NavLink>
+          )}
           <div ref={dialogRef}>
-            {isHovered && isInstructorModeOpen && (
+            {isHovered && isInstructorModeOpen && !data?.has_used && (
               <div
                 className='absolute left-0 mt-8 w-full lg:w-64 bg-white border border-gray-300 rounded-lg shadow-lg'
                 onMouseLeave={closeStudentMode}
@@ -96,7 +136,7 @@ const StudentHeader = () => {
                   </p>
                   <p>Превратите свои знания в возможность и учите людей по всему миру.</p>
                   <NavLink
-                    to={'/teaching'}
+                    to={final_route}
                     className='block bg-black text-white rounded-lg px-4 py-2 mt-4 ml-2hover:bg-gray-800 mr-1'
                   >
                     Узнать подробнее

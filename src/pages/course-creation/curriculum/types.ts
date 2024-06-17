@@ -1,40 +1,41 @@
 export type SectionComponentType = 'lecture' | 'test'
 
-export type TestAnswer = {
-  answer: string
-  answerIsCorrect: boolean
-  answerDescription: string
+export type api_section = {
+  section_id: number
+  section_title: string
+  serial_number: number
+  type: SectionComponentType
+  section_description: string
+  lectures: api_lecture[]
+  tests: api_test[]
 }
 
-export interface TestQuestion {
-  question: string
-  answers: { answer: string; answerIsCorrect: boolean; answerDescription: string }[]
+export type api_lecture = {
+  id: number
+  title: string
+  description: string
+  type: SectionComponentType
+  serial_number: string
+  video_url: string
 }
 
-export type SectionTest = {
-  componentSerial: number
+export type api_test = {
+  test_id: number
+  test_name: string
   type: SectionComponentType
-  title: string
   description: string
-  questions: TestQuestion[]
-}
-export type SectionAssignment = {
-  componentSerial: number
-  type: SectionComponentType
-  title: string
-  description: string
-}
-export type SectionLecture = {
-  componentSerial: number
-  type: SectionComponentType
-  title: string
-  description: string
+  serial_number: number
+  questions: api_question[]
 }
 
-export type SectionType = {
-  sectionNum: number
-  title: string
+export type api_question = {
+  id: number
+  question_body: string
+  answers: api_answer[]
+}
+
+export type api_answer = {
+  response_text: string
   description: string
-  lectures: SectionLecture[]
-  tests: SectionTest[]
+  is_correct: boolean
 }

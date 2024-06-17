@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import PhoneInput from 'react-phone-input-2'
 import useModal from '@/utils/hooks/useModal.ts'
 import Pagination from '@/components/Pagination.tsx'
+import axios from 'axios'
+import useSWR from 'swr'
 
 const ITEMS_PER_PAGE = 6
 
@@ -11,26 +13,19 @@ export interface IUser {
   id: number
   username: string
   email: string
-  fullName: string
-  avatar: string
-  mobile?: string
-  about?: string
+  full_name: string
+  avatar_url: string
+  phone_number?: string
+  description?: string
   courses?: number[]
 }
 
-// UserInfoRequest.ts
-export interface UserInfoRequest {
-  id: string
-}
-
-// UserInfoResponse.ts
-export interface UserInfoResponse {
-  id: number
-  full_name: string
-  description: string
+interface UserToUpdate {
+  user_id: number
   email: string
-  avatar: string
-  phone_number: string
+  fullName: string
+  phone_number?: string
+  description?: string
 }
 
 interface Course {
@@ -76,7 +71,7 @@ const CoursesList: React.FC<{ courses: Course[]; user: IUser }> = ({ courses, us
   return (
     <div>
       <h3 className='text-xl font-bold mb-4'>
-        Курсы, на которые записан {user.fullName}
+        Курсы, на которые записан {user.full_name}
       </h3>
       {paginatedCourses.length === 0 ? (
         <p className='text-gray-500 text-center'>Список курсов пуст</p>
@@ -106,6 +101,8 @@ const CoursesList: React.FC<{ courses: Course[]; user: IUser }> = ({ courses, us
   )
 }
 
+const fetcher = (url: string) => axios.get<IUser>(url).then((res) => res.data)
+
 const UserPage: React.FC = () => {
   const { userID } = useParams<{ userID: string }>()
   const [user, setUser] = useState<IUser | null>(null)
@@ -114,6 +111,11 @@ const UserPage: React.FC = () => {
   const [, setPhoneNumber] = useState('')
   const { isOpen, openModal, closeModal, ref } = useModal()
   const [isOnline, setIsOnline] = useState(true)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const { data, error, isLoading } = useSWR(
+    `http://localhost:8080/users/get-one/${userID}`,
+    fetcher
+  )
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true)
@@ -128,82 +130,80 @@ const UserPage: React.FC = () => {
     }
   }, [])
 
-  // const fetchUserInfo = async (userId: string): Promise<UserInfoResponse | null> => {
-  //   try {
-  //     const response = await axios.get<UserInfoResponse>(
-  //       `http://localhost:8080/user/get-self-info`,
-  //       {
-  //         params: { id: userId },
-  //       }
-  //     )
-  //     return response.data
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       console.error(`Error fetching user info: ${error.message}`)
-  //       console.error(`Status code: ${error.response?.status}`)
-  //       console.error(`Response data: ${error.response?.data}`)
-  //     } else {
-  //       console.error('Unexpected error', error)
-  //     }
-  //     return null
-  //   }
-  // }
-
   useEffect(() => {
-    // Simulate fetching user data
-    if (userID === '2') {
-      const userData: IUser = {
-        id: 2,
-        username: 'exampleUser',
-        email: 'shinichi@gmail.com',
-        fullName: 'Александр Мордов',
-        avatar: 'https://github.com/shadcn.png',
-        mobile: '8-904-003-53-23',
-        about:
-          'Всем привет! Меня зовут Алесандр. Я занимаюсь разработкой программного обеспечения более 10 лет.\n' +
-          '\n' +
-          'Работал над проектами в различных сферах: от игр и мобильных приложений до интерактивных инсталляций и программирования микроконтроллеров.\n' +
-          '\n' +
-          'На данный момент являюсь инженером компьютерной графики и работаю в индустрии виртуальной реальности в Финляндии.\n' +
-          '\n' +
-          'Мне нравится рассказывать сложные вещи простым языком. Я уверен, мой опыт и курс будут полезны в освоении профессии разработчика игр. Считаю, что теория и практика одинаковы важны, а для глубокого усвоения  материала все концепты теории должны быть объяснены на примерах по фейнмановскому методу.',
-        courses: [1, 2, 3, 4, 5, 6, 7, 8],
-      }
-      setUser(userData)
-      setUpdatedUser(userData)
-    } else {
-      const userData: IUser = {
-        id: 1,
-        username: 'exampleUser',
-        email: 'daker255@bk.ru',
-        fullName: 'Виктор Самсонов',
-        avatar: 'https://github.com/shadcn.png',
-        mobile: '8-904-003-53-23',
-        about:
-          'Всем привет! Меня зовут Виктор. Я занимаюсь разработкой программного обеспечения более 2 лет.\n' +
-          '\n' +
-          'Работал над проектами в различных сферах: от игр и мобильных приложений до интерактивных инсталляций и программирования микроконтроллеров.\n' +
-          '\n' +
-          'На данный момент являюсь инженером компьютерной графики и работаю в индустрии виртуальной реальности в Финляндии.\n' +
-          '\n' +
-          'Мне нравится рассказывать сложные вещи простым языком. Я уверен, мой опыт и курс будут полезны в освоении профессии разработчика игр. Считаю, что теория и практика одинаковы важны, а для глубокого усвоения  материала все концепты теории должны быть объяснены на примерах по фейнмановскому методу.',
-        courses: [1, 2, 3, 4, 5, 6, 7, 8],
-      }
-      setUser(userData)
-      setUpdatedUser(userData)
+    if (data) {
+      setUser(data)
+      setUpdatedUser(data)
     }
-  }, [])
+  }, [isLoading, data])
 
   const handleEditClick = () => {
     openModal()
   }
 
-  const handleSave = () => {
-    if (updatedUser) {
-      setUser({ ...updatedUser })
-      // Save updated user data (not implemented in this example)
+  const handleAvatarClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
     }
-    closeModal() // Закрываем модальное окно при сохранении
+  }
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && user) {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/users/upload-avatar/${user.id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+
+        if (response.status === 200) {
+          const updatedAvatarUrl = response.data.avatar_url
+          setUser((prevUser) => ({
+            ...prevUser!,
+            avatar_url: updatedAvatarUrl,
+          }))
+          setUpdatedUser((prevUser) => ({
+            ...prevUser!,
+            avatar_url: updatedAvatarUrl,
+          }))
+        }
+      } catch (error) {
+        console.error('Error uploading avatar:', error)
+      }
+    }
+  }
+
+  if (!userID) {
+    return <div>Пользователь не найден</div>
+  }
+
+  const handleSave = async () => {
+    if (updatedUser) {
+      const userToUpdate: UserToUpdate = {
+        user_id: updatedUser.id,
+        email: updatedUser.email,
+        fullName: updatedUser.full_name,
+        phone_number: updatedUser.phone_number,
+        description: updatedUser.description,
+      }
+      const res = await axios.put(
+        'http://localhost:8080/users/update-user-info',
+        userToUpdate
+      )
+      if (res.status === 200) {
+        console.log('User data updated successfully')
+        setUser({ ...updatedUser })
+      }
+    }
+    closeModal()
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -220,7 +220,7 @@ const UserPage: React.FC = () => {
     if (updatedUser) {
       setUpdatedUser({
         ...updatedUser,
-        mobile: value,
+        phone_number: value,
       })
     }
   }
@@ -229,17 +229,29 @@ const UserPage: React.FC = () => {
     setCurrentMainTab(tab)
   }
 
+  if (error) return <div>ошибка загрузки</div>
+  if (isLoading) return <div>загрузка...</div>
+
+  const isSelfProfile = user?.id === parseInt(userID)
+
   return (
     <>
       <div className='min-h-screen bg-gray-100 shadow-lg rounded-lg overflow-hidden w-full sm:w-11/12 md:w-10/12 lg:w-8/12 xl:w-7/12 relative p-8 mt-20 lg:mt-[-150px] xl:mt-10 lg: ml-[20%]'>
-        {user ? (
+        {user && (
           <>
             <div className='flex items-center mb-4'>
               <div className='relative'>
-                <Avatar className={'w-16 h-16 mr-4'}>
-                  <AvatarImage src={user.avatar} />
-                  <AvatarFallback>{user.username}</AvatarFallback>
+                <Avatar className={'w-16 h-16 mr-4'} onClick={handleAvatarClick}>
+                  <AvatarImage src={user.avatar_url} />
+                  <AvatarFallback>{user.full_name}</AvatarFallback>
                 </Avatar>
+                <input
+                  type='file'
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleAvatarChange}
+                  accept='image/*'
+                />
                 <div
                   className={`absolute bottom-0 right-4 w-4 h-4 rounded-full ${
                     isOnline ? 'bg-green-500' : 'bg-gray-500'
@@ -247,51 +259,51 @@ const UserPage: React.FC = () => {
                 />
               </div>
               <div>
-                <h2 className='text-2xl font-bold'>{user.fullName}</h2>
+                <h2 className='text-2xl font-bold'>{user.full_name}</h2>
                 <p className='text-gray-600'>
                   <b>e-mail:</b> {user.email}
                 </p>
                 <p className='text-gray-600'>
                   <b>телефон: </b>
-                  {user.mobile}
+                  {user.phone_number}
                 </p>
               </div>
             </div>
             <hr className='my-4 border-t border-gray-300' />
-            {user.id === 1 && (
+            {isSelfProfile && (
               <button
                 className='bg-blue-500 text-white px-4 py-2 rounded'
                 onClick={handleEditClick}
               >
-                Редактировать профиль:
+                Редактировать профиль
               </button>
             )}
 
             <div className='mt-4'>
               <h3 className='text-xl font-bold mb-2'>Обо мне:</h3>
-              <p className='text-black mb-4'>{user.about}</p>
+              <p className='text-black mb-4'>{user.description}</p>
             </div>
-            <div className='mt-8'>
-              <div className='flex justify-between items-center mb-4'>
-                <button
-                  className={`px-4 py-2 rounded ${
-                    currentMainTab === 'courses'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-300 text-gray-800'
-                  }`}
-                  onClick={() => handleMainTabChange('courses')}
-                >
-                  Курсы
-                </button>
-              </div>
+            {isSelfProfile && (
+              <div className='mt-8'>
+                <div className='flex justify-between items-center mb-4'>
+                  <button
+                    className={`px-4 py-2 rounded ${
+                      currentMainTab === 'courses'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-300 text-gray-800'
+                    }`}
+                    onClick={() => handleMainTabChange('courses')}
+                  >
+                    Курсы
+                  </button>
+                </div>
 
-              {currentMainTab === 'courses' && (
-                <CoursesList courses={courses} user={user} />
-              )}
-            </div>
+                {currentMainTab === 'courses' && (
+                  <CoursesList courses={courses} user={user} />
+                )}
+              </div>
+            )}
           </>
-        ) : (
-          <p className='p-8'>Загрузка...</p>
         )}
       </div>
 
@@ -303,13 +315,14 @@ const UserPage: React.FC = () => {
           >
             <h2 className='text-2xl font-bold mb-4'>Редактировать профиль</h2>
             <div className='mb-4'>
-              <label htmlFor='fullName' className='block text-sm font-medium'>
+              <label htmlFor='full_name' className='block text-sm font-medium'>
                 ФИО
               </label>
               <input
                 type='text'
-                id='fullName'
-                name='fullName'
+                id='full_name'
+                name='full_name'
+                value={updatedUser?.full_name}
                 onChange={handleChange}
                 placeholder={'Введите ФИО'}
                 className='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black'
@@ -323,8 +336,9 @@ const UserPage: React.FC = () => {
                 type='email'
                 id='email'
                 name='email'
+                value={updatedUser?.email}
                 onChange={handleChange}
-                placeholder={'Введите ФИО'}
+                placeholder={'Введите email'}
                 className='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border-black lg:pl-2 lg:pt-4'
               />
             </div>
@@ -334,8 +348,9 @@ const UserPage: React.FC = () => {
               </label>
               <PhoneInput
                 country={'ru'}
+                value={updatedUser?.phone_number}
                 onChange={handlePhoneChange}
-                placeholder={'Введите ФИО'}
+                placeholder={'Введите номер мобильного телефона'}
                 inputClass='w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 pl-2 lg:text-sm text-black border lg:pl-2 lg:pt-4'
               />
             </div>
@@ -344,10 +359,11 @@ const UserPage: React.FC = () => {
                 Обо мне
               </label>
               <textarea
-                id='about'
-                name='about'
+                id='description'
+                name='description'
+                value={updatedUser?.description}
                 onChange={handleChange}
-                placeholder={'Введите ФИО'}
+                placeholder={'Введите описание'}
                 className='w-full h-24  rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm lg:text-sm text-black border-red-300 lg:pl-4 lg:pt-1'
               />
             </div>

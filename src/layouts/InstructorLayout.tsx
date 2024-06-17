@@ -11,7 +11,7 @@ type PropsType = {
 }
 
 const InstructorLayout: React.FC<PropsType> = ({ children }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(true)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const [activeItem, setActiveItem] = useState<number>(1)
   const menuRef = useRef<HTMLDivElement>(null)
 

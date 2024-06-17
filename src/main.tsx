@@ -33,7 +33,7 @@ import CurriculumPage from '@/pages/course-creation/curriculum/CurriculumPage.ts
 import SettingsPage from '@/pages/course-creation/SettingsPage.tsx'
 import { NotificationProvider } from '@/utils/contexts/notificationContext.tsx'
 import CoursesSearchByCategory from '@/pages/CoursesSearchByCategory.tsx'
-import UnregisteredCoursePage from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import CoursePage from '@/pages/course-page/CoursePage.tsx'
 import InstructorNewcomerPage from '@/pages/instructor/InstructorNewcomerPage.tsx'
 import CourseActivePage from '@/pages/course-learning/CourseActivePage.tsx'
 import InstructorCommunicationPage from '@/pages/instructor/InstructorCommunicationPage.tsx'
@@ -62,11 +62,6 @@ const router = createBrowserRouter([
         element: <CoursesSearchPage />,
         errorElement: <NotFoundPage />,
       },
-      // {
-      //   path: '/courses/my',
-      //   element: <UserCoursesPage />,
-      //   errorElement: <NotFoundPage />,
-      // },
       {
         path: '/forum',
         element: <ForumPage />,
@@ -99,7 +94,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/courses/course/:courseID',
-        element: <UnregisteredCoursePage />,
+        element: <CoursePage />,
         errorElement: <NotFoundPage />,
       },
       {

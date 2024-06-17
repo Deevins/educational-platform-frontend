@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
-import { TestQuestion } from '@/pages/course-creation/curriculum/types.ts'
+import { api_question } from '@/pages/course-creation/curriculum/types.ts'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
 
-const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => {
+const TestSection: React.FC<{ questions: api_question[]; id: number }> = ({
+  questions,
+  id,
+}) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({})
   const [testCompleted, setTestCompleted] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [testStarted, setTestStarted] = useState(false)
+  const userID = useSelector(selectUserID)
 
   const handleAnswerSelect = (index: number) => {
     setUserAnswers((prev) => ({
@@ -32,8 +39,32 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
     }
   }
 
-  const handleSubmitResults = () => {
+  const handleSubmitResults = async () => {
+    const totalQuestionsCount = questions.length
+    const correctAnsweredCount = Object.keys(userAnswers).reduce((count, key) => {
+      const questionIndex = parseInt(key)
+      const userAnswerIndex = userAnswers[questionIndex]
+      const isCorrect = questions[questionIndex].answers[userAnswerIndex!]?.is_correct
+      return isCorrect ? count + 1 : count
+    }, 0)
+
+    const result = {
+      user_id: userID,
+      total_questions_count: totalQuestionsCount,
+      correct_answered_count: correctAnsweredCount,
+    }
+
+    await axios.post(`http://localhost:8080/courses/submit-test/${id}`, result)
+
     setTestCompleted(true)
+  }
+
+  const handleRestartTest = () => {
+    setCurrentQuestionIndex(0)
+    setUserAnswers({})
+    setSelectedAnswer(null)
+    setTestCompleted(false)
+    setTestStarted(false)
   }
 
   const handleStartTest = () => {
@@ -56,7 +87,7 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
       ) : !testCompleted ? (
         <div className='bg-white shadow-md rounded-lg p-6'>
           <div className='text-xl font-semibold mb-4'>
-            {questions[currentQuestionIndex].question}
+            {questions[currentQuestionIndex].question_body}
           </div>
           <div className='space-y-4'>
             {questions[currentQuestionIndex].answers.map((answer, index) => (
@@ -69,7 +100,7 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
                     : 'border-gray-300 hover:bg-gray-100'
                 }`}
               >
-                {answer.answer}
+                {answer.response_text}
               </button>
             ))}
           </div>
@@ -99,24 +130,30 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
             Thank you for completing the test. Your results have been submitted
             successfully.
           </p>
+          <button
+            onClick={handleRestartTest}
+            className='px-6 py-2 mt-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700'
+          >
+            Restart Test
+          </button>
           {questions.map((question, index) => (
             <div key={index} className='mb-8 bg-gray-50 p-4 rounded-lg shadow'>
-              <div className='text-lg font-semibold mb-2'>{question.question}</div>
+              <div className='text-lg font-semibold mb-2'>{question.question_body}</div>
               {question.answers.map((answer, ansIndex) => (
                 <div
                   key={ansIndex}
                   className={`p-3 rounded-lg mb-2 ${
                     userAnswers[index] === ansIndex
-                      ? answer.answerIsCorrect
+                      ? answer.is_correct
                         ? 'bg-green-100 border-green-500'
                         : 'bg-red-100 border-red-500'
                       : 'bg-white'
                   } border-2`}
                 >
-                  {answer.answer}
-                  {(userAnswers[index] === ansIndex || !answer.answerIsCorrect) && (
+                  {answer.response_text}
+                  {(userAnswers[index] === ansIndex || !answer.is_correct) && (
                     <div className='text-sm text-gray-600 italic mt-2'>
-                      — {answer.answerDescription}
+                      — {answer.description}
                     </div>
                   )}
                 </div>

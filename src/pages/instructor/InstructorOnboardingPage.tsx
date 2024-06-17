@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-
+import React, { useEffect, useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
 import item_1 from '/create_course_1.png'
 
-// Компонент заголовка
 const SectionTitle: React.FC<{ title: string }> = ({ title }) => {
   return <h2 className='text-3xl font-bold mb-10'>{title}</h2>
 }
@@ -53,6 +54,7 @@ const CheckBoxes: React.FC<{
 const SectionImage: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
   return <img src={src} alt={alt} className={'hidden lg:block'} />
 }
+
 type step = 1 | 2 | 3
 type OnboardingResponses = {
   [key in step]: string
@@ -67,6 +69,17 @@ const InstructorOnboardingPage: React.FC = () => {
     '2': '',
     '3': '',
   })
+  const userID = useSelector(selectUserID)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (selectedOption) {
+      setResponses((prevResponses) => ({
+        ...prevResponses,
+        [currentStep]: selectedOption,
+      }))
+    }
+  }, [selectedOption, currentStep])
 
   const handleContinue = () => {
     setCurrentStep((prevStep) => prevStep + 1)
@@ -79,13 +92,26 @@ const InstructorOnboardingPage: React.FC = () => {
   }
 
   const handleOptionChange = (option: string) => {
-    setResponses(
-      (prevResponses) =>
-        ({ ...prevResponses, [currentStep]: option }) as OnboardingResponses
-    )
-    console.log(responses)
     setSelectedOption(option)
     setIsCheckboxSelected(true)
+  }
+
+  const handlerReadyClick = async () => {
+    try {
+      const repackedResponses = {
+        user_id: userID,
+        video_knowledge: responses[2],
+        previous_experience: responses[1],
+        current_audience_count: responses[3],
+      }
+      await axios.post(
+        `http://localhost:8080/users/add-user-teaching-experience`,
+        repackedResponses
+      )
+      navigate(`/instructor/courses`)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
   }
 
   const isContinueDisabled = !isCheckboxSelected
@@ -124,7 +150,6 @@ const InstructorOnboardingPage: React.FC = () => {
             handleOptionChange={handleOptionChange}
           />
         )}
-        {}
         {currentStep === 2 && (
           <PageSection
             title={'Создайте курс'}
@@ -171,7 +196,10 @@ const InstructorOnboardingPage: React.FC = () => {
             Продолжить
           </button>
         ) : (
-          <button className={'border-black px-4 py-2 border-2 bg-black'}>
+          <button
+            className={'border-black px-4 py-2 border-2 bg-black'}
+            onClick={handlerReadyClick}
+          >
             <NavLink to={`/instructor/courses`}>Готово</NavLink>
           </button>
         )}
@@ -222,4 +250,5 @@ const PageSection: React.FC<PageSectionProps> = ({
     </div>
   )
 }
+
 export default InstructorOnboardingPage

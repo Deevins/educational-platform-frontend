@@ -2,38 +2,58 @@ import React, { useEffect, useState } from 'react'
 import { FaCheckCircle, FaTrash } from 'react-icons/fa'
 import { IoIosArrowDown, IoIosArrowUp, IoMdAdd } from 'react-icons/io'
 import {
-  SectionTest,
-  TestAnswer,
-  TestQuestion,
+  api_answer,
+  api_question,
+  api_test,
+  SectionComponentType,
 } from '@/pages/course-creation/curriculum/types.ts'
 import { MdModeEdit } from 'react-icons/md'
 import { Link, useParams } from 'react-router-dom'
+import axios from 'axios'
 
 type TestComponentProps = {
-  testData: SectionTest
+  testData: api_test
+  onRemove: (id: number, componentType: SectionComponentType) => void
+  onUpdate: (id: number, title: string, componentType: SectionComponentType) => void
 }
 
-const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
+const TestComponent: React.FC<TestComponentProps> = ({
+  testData,
+  onUpdate,
+  onRemove,
+}) => {
   const [data, setData] = useState(testData)
   const [editButtonsVisible, setIsEditButtonsVisible] = React.useState(false)
-  const [questions, setQuestions] = useState(testData.questions)
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false)
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null)
-  const [isQuestionsVisible, setIsQuestionsVisible] = useState(false) // Состояние видимости вопросов
+  const [isQuestionsVisible, setIsQuestionsVisible] = useState(false)
+  const [editMode, setEditMode] = useState(false)
   const { courseID } = useParams()
-  console.log(courseID)
-  const handleAddQuestion = (newQuestion: TestQuestion) => {
-    const updatedQuestions =
-      selectedQuestionIndex !== null
-        ? questions.map((question, index) =>
-            index === selectedQuestionIndex ? newQuestion : question
-          )
-        : [...questions, newQuestion]
 
-    setQuestions(updatedQuestions)
-    setData({ ...data, questions: updatedQuestions })
-    setIsQuestionModalOpen(false)
-    setSelectedQuestionIndex(null)
+  const handleAddQuestions = async (newQuestion: api_question) => {
+    const endpoint =
+      data.questions.length === 0
+        ? `http://localhost:8080/courses/add-question-to-test/${data.test_id}`
+        : `http://localhost:8080/courses/add-question-to-test/${data.test_id}`
+
+    try {
+      const response = await axios.post(endpoint, newQuestion)
+      if (response.status !== 200) throw new Error('Error adding question')
+
+      const updatedQuestions =
+        selectedQuestionIndex !== null
+          ? data.questions.map((question, index) =>
+              index === selectedQuestionIndex ? newQuestion : question
+            )
+          : [...data.questions, newQuestion]
+
+      setData({ ...data, questions: updatedQuestions })
+      setIsQuestionModalOpen(false)
+      setSelectedQuestionIndex(null)
+      onUpdate(data.test_id, data.test_name, 'test') // Обновляем тест после изменений
+    } catch (error) {
+      console.error('Failed to add question:', error)
+    }
   }
 
   const handleEditQuestion = (index: number) => {
@@ -41,21 +61,39 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
     setIsQuestionModalOpen(true)
   }
 
-  const handleDeleteQuestion = (index: number) => {
-    const updatedQuestions = questions.filter((_, i) => i !== index)
-    setQuestions(updatedQuestions)
-    setData({ ...data, questions: updatedQuestions })
-    if (updatedQuestions.length === 0) {
-      setIsQuestionsVisible(false)
+  const handleDeleteQuestion = async (index: number) => {
+    const questionId = data.questions[index].id
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/courses/remove-question-from-test/${questionId}`
+      )
+      if (response.status !== 200) throw new Error('Error deleting question')
+
+      const updatedQuestions = data.questions.filter((_, i) => i !== index)
+      setData({ ...data, questions: updatedQuestions })
+      if (updatedQuestions.length === 0) {
+        setIsQuestionsVisible(false)
+      }
+      onUpdate(data.test_id, data.test_name, 'test') // Обновляем тест после изменений
+    } catch (error) {
+      console.error('Failed to delete question:', error)
     }
   }
 
   const toggleQuestionsVisibility = () => {
-    if (questions.length === 0) {
+    if (data.questions.length === 0) {
       setIsQuestionsVisible(false)
       return
     }
     setIsQuestionsVisible(!isQuestionsVisible)
+  }
+
+  const removeTest = () => {
+    onRemove(testData.test_id, 'test')
+  }
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode)
   }
 
   return (
@@ -68,21 +106,24 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
         <div className='flex items-center'>
           <FaCheckCircle className='mr-2 ml-2' />
           <p>
-            Тест {data.componentSerial}: {data.title}
+            Тест {data.serial_number}: {data.test_name}
           </p>
           <span
             className={`flex scale-90 items-center ml-2 ${editButtonsVisible ? 'visible' : 'hidden'} `}
           >
-            <MdModeEdit className={'mr-4 hover:cursor-pointer'} />
-            <FaTrash className={'mr-4 hover:cursor-pointer'} />
+            <MdModeEdit
+              className={'mr-4 hover:cursor-pointer'}
+              onClick={toggleEditMode}
+            />
+            <FaTrash className={'mr-4 hover:cursor-pointer'} onClick={removeTest} />
           </span>
         </div>
         <div className={'flex items-center justify-center hover:cursor-pointer'}>
-          {questions.length === 0 && (
+          {data.questions.length === 0 && (
             <button
               className='flex items-center border-black border-[1px] px-2 py-0.5 font-medium hover:bg-gray-300'
               onClick={(e) => {
-                e.stopPropagation() // Prevents the questions visibility from toggling
+                e.stopPropagation()
                 setIsQuestionModalOpen(true)
                 setSelectedQuestionIndex(null)
               }}
@@ -103,14 +144,17 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
             setIsQuestionModalOpen(false)
             setSelectedQuestionIndex(null)
           }}
-          onSave={handleAddQuestion}
+          onSave={handleAddQuestions}
+          testID={data.test_id} // Передаем testID в QuestionModal
           initialData={
-            selectedQuestionIndex !== null ? questions[selectedQuestionIndex] : undefined
+            selectedQuestionIndex !== null
+              ? data.questions[selectedQuestionIndex]
+              : undefined
           }
         />
       </div>
 
-      {isQuestionsVisible && questions.length > 0 ? (
+      {isQuestionsVisible && data.questions.length > 0 ? (
         <div className='flex flex-col ml-16 border-2 border-t-0 border-black mb-6'>
           <div className={'flex py-4 px-2 items-center bg-white'}>
             <div className='flex items-center'>
@@ -118,7 +162,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
               <button
                 className='bg-black text-white px-1 py-1 ml-4'
                 onClick={(e) => {
-                  e.stopPropagation() // Prevents the questions visibility from toggling
+                  e.stopPropagation()
                   setIsQuestionModalOpen(true)
                   setSelectedQuestionIndex(null)
                 }}
@@ -133,8 +177,9 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
               <button>Предпросмотр</button>
             </Link>
           </div>
-          {questions.map((question, index) => (
+          {data.questions.map((question, index) => (
             <QuestionBlock
+              key={index}
               index={index}
               question={question}
               handleDeleteQuestion={handleDeleteQuestion}
@@ -150,7 +195,7 @@ const TestComponent: React.FC<TestComponentProps> = ({ testData }) => {
 export default TestComponent
 
 type TestQuestionProps = {
-  question: TestQuestion
+  question: api_question
   index: number
   handleEditQuestion: (index: number) => void
   handleDeleteQuestion: (index: number) => void
@@ -163,7 +208,6 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
   handleEditQuestion,
 }) => {
   const [areEditButtonsVisible, setAreEditButtonsVisible] = React.useState(false)
-
   return (
     <div
       key={index}
@@ -174,7 +218,7 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
       <div className={'flex flex-col w-full'}>
         <div className={'flex'}>
           <span>
-            {index + 1}. {question.question} (несколько вариантов ответа)
+            {index + 1}. {question.question_body} (несколько вариантов ответа)
           </span>
           {areEditButtonsVisible && (
             <div className={'flex items-center mr-4  ml-auto'}>
@@ -183,7 +227,10 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
                 className='cursor-pointer mr-2'
               />
               <FaTrash
-                onClick={() => handleDeleteQuestion(index)}
+                onClick={() => {
+                  console.log(`Deleting question ${question.id}...`)
+                  handleDeleteQuestion(index)
+                }}
                 className='cursor-pointer'
               />
             </div>
@@ -197,27 +244,34 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
 const QuestionModal: React.FC<{
   isOpen: boolean
   onClose: () => void
-  onSave: (question: TestQuestion) => void
-  initialData?: TestQuestion
-}> = ({ isOpen, onClose, onSave, initialData }) => {
-  const [question, setQuestion] = useState<string>('')
-  const [answers, setAnswers] = useState<TestAnswer[]>([
-    {
-      answer: '',
-      answerIsCorrect: false,
-      answerDescription: '',
-    },
-    { answer: '', answerIsCorrect: false, answerDescription: '' },
-  ])
+  onSave: (question: api_question) => void
+  initialData?: api_question
+  testID: number // Добавляем testID как пропс
+}> = ({ isOpen, onClose, onSave, initialData, testID }) => {
+  const [question, setQuestion] = useState<api_question>({
+    id: initialData?.id || 0, // устанавливаем id если есть
+    question_body: initialData?.question_body || '',
+    answers: initialData?.answers || [],
+  })
+  const [answers, setAnswers] = useState<api_answer[]>(
+    initialData?.answers || [
+      {
+        response_text: '',
+        is_correct: false,
+        description: '',
+      },
+      { response_text: '', is_correct: false, description: '' },
+    ]
+  )
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset'
     if (initialData) {
-      setQuestion(initialData.question)
+      setQuestion(initialData)
       setAnswers(initialData.answers)
     } else {
-      setQuestion('')
-      setAnswers([{ answer: '', answerIsCorrect: false, answerDescription: '' }])
+      setQuestion({ id: 0, question_body: '', answers: [] }) // установим id: 0 по умолчанию
+      setAnswers([{ response_text: '', is_correct: false, description: '' }])
     }
     return () => {
       document.body.style.overflow = 'unset'
@@ -225,15 +279,12 @@ const QuestionModal: React.FC<{
   }, [initialData, isOpen])
 
   const handleAddAnswer = () => {
-    setAnswers([
-      ...answers,
-      { answer: '', answerIsCorrect: false, answerDescription: '' },
-    ])
+    setAnswers([...answers, { response_text: '', is_correct: false, description: '' }])
   }
 
   const handleAnswerChange = (
     index: number,
-    field: keyof TestAnswer,
+    field: keyof api_answer,
     value: string | boolean
   ) => {
     const newAnswers = answers.map((answer, i) =>
@@ -244,26 +295,39 @@ const QuestionModal: React.FC<{
 
   const handleToggleCorrectAnswer = (index: number) => {
     const newAnswers = answers.map((answer, i) =>
-      i === index ? { ...answer, answerIsCorrect: !answer.answerIsCorrect } : answer
+      i === index ? { ...answer, is_correct: !answer.is_correct } : answer
     )
     setAnswers(newAnswers)
   }
 
-  const handleSubmit = () => {
-    // Проверяем, что все обязательные поля заполнены
-    if (!question || answers.some((a) => !a.answer)) {
+  const handleSubmit = async () => {
+    if (!question.question_body || answers.some((a) => !a.response_text)) {
       alert('Пожалуйста заполните все необходимые поля.')
       return
     }
-    // Проверяем, что хотя бы один ответ отмечен как правильный
-    if (!answers.some((a) => a.answerIsCorrect)) {
+    if (!answers.some((a) => a.is_correct)) {
       alert('Пожалуйста выберите хотя бы один правильный ответ.')
       return
     }
-    // Сохраняем вопрос и ответы
-    onSave({ question, answers })
-    onClose()
+
+    const endpoint = question.id
+      ? `http://localhost:8080/courses/edit-question/${question.id}`
+      : `http://localhost:8080/courses/add-question-to-test/${testID}` // используем ID теста
+
+    try {
+      const response = await axios.post(endpoint, {
+        data: { ...question, answers },
+      })
+
+      if (response.status !== 200) throw new Error('Error saving question')
+
+      onSave({ ...question, answers })
+      onClose()
+    } catch (error) {
+      console.error('Failed to save question:', error)
+    }
   }
+
   if (!isOpen) return null
 
   return (
@@ -285,8 +349,8 @@ const QuestionModal: React.FC<{
         <div className='my-4'>
           <label className='block text-sm font-medium text-gray-700'>Вопрос</label>
           <textarea
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            value={question.question_body}
+            onChange={(e) => setQuestion({ ...question, question_body: e.target.value })}
             className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
             rows={3}
           />
@@ -297,22 +361,22 @@ const QuestionModal: React.FC<{
             <div className='flex items-center'>
               <input
                 type='checkbox'
-                checked={answer.answerIsCorrect}
+                checked={answer.is_correct}
                 onChange={() => handleToggleCorrectAnswer(index)}
                 className='mr-2'
               />
               <input
                 type='text'
-                value={answer.answer}
-                onChange={(e) => handleAnswerChange(index, 'answer', e.target.value)}
+                value={answer.response_text}
+                onChange={(e) =>
+                  handleAnswerChange(index, 'response_text', e.target.value)
+                }
                 className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
               />
             </div>
             <textarea
-              value={answer.answerDescription}
-              onChange={(e) =>
-                handleAnswerChange(index, 'answerDescription', e.target.value)
-              }
+              value={answer.description}
+              onChange={(e) => handleAnswerChange(index, 'description', e.target.value)}
               className='mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500'
               placeholder='Объяснение ответа'
               rows={2}
@@ -322,13 +386,13 @@ const QuestionModal: React.FC<{
         <div className={'flex justify-between'}>
           <button
             onClick={handleAddAnswer}
-            className='px-4 py-2 bg-gray-300 text-black hover:bg-gray-400'
+            className='px-4 py-2 bg-black text-white hover:bg-gray-600'
           >
             Добавить ответ
           </button>
           <button
             onClick={handleSubmit}
-            className='px-4 py-2 bg-black text-white hover:bg-gray-800'
+            className='px-4 py-2 bg-black text-white hover:bg-gray-600'
           >
             Сохранить
           </button>

@@ -1,98 +1,69 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { IoMdAdd } from 'react-icons/io'
 import React, { useEffect, useState } from 'react'
 import { ImCross } from 'react-icons/im'
 import {
+  api_section,
   SectionComponentType,
-  SectionType,
 } from '@/pages/course-creation/curriculum/types.ts'
 import { Section } from '@/pages/course-creation/curriculum/Section.tsx'
-
-const sections: SectionType[] = [
-  {
-    sectionNum: 1,
-    title: 'Введение',
-    description: 'Введение в курс',
-    lectures: [
-      {
-        componentSerial: 1,
-        type: 'lecture',
-        title: 'Лекция 1',
-        description: 'lecture1  desc',
-      },
-      {
-        componentSerial: 2,
-        type: 'lecture',
-        title: 'Лекция 2',
-        description: 'lecture1  desc',
-      },
-    ],
-    tests: [
-      {
-        componentSerial: 1,
-        type: 'test',
-        title: 'Тест 1',
-        description: 'test1 desc',
-        questions: [
-          // {
-          //   question: 'Вопрос 1',
-          //   answers: [
-          //     {
-          //       answer: 'Ответ 1',
-          //       answerDescription: 'Описание ответа 1',
-          //       answerIsCorrect: true,
-          //     },
-          //     {
-          //       answer: 'Ответ 2',
-          //       answerDescription: 'Описание ответа 2',
-          //       answerIsCorrect: false,
-          //     },
-          //   ],
-          // },
-        ],
-      },
-    ],
-  },
-]
+import axios from 'axios'
 
 const CurriculumPage = () => {
   const [isSectionCreationActive, setIsSectionCreationActive] = React.useState(false)
-  const [stateSections, setStateSections] = React.useState<SectionType[]>(sections)
+  const [stateSections, setStateSections] = React.useState<api_section[]>([])
+  const [triggerReload, setTriggerReload] = useState(false) // Новое состояние
+  const { courseID } = useParams<{ courseID: string }>()
 
-  const handleSectionCreate = (title: string, description: string) => {
-    setStateSections((prev) => [
-      ...prev,
-      {
-        sectionNum: prev.length + 1,
-        title: title,
-        description: description,
-        lectures: [],
-        tests: [],
-        assignments: [],
-      },
-    ])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get<api_section[]>(
+          `http://localhost:8080/courses/get-course-materials/${courseID}`
+        )
 
+        setStateSections(response.data)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
+  }, [triggerReload])
+
+  const handleSectionCreate = async (title: string, description: string) => {
+    await axios.post(`http://localhost:8080/courses/create-section/${courseID}`, {
+      title: title,
+      description: description,
+    })
+
+    setTriggerReload(!triggerReload) // Триггерим useEffect для обновления данных
     setIsSectionCreationActive(!isSectionCreationActive)
   }
+
+  // Функция для триггера лута новых секций и изменений после изменения чего-либо
+  const handleSectionUpdate = () => {
+    setTriggerReload(!triggerReload) // Функция для триггера
+  }
+
+  const sortedSections =
+    stateSections && stateSections.length > 0
+      ? stateSections.sort((a, b) => a.serial_number - b.serial_number)
+      : []
 
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl w-full'>
       <h1 className='text-2xl font-bold mb-4'>Учебный план</h1>
       <hr className='border-t border-gray-400 mb-8 w-full opacity-75' />
       <p>
-        Начните составлять свой курс, создав разделы, лекции и практические задания
-        (тесты, упражнения по написанию кода, задания).
-      </p>
-      <p>
-        Начните составлять свой курс, создав разделы, лекции и практические задания тесты,
-        упражнения по написанию кода и задания{'  '}
+        Начните составлять свой курс, создав секции, лекции, практические задания и тесты
         <Link
           to={'/course-creation/plan-your-practice-activities/'}
           className={'text-blue-700 underline pb-4'}
         >
-          (тесты, упражнения по написанию кода и задания).
+          (тесты, упражнения по написанию кода и задания){'  '}
         </Link>
-        Используйте{' '}
+        . Используйте{' '}
         <Link
           to={'/course-creation/outline-your-course/'}
           className={'text-blue-700 underline pb-4'}
@@ -101,15 +72,8 @@ const CurriculumPage = () => {
         </Link>{' '}
         для выстраивания структуры материалов и понятной маркировки разделов и лекций.
       </p>
-      {stateSections.map((section, index) => (
-        <Section
-          key={index}
-          description={section.description}
-          sectionNum={section.sectionNum}
-          title={section.title}
-          lectures={section.lectures}
-          tests={section.tests}
-        />
+      {sortedSections.map((section, index) => (
+        <Section key={index} section={section} onSectionUpdate={handleSectionUpdate} />
       ))}
 
       <div
@@ -125,13 +89,20 @@ const CurriculumPage = () => {
             <ImCross className={'rotate-180 opacity-60 scale-50'} />
           </button>
         ) : (
-          <button
-            className={`w-12 h-8 rounded border-dotted ml-4 bg-gray-100
-           border-2 border-green hover:cursor-pointer hover:bg-gray-200 flex justify-center items-center visible `}
+          <div
+            className={
+              'bg-gray-100 flex align-middle rounded-sm px-2 py-1 hover:cursor-pointer hover:bg-gray-200'
+            }
             onClick={() => setIsSectionCreationActive(true)}
           >
-            <IoMdAdd />
-          </button>
+            <button
+              className={`w-12 h-8 rounded border-dotted bg-white
+             flex justify-center items-center visible `}
+            >
+              <IoMdAdd />
+            </button>
+            <p className={'ml-4 mt-0.5'}>Добавить секцию</p>
+          </div>
         )}
       </div>
 

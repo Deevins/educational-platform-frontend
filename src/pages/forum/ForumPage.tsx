@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
+
+// import { Helmet } from 'react-helmet'
 
 interface ITag {
   id: number
@@ -16,14 +17,14 @@ interface Thread {
   tags: ITag[]
 }
 
-interface ThreadCardProps {
-  title: string
-  author: string
-  createdDate: string
-  lastReplyDate: string
-  repliesCount: number
-  tags: ITag[]
-}
+// interface ThreadCardProps {
+//   title: string
+//   author: string
+//   createdDate: string
+//   lastReplyDate: string
+//   repliesCount: number
+//   tags: ITag[]
+// }
 
 const initialThreads: Thread[] = [
   {
@@ -119,76 +120,76 @@ const initialThreads: Thread[] = [
   },
 ]
 
-const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }> = ({
-  title,
-  author,
-  createdDate,
-  lastReplyDate,
-  repliesCount,
-  tags,
-  onTagClick,
-}) => {
-  const [showTagsPopup, setShowTagsPopup] = useState(false)
-
-  const handleMouseEnter = () => {
-    setShowTagsPopup(true)
-  }
-
-  const handleMouseLeave = () => {
-    setShowTagsPopup(false)
-  }
-
-  return (
-    <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4 -z-10'>
-      <Helmet>
-        <title>Форум</title>
-      </Helmet>
-      <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
-        <h2 className='text-lg font-semibold mb-2'>{title}</h2>
-        <div className='flex items-center mb-2'>
-          <span className='text-sm text-gray-600 mr-2'>Автор: {author}</span>
-          <span className='text-sm text-gray-600'>Дата создания: {createdDate}</span>
-        </div>
-        <div className='flex items-center'>
-          {tags.slice(0, 3).map((tag, index) => (
-            <TagCard key={index} tag={tag} handleTagSelect={() => onTagClick(tag)} />
-          ))}
-          {tags.length > 3 && (
-            <div
-              className='relative'
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'>
-                + {tags.length - 3} more
-              </div>
-              {showTagsPopup && (
-                <div
-                  className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex z-50'
-                  onClick={() => setShowTagsPopup(false)}
-                >
-                  {tags.slice(3).map((tag, index) => (
-                    <TagCard
-                      key={index}
-                      tag={tag}
-                      handleTagSelect={() => onTagClick(tag)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className='flex flex-col  md:items-center justify-start items-start'>
-        <span className='text-sm text-gray-600 mb-2'>Ответов: {repliesCount}</span>
-        <span className='text-sm text-gray-600'>
-          Дата последнего ответа: {lastReplyDate}
-        </span>
-      </div>
-    </div>
-  )
-}
+// const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }> = ({
+//   title,
+//   author,
+//   createdDate,
+//   lastReplyDate,
+//   repliesCount,
+//   tags,
+//   onTagClick,
+// }) => {
+//   const [showTagsPopup, setShowTagsPopup] = useState(false)
+//
+//   const handleMouseEnter = () => {
+//     setShowTagsPopup(true)
+//   }
+//
+//   const handleMouseLeave = () => {
+//     setShowTagsPopup(false)
+//   }
+//
+//   return (
+//     <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4 -z-10'>
+//       <Helmet>
+//         <title>Форум</title>
+//       </Helmet>
+//       <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
+//         <h2 className='text-lg font-semibold mb-2'>{title}</h2>
+//         <div className='flex items-center mb-2'>
+//           <span className='text-sm text-gray-600 mr-2'>Автор: {author}</span>
+//           <span className='text-sm text-gray-600'>Дата создания: {createdDate}</span>
+//         </div>
+//         <div className='flex items-center'>
+//           {tags.slice(0, 3).map((tag, index) => (
+//             <TagCard key={index} tag={tag} handleTagSelect={() => onTagClick(tag)} />
+//           ))}
+//           {tags.length > 3 && (
+//             <div
+//               className='relative'
+//               onMouseEnter={handleMouseEnter}
+//               onMouseLeave={handleMouseLeave}
+//             >
+//               <div className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'>
+//                 + {tags.length - 3} more
+//               </div>
+//               {showTagsPopup && (
+//                 <div
+//                   className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex z-50'
+//                   onClick={() => setShowTagsPopup(false)}
+//                 >
+//                   {tags.slice(3).map((tag, index) => (
+//                     <TagCard
+//                       key={index}
+//                       tag={tag}
+//                       handleTagSelect={() => onTagClick(tag)}
+//                     />
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//       <div className='flex flex-col  md:items-center justify-start items-start'>
+//         <span className='text-sm text-gray-600 mb-2'>Ответов: {repliesCount}</span>
+//         <span className='text-sm text-gray-600'>
+//           Дата последнего ответа: {lastReplyDate}
+//         </span>
+//       </div>
+//     </div>
+//   )
+// }
 
 const ForumPage: React.FC = () => {
   const [filter, setFilter] = useState<'hot' | 'newest'>('hot')
@@ -304,23 +305,23 @@ const ForumPage: React.FC = () => {
     }
   }
 
-  const handleTagSelect = (tag: ITag) => {
-    setActiveTags((prevTags) => [...prevTags, tag])
-    setTags(tags.filter((t) => t.id !== tag.id))
-  }
-
-  const handleRemoveTag = (tag: ITag) => {
-    setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag.id !== tag.id))
-  }
-
-  const handleTagClick = (tag: ITag) => {
-    if (activeTags.some((activeTag) => activeTag.id === tag.id)) {
-      setActiveTags(activeTags.filter((item) => item.id !== tag.id))
-    } else {
-      setActiveTags([...activeTags, tag])
-    }
-    console.log(`Clicked on tag: ${tag.title}`)
-  }
+  // const handleTagSelect = (tag: ITag) => {
+  //   setActiveTags((prevTags) => [...prevTags, tag])
+  //   setTags(tags.filter((t) => t.id !== tag.id))
+  // }
+  //
+  // const handleRemoveTag = (tag: ITag) => {
+  //   setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag.id !== tag.id))
+  // }
+  //
+  // const handleTagClick = (tag: ITag) => {
+  //   if (activeTags.some((activeTag) => activeTag.id === tag.id)) {
+  //     setActiveTags(activeTags.filter((item) => item.id !== tag.id))
+  //   } else {
+  //     setActiveTags([...activeTags, tag])
+  //   }
+  //   console.log(`Clicked on tag: ${tag.title}`)
+  // }
 
   // Валидация и обработка блокировки скроллинга
   useEffect(() => {
@@ -333,105 +334,125 @@ const ForumPage: React.FC = () => {
   return (
     <div className='flex flex-col lg:flex-row justify-center min-h-screen'>
       <div className='w-full lg:w-3/4 p-4'>
-        <input
-          type='text'
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder='Search threads...'
-          className='w-full border border-gray-300 p-2 rounded mb-4'
-        />
-        {filteredThreads.length > 0 ? (
-          filteredThreads.map((thread) => (
-            <ThreadCard
-              key={thread.id}
-              title={thread.title}
-              author={thread.author}
-              createdDate={thread.createdDate}
-              lastReplyDate={thread.lastReplyDate}
-              repliesCount={thread.repliesCount}
-              tags={thread.tags}
-              onTagClick={handleTagClick}
+        <div className='flex flex-col items-center justify-center min-h-screen bg-white p-4'>
+          <div className='bg-yellow-300 rounded-lg p-6 text-center'>
+            <img
+              src='https://дом.зеленыйбульвар.рф/wp-content/uploads/2020/12/2785306490dd68af4cdc00b9242faeb9.jpg'
+              alt='Технические работы'
+              className='mx-auto mb-4'
             />
-          ))
-        ) : (
-          <div className='flex flex-col items-center justify-center h-full'>
-            <p className='text-center mb-4'>
-              Обсуждение по заданным фильтрам не найдено.
+          </div>
+          <div className='mt-6 text-center'>
+            <h2 className='text-2xl font-semibold'>
+              На сайте ведутся технические работы
+            </h2>
+            <p className='mt-4'>
+              На сайте ведутся технические работы. Возможно некорректное отображение
+              некоторых страниц. Приносим свои извинения за доставленные неудобства!
+              <br />
+              Скоро сайт будет работать в штатном режиме.
             </p>
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className={'bg-red-500 text-white px-4 py-2 rounded'}
-            >
-              Начните новое обсуждение!
-            </button>
-          </div>
-        )}
-      </div>
-      <div className='w-full lg:w-1/4 p-4 border-l border-gray-200'>
-        <div className='mb-4'>
-          {activeTags.length > 0 && (
-            <div className={'flex'}>
-              {activeTags.map((tag, index) => (
-                <div
-                  key={index}
-                  className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-30 text-center'
-                >
-                  <span>{tag.title}</span>
-                  <button
-                    className='ml-2 text-xl text-right text-white'
-                    onClick={() => handleRemoveTag(tag)}
-                  >
-                    &times;
-                  </button>
-                </div>
-              ))}
-              <button
-                className={'py-1 px-2 bg-black text-white rounded-full'}
-                onClick={() => setActiveTags([])}
-              >
-                Очистить теги
-              </button>
-            </div>
-          )}
-        </div>
-        <div className='mb-4'>
-          <h2 className='text-lg font-semibold mb-2'>Теги</h2>
-          <div className='flex flex-wrap '>
-            {tags.map((tag) => (
-              <TagCard
-                key={tag.id}
-                tag={tag}
-                handleTagSelect={() => handleTagSelect(tag)}
-              />
-            ))}
           </div>
         </div>
-        <div className='mb-4'>
-          <button
-            onClick={() => setFilter('hot')}
-            className={`bg-gray-600 text-white px-4 py-2 mr-3  ${
-              filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            Горячие обсуждения
-          </button>
-          <button
-            onClick={() => setFilter('newest')}
-            className={`bg-gray-600 text-white px-4 py-2  ${
-              filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            Самые новые обсуждения
-          </button>
-        </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className={
-            'bg-white text-black border-2 shadow-md border-black px-4 py-2 rounded block hover:bg-gray-50'
-          }
-        >
-          Создайте новое обсуждение!
-        </button>
+        {/*  <input*/}
+        {/*    type='text'*/}
+        {/*    value={searchQuery}*/}
+        {/*    onChange={(e) => setSearchQuery(e.target.value)}*/}
+        {/*    placeholder='Search threads...'*/}
+        {/*    className='w-full border border-gray-300 p-2 rounded mb-4'*/}
+        {/*  />*/}
+        {/*  {filteredThreads.length > 0 ? (*/}
+        {/*    filteredThreads.map((thread) => (*/}
+        {/*      <ThreadCard*/}
+        {/*        key={thread.id}*/}
+        {/*        title={thread.title}*/}
+        {/*        author={thread.author}*/}
+        {/*        createdDate={thread.createdDate}*/}
+        {/*        lastReplyDate={thread.lastReplyDate}*/}
+        {/*        repliesCount={thread.repliesCount}*/}
+        {/*        tags={thread.tags}*/}
+        {/*        onTagClick={handleTagClick}*/}
+        {/*      />*/}
+        {/*    ))*/}
+        {/*  ) : (*/}
+        {/*    <div className='flex flex-col items-center justify-center h-full'>*/}
+        {/*      <p className='text-center mb-4'>*/}
+        {/*        Обсуждение по заданным фильтрам не найдено.*/}
+        {/*      </p>*/}
+        {/*      <button*/}
+        {/*        onClick={() => setShowCreateModal(true)}*/}
+        {/*        className={'bg-red-500 text-white px-4 py-2 rounded'}*/}
+        {/*      >*/}
+        {/*        Начните новое обсуждение!*/}
+        {/*      </button>*/}
+        {/*    </div>*/}
+        {/*  )}*/}
+        {/*</div>*/}
+        {/*<div className='w-full lg:w-1/4 p-4 border-l border-gray-200'>*/}
+        {/*  <div className='mb-4'>*/}
+        {/*    {activeTags.length > 0 && (*/}
+        {/*      <div className={'flex'}>*/}
+        {/*        {activeTags.map((tag, index) => (*/}
+        {/*          <div*/}
+        {/*            key={index}*/}
+        {/*            className='bg-gray-700 text-white px-4 mr-2 py-1 mb-2 flex items-center w-30 text-center'*/}
+        {/*          >*/}
+        {/*            <span>{tag.title}</span>*/}
+        {/*            <button*/}
+        {/*              className='ml-2 text-xl text-right text-white'*/}
+        {/*              onClick={() => handleRemoveTag(tag)}*/}
+        {/*            >*/}
+        {/*              &times;*/}
+        {/*            </button>*/}
+        {/*          </div>*/}
+        {/*        ))}*/}
+        {/*        <button*/}
+        {/*          className={'py-1 px-2 bg-black text-white rounded-full'}*/}
+        {/*          onClick={() => setActiveTags([])}*/}
+        {/*        >*/}
+        {/*          Очистить теги*/}
+        {/*        </button>*/}
+        {/*      </div>*/}
+        {/*    )}*/}
+        {/*  </div>*/}
+        {/*  <div className='mb-4'>*/}
+        {/*    <h2 className='text-lg font-semibold mb-2'>Теги</h2>*/}
+        {/*    <div className='flex flex-wrap '>*/}
+        {/*      {tags.map((tag) => (*/}
+        {/*        <TagCard*/}
+        {/*          key={tag.id}*/}
+        {/*          tag={tag}*/}
+        {/*          handleTagSelect={() => handleTagSelect(tag)}*/}
+        {/*        />*/}
+        {/*      ))}*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*  <div className='mb-4'>*/}
+        {/*    <button*/}
+        {/*      onClick={() => setFilter('hot')}*/}
+        {/*      className={`bg-gray-600 text-white px-4 py-2 mr-3  ${*/}
+        {/*        filter === 'hot' ? 'opacity-50 cursor-not-allowed' : ''*/}
+        {/*      }`}*/}
+        {/*    >*/}
+        {/*      Горячие обсуждения*/}
+        {/*    </button>*/}
+        {/*    <button*/}
+        {/*      onClick={() => setFilter('newest')}*/}
+        {/*      className={`bg-gray-600 text-white px-4 py-2  ${*/}
+        {/*        filter === 'newest' ? 'opacity-50 cursor-not-allowed' : ''*/}
+        {/*      }`}*/}
+        {/*    >*/}
+        {/*      Самые новые обсуждения*/}
+        {/*    </button>*/}
+        {/*  </div>*/}
+        {/*  <button*/}
+        {/*    onClick={() => setShowCreateModal(true)}*/}
+        {/*    className={*/}
+        {/*      'bg-white text-black border-2 shadow-md border-black px-4 py-2 rounded block hover:bg-gray-50'*/}
+        {/*    }*/}
+        {/*  >*/}
+        {/*    Создайте новое обсуждение!*/}
+        {/*  </button>*/}
       </div>
       {showCreateModal && (
         <CreateThreadModal

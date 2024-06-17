@@ -3,29 +3,29 @@ import { MdModeEdit } from 'react-icons/md'
 import { FaPlus, FaTrash } from 'react-icons/fa'
 import { IoMdClose } from 'react-icons/io'
 import {
-  SectionAssignment,
+  api_lecture,
+  api_section,
+  api_test,
   SectionComponentType,
-  SectionLecture,
-  SectionTest,
-  SectionType,
 } from '@/pages/course-creation/curriculum/types.ts'
 import LectureComponent from '@/pages/course-creation/curriculum/Lecture.tsx'
 import TestComponent from '@/pages/course-creation/curriculum/Test.tsx'
 import { Modal } from '@/pages/course-creation/curriculum/CurriculumPage.tsx'
+import axios from 'axios'
 
 interface SectionComponentProps {
   sectionType: SectionComponentType
-  lectureData?: SectionLecture
-  testData?: SectionTest
-  onRemove: (serial: number) => void
-  onUpdate: (serial: number, title: string) => void
+  lectureData?: api_lecture
+  testData?: api_test
+  onRemove: (id: number, componentType: SectionComponentType) => void
+  onUpdate: (id: number, title: string, componentType: SectionComponentType) => void
 }
 
 const SectionComponent: React.FC<SectionComponentProps> = ({
   sectionType,
   lectureData,
   testData,
-  onUpdate, // These props need to be part of SectionComponentProps
+  onUpdate,
   onRemove,
 }) => {
   switch (sectionType) {
@@ -42,39 +42,41 @@ const SectionComponent: React.FC<SectionComponentProps> = ({
       break
     case 'test':
       if (testData) {
-        return <TestComponent testData={testData} />
+        return (
+          <TestComponent testData={testData} onUpdate={onUpdate} onRemove={onRemove} />
+        )
       }
       break
   }
   return null // Ensure all paths return a value
 }
 
-const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) => {
-  const [items, setItems] = React.useState<
-    SectionLecture[] | SectionTest[] | SectionAssignment[]
-  >([...lectures, ...tests])
+interface SectionProps {
+  section: api_section
+  onSectionUpdate: () => void // Новый пропс
+}
+
+const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
+  const [items] = React.useState<(api_lecture | api_test)[]>([
+    ...section.lectures,
+    ...section.tests,
+  ])
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState<SectionComponentType>('lecture') // "lecture", "test", "task"
+
   const handleAddComponent = () => {
     setIsComponentAdditionActive(!isComponentAdditionActive)
   }
 
   const handleCreateComponent = (title: string, description: string) => {
-    console.log(title, description)
-
     createComponentAndReturn({ title, description }, modalType)
-      .then((newItem) => {
-        if (newItem) {
-          console.log(`${modalType} added:`, newItem)
-        }
-      })
       .catch((error) => console.error(error))
       .finally(() => {
         setIsModalOpen(false)
         setIsComponentAdditionActive(false)
+        onSectionUpdate()
       })
   }
 
@@ -89,65 +91,137 @@ const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) 
       description: string
     },
     componentType: SectionComponentType
-  ): Promise<SectionLecture | SectionTest | SectionAssignment> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let newItem: SectionLecture | SectionTest | SectionAssignment
-        switch (componentType) {
-          case 'lecture':
-            newItem = {
-              componentSerial: lectures.length + 1,
-              type: componentType,
+  ) => {
+    switch (componentType) {
+      case 'lecture':
+        try {
+          await axios.post(
+            `http://localhost:8080/courses/create-lecture/${section.section_id}`,
+            {
               title: component.title,
               description: component.description,
             }
-            setItems((prevItems) => [...prevItems, newItem]) // Update items state
-            break
-          case 'test':
-            newItem = {
-              componentSerial: tests.length + 1,
-              type: componentType,
-              title: component.title,
-              description: component.description,
-              questions: [],
-            }
-            setItems((prevItems) => [...prevItems, newItem]) // Update items state
-            break
+          )
+          onSectionUpdate()
+        } catch (error) {
+          console.error(error)
         }
-        console.log(`update with ${componentType}:`, newItem)
-        // Update state with a new array
-        setItems([...items, newItem]) // Assuming `items` holds a flat list of all items
-        resolve(newItem)
-      }, 500)
-    })
+
+        break
+      case 'test':
+        try {
+          await axios.post(
+            `http://localhost:8080/courses/create-test/${section.section_id}`,
+            {
+              title: component.title,
+              description: component.description,
+            }
+          )
+          onSectionUpdate()
+        } catch (error) {
+          console.error(error)
+        }
+
+        break
+    }
   }
 
-  const onUpdate = (serial: number, newTitle: string) => {
-    setItems(
-      items.map((item) =>
-        item.componentSerial === serial ? { ...item, title: newTitle } : item
+  const onUpdate = async (
+    id: number,
+    newTitle: string,
+    componentType: SectionComponentType
+  ) => {
+    switch (componentType) {
+      case 'lecture':
+        try {
+          await axios.post(`http://localhost:8080/courses/update-lecture-title/${id}`, {
+            title: newTitle,
+          })
+          onSectionUpdate()
+        } catch (error) {
+          console.error(error)
+        }
+
+        break
+      case 'test':
+        try {
+          await axios.post(`http://localhost:8080/courses/update-test-title/${id}`, {
+            title: newTitle,
+          })
+        } catch (error) {
+          console.error(error)
+        } finally {
+          onSectionUpdate()
+        }
+
+        break
+    }
+  }
+
+  const onRemove = async (id: number, componentType: SectionComponentType) => {
+    switch (componentType) {
+      case 'lecture':
+        try {
+          await axios.post(`http://localhost:8080/courses/remove-lecture/${id}`)
+          onSectionUpdate()
+        } catch (error) {
+          console.error(error)
+        }
+
+        break
+      case 'test':
+        try {
+          await axios.post(`http://localhost:8080/courses/remove-test/${id}`)
+          onSectionUpdate()
+        } catch (error) {
+          console.error(error)
+        }
+
+        break
+    }
+  }
+
+  const handleUpdateComponent = (
+    id: number,
+    title: string,
+    componentType: SectionComponentType
+  ) => {
+    onUpdate(id, title, componentType).catch((error) => console.error(error))
+  }
+
+  const handleDeleteComponent = (id: number, componentType: SectionComponentType) => {
+    onRemove(id, componentType).catch((error) => console.error(error))
+  }
+
+  const handleDeleteSection = async () => {
+    console.log('section.section_id:', section.section_id)
+    try {
+      await axios.post(
+        `http://localhost:8080/courses/remove-section/${section.section_id}`
       )
-    )
-  }
-
-  const onRemove = (serial: number) => {
-    setItems(items.filter((item) => item.componentSerial !== serial))
+      onSectionUpdate()
+    } catch (error) {
+      console.error('Failed to delete section:', error)
+    }
   }
 
   return (
-    <div className={'border-2 border-black mt-16 min-h-8 bg-gray-100 py-4 px-2'}>
+    <div className={'border-2 border-black mt-10 min-h-8 bg-gray-100 py-4 px-2'}>
       <div
         className={'flex mb-8 w-full'}
         onMouseEnter={() => setIsTitleButtonsShown(true)}
         onMouseLeave={() => setIsTitleButtonsShown(false)}
       >
-        <h1 className={'font-bold mr-2'}>Часть {sectionNum}:</h1>
-        <p>{title}</p>
+        <h1 className={'font-bold mr-2'}>Часть {section.serial_number}:</h1>
+        <p>{section.section_title}</p>
         <span
           className={`flex scale-90 items-center ml-2 ${isTitleButtonsShown ? 'visible' : 'hidden'} `}
         >
           <MdModeEdit className={'mr-4 hover:cursor-pointer'} />
-          <FaTrash className={'mr-4 hover:cursor-pointer'} />
+          <FaTrash
+            className={'mr-4 hover:cursor-pointer'}
+            onClick={handleDeleteSection}
+          />
         </span>
       </div>
 
@@ -155,10 +229,10 @@ const Section: React.FC<SectionType> = ({ sectionNum, title, lectures, tests }) 
         <SectionComponent
           key={index}
           sectionType={item.type}
-          lectureData={item as SectionLecture}
-          testData={item as SectionTest}
-          onUpdate={onUpdate}
-          onRemove={onRemove}
+          lectureData={item as api_lecture}
+          testData={item as api_test}
+          onUpdate={handleUpdateComponent}
+          onRemove={handleDeleteComponent}
         />
       ))}
       {isComponentAdditionActive ? (

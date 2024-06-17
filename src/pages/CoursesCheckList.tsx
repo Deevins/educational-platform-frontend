@@ -1,70 +1,39 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-const courses = [
-  {
-    id: 1,
-    image:
-      'https://assets-global.website-files.com/6278a25acc3db4aaa47a3aa5/65800db51bbc7104e5af4d03_Kubernetes%20Test%20(K8s).webp',
-    author: 'Author 1',
-    title: 'Course 1',
-    description: 'Description 1',
-    createdAt: '2024-01-01',
-  },
-  {
-    id: 2,
-    image:
-      'https://assets-global.website-files.com/6278a25acc3db4aaa47a3aa5/65800db51bbc7104e5af4d03_Kubernetes%20Test%20(K8s).webp',
-    author: 'Author 2',
-    title: 'Course 2',
-    description: ' Description2',
-    createdAt: '2024-02-01',
-  },
-  {
-    id: 3,
-    image:
-      'https://assets-global.website-files.com/6278a25acc3db4aaa47a3aa5/65800db51bbc7104e5af4d03_Kubernetes%20Test%20(K8s).webp',
-    author: 'Author 3',
-    title: 'Course 3',
-    description: 'Description 3',
-    createdAt: '2024-03-01',
-  },
-  {
-    id: 4,
-    image:
-      'https://assets-global.website-files.com/6278a25acc3db4aaa47a3aa5/65800db51bbc7104e5af4d03_Kubernetes%20Test%20(K8s).webp',
-    author: 'Author 4',
-    title: 'Course 4',
-    description: 'Description 4',
-    createdAt: '2024-04-01',
-  },
-  {
-    id: 5,
-    image:
-      'https://assets-global.website-files.com/6278a25acc3db4aaa47a3aa5/65800db51bbc7104e5af4d03_Kubernetes%20Test%20(K8s).webp',
-    author: 'Author 5',
-    title: 'Course 5',
-    description: 'Description 5',
-    createdAt: '2024-05-01',
-  },
-  {
-    id: 6,
-    image:
-      'https://assets-global.website-files.com/6278a25acc3db4aaa47a3aa5/65800db51bbc7104e5af4d03_Kubernetes%20Test%20(K8s).webp',
-    author: 'Author 6',
-    title: 'Course 6',
-    description: 'Description 6',
-    createdAt: '2024-06-01',
-  },
-]
+import { Course } from '@/pages/CoursesPage.tsx'
+import { format } from 'date-fns'
+import { ru } from 'date-fns/locale'
+import axios from 'axios'
+import { ScrollToTop } from '@/utils/routes/scroll-to-top.ts'
 
 const CoursesCheckList: React.FC = () => {
-  const handlePublish = (id: number) => {
-    console.log(`Publish course ${id}`)
+  const [changed, setChanged] = useState(false)
+  const [courses, setCourses] = useState<Course[]>([])
+
+  useEffect(() => {
+    const getCourses = async () => {
+      const response = await axios.get<Course[]>(
+        `http://localhost:8080/courses/get-courses-waiting-for-approval`
+      )
+      console.log(response.data)
+
+      setCourses(response.data)
+      ScrollToTop()
+    }
+
+    getCourses()
+  }, [changed])
+
+  const handlePublish = async (id: number) => {
+    await axios.post(`http://localhost:8080/courses/approve-course/${id}`)
+    setChanged(!changed)
+    console.log(`Published course ${id}`)
   }
 
-  const handleReject = (id: number) => {
-    console.log(`Reject course ${id}`)
+  const handleReject = async (id: number) => {
+    await axios.post(`http://localhost:8080/courses/reject-course/${id}`)
+    setChanged(!changed)
+    console.log(`rejected course ${id}`)
   }
 
   return (
@@ -83,6 +52,7 @@ interface CourseCardProps {
   image: string
   author: string
   title: string
+  createdAt: string
   description: string
   onPublish: (id: number) => void
   onReject: (id: number) => void
@@ -94,6 +64,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   author,
   title,
   description,
+  createdAt,
   onPublish,
   onReject,
 }) => {
@@ -104,8 +75,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <div className='ml-4 flex flex-col justify-between'>
           <div>
             <h2 className='text-lg font-bold'>{title}</h2>
-            <p className='text-sm text-gray-600'>by {author}</p>
+            <p className='text-sm text-gray-600'>Создан: {author}</p>
             <p className='text-gray-700 mt-2'>{description}</p>
+            <p className='text-gray-700 mt-2'>Дата создания курса: {createdAt}</p>
           </div>
           <div className='flex items-center mt-4'>
             <div>
@@ -135,15 +107,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   )
 }
 
-interface Course {
-  id: number
-  image: string
-  author: string
-  title: string
-  description: string
-  createdAt: string
-}
-
 interface CourseListProps {
   courses: Course[]
   onPublish: (id: number) => void
@@ -157,7 +120,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onPublish, onReject })
 
   const sortedCourses = [...courses].sort((a, b) => {
     if (sortBy === 'createdAt') {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      return new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
     } else if (sortBy === 'title') {
       return a.title.localeCompare(b.title)
     }
@@ -190,14 +153,25 @@ const CourseList: React.FC<CourseListProps> = ({ courses, onPublish, onReject })
         </button>
       </div>
       <div className='w-full'>
-        {paginatedCourses.map((course) => (
-          <CourseCard
-            key={course.id}
-            {...course}
-            onPublish={onPublish}
-            onReject={onReject}
-          />
-        ))}
+        {paginatedCourses.length === 0 ? (
+          <div>Нет курсов</div>
+        ) : (
+          paginatedCourses.map((course) => (
+            <CourseCard
+              key={course.id}
+              title={course.title}
+              image={course.course_avatar_url}
+              createdAt={format(new Date(course.created_date), 'dd MMMM yyyy ', {
+                locale: ru,
+              })}
+              description={course.description}
+              id={parseInt(course.id)}
+              author={course.author_full_name}
+              onPublish={onPublish}
+              onReject={onReject}
+            />
+          ))
+        )}
       </div>
       <Pagination
         currentPage={currentPage}
