@@ -21,7 +21,7 @@ const CurriculumPage = () => {
         const response = await axios.get<api_section[]>(
           `http://localhost:8080/courses/get-course-materials/${courseID}`
         )
-        console.log(response.data)
+
         setStateSections(response.data)
       } catch (error) {
         console.error('Error fetching data:', error)

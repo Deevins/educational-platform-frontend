@@ -71,8 +71,6 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
   }
 
   const handleCreateComponent = (title: string, description: string) => {
-    console.log(title, description)
-
     createComponentAndReturn({ title, description }, modalType)
       .catch((error) => console.error(error))
       .finally(() => {
@@ -105,7 +103,6 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
             }
           )
           onSectionUpdate()
-          console.log(onSectionUpdate())
         } catch (error) {
           console.error(error)
         }
@@ -137,12 +134,10 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
     switch (componentType) {
       case 'lecture':
         try {
-          console.log(id, newTitle, componentType)
           await axios.post(`http://localhost:8080/courses/update-lecture-title/${id}`, {
             title: newTitle,
           })
           onSectionUpdate()
-          console.log(onSectionUpdate())
         } catch (error) {
           console.error(error)
         }
@@ -169,7 +164,6 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
         try {
           await axios.post(`http://localhost:8080/courses/remove-lecture/${id}`)
           onSectionUpdate()
-          console.log(onSectionUpdate())
         } catch (error) {
           console.error(error)
         }
@@ -179,7 +173,6 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
         try {
           await axios.post(`http://localhost:8080/courses/remove-test/${id}`)
           onSectionUpdate()
-          console.log(onSectionUpdate())
         } catch (error) {
           console.error(error)
         }
@@ -200,6 +193,18 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
     onRemove(id, componentType).catch((error) => console.error(error))
   }
 
+  const handleDeleteSection = async () => {
+    console.log('section.section_id:', section.section_id)
+    try {
+      await axios.post(
+        `http://localhost:8080/courses/remove-section/${section.section_id}`
+      )
+      onSectionUpdate()
+    } catch (error) {
+      console.error('Failed to delete section:', error)
+    }
+  }
+
   return (
     <div className={'border-2 border-black mt-10 min-h-8 bg-gray-100 py-4 px-2'}>
       <div
@@ -213,7 +218,10 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
           className={`flex scale-90 items-center ml-2 ${isTitleButtonsShown ? 'visible' : 'hidden'} `}
         >
           <MdModeEdit className={'mr-4 hover:cursor-pointer'} />
-          <FaTrash className={'mr-4 hover:cursor-pointer'} />
+          <FaTrash
+            className={'mr-4 hover:cursor-pointer'}
+            onClick={handleDeleteSection}
+          />
         </span>
       </div>
 

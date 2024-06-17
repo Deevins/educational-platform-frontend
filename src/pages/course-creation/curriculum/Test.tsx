@@ -207,7 +207,6 @@ const QuestionBlock: React.FC<TestQuestionProps> = ({
   handleDeleteQuestion,
   handleEditQuestion,
 }) => {
-  console.log(question, index)
   const [areEditButtonsVisible, setAreEditButtonsVisible] = React.useState(false)
   return (
     <div
@@ -311,15 +310,16 @@ const QuestionModal: React.FC<{
       return
     }
 
-    const endpoint = initialData
-      ? `http://localhost:8080/courses/edit-question/${initialData.id}`
+    const endpoint = question.id
+      ? `http://localhost:8080/courses/edit-question/${question.id}`
       : `http://localhost:8080/courses/add-question-to-test/${testID}` // используем ID теста
 
     try {
-      await axios.post(endpoint, {
-        ...question,
-        answers,
+      const response = await axios.post(endpoint, {
+        data: { ...question, answers },
       })
+
+      if (response.status !== 200) throw new Error('Error saving question')
 
       onSave({ ...question, answers })
       onClose()
