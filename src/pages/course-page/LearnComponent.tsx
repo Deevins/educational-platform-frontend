@@ -1,6 +1,6 @@
 import React from 'react'
 import { AiOutlineCheck } from 'react-icons/ai'
-import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import { CourseInfo } from '@/pages/course-page/CoursePage.tsx'
 
 type LearnComponentProps = {
   courseInfo: CourseInfo

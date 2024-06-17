@@ -4,16 +4,11 @@ import { NavLink, useParams } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import TestSection from '@/pages/course-learning/TestSection.tsx'
 import logo from '/platform_logo.png'
-import {
-  averageRating,
-  computeRatingDistribution,
-  Review,
-  ReviewList,
-} from '@/components/ReviewList.tsx'
+import { ReviewList } from '@/components/ReviewList.tsx'
 import useSWR from 'swr'
 import { api_lecture, api_section } from '@/pages/course-creation/curriculum/types.ts'
 import axios from 'axios'
-import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import { CourseInfo } from '@/pages/course-page/CoursePage.tsx'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -197,7 +192,7 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab, course }) => {
       )}
       {activeTab === 'reviews' && (
         <div className='mt-4 w-full '>
-          <ReviewList reviews={initialReviews} /> {/* TODO: wtf*/}
+          <ReviewList reviews={course.reviews} />
         </div>
       )}
     </div>
@@ -345,149 +340,6 @@ const Header: React.FC = () => {
         </Avatar>
         <h1 className='text-lg font-bold ml-6'>ProdigyPath</h1>
       </NavLink>
-    </div>
-  )
-}
-
-const initialReviews: Review[] = [
-  {
-    full_name: 'John Doe',
-    review_text: 'Great course!',
-    created_at: '2023-05-01',
-    rating: 5,
-  },
-  {
-    full_name: 'Jane Smith',
-    review_text:
-      'Learned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommendLearned a lot, highly recommend!',
-    created_at: '2023-05-02',
-    rating: 4,
-  },
-]
-
-export const ReviewsComponent: React.FC = () => {
-  const [reviews, setReviews] = useState<Review[]>(initialReviews)
-  const [newReview, setNewReview] = useState<Review>({
-    full_name: '',
-    review_text: '',
-    created_at: '',
-    rating: 0,
-  })
-
-  const ratingsDistribution = computeRatingDistribution(reviews)
-  const avgRating = averageRating(reviews)
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target
-    setNewReview((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
-  }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    const reviewToAdd = {
-      ...newReview,
-      date: new Date().toISOString().split('T')[0],
-    }
-    setReviews([...reviews, reviewToAdd])
-    setNewReview({ full_name: '', review_text: '', created_at: '', rating: 0 })
-  }
-
-  return (
-    <div className='max-w-8xl p-6 bg-white shadow w-full'>
-      <h2 className='text-2xl font-bold mb-4'>Отзывы студентов</h2>
-      <RatingSummary averageRating={avgRating} distribution={ratingsDistribution} />
-      <ReviewList reviews={reviews} />
-      <form
-        onSubmit={handleSubmit}
-        className='bg-gray-100 shadow-md rounded px-8 pt-6 pb-8 mt-6'
-      >
-        <div className='mb-4'>
-          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='author'>
-            Автор
-          </label>
-          <input
-            id='author'
-            name='full_name'
-            type='text'
-            value={newReview.full_name}
-            onChange={handleInputChange}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            placeholder='Ваше имя'
-            required
-          />
-        </div>
-        <div className='mb-4'>
-          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='content'>
-            Отзыв
-          </label>
-          <textarea
-            id='content'
-            name='review_text'
-            value={newReview.review_text}
-            onChange={handleInputChange}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            placeholder='Ваш отзыв'
-            required
-          />
-        </div>
-        <div className='mb-4'>
-          <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='rating'>
-            Рейтинг
-          </label>
-          <input
-            id='rating'
-            name='rating'
-            type='number'
-            value={newReview.rating}
-            onChange={handleInputChange}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            placeholder='Рейтинг от 1 до 5'
-            min='1'
-            max='5'
-            required
-          />
-        </div>
-        <div className='flex items-center justify-between'>
-          <button
-            type='submit'
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
-          >
-            Отправить
-          </button>
-        </div>
-      </form>
-    </div>
-  )
-}
-
-interface RatingSummaryProps {
-  averageRating: string
-  distribution: number[] // This expects an array of percentages for 5 to 1 stars
-}
-
-const RatingSummary: React.FC<RatingSummaryProps> = ({ averageRating, distribution }) => {
-  return (
-    <div className='mb-6 '>
-      <div className='flex items-center mb-4'>
-        <div className='text-4xl font-bold mr-4'>{averageRating}</div>
-        <div className='w-full'>
-          {distribution.map((percent, index) => (
-            <div key={index} className='flex items-center mb-1'>
-              <div className='w-8 text-right'>{5 - index}★</div>
-              <div className='w-full bg-gray-200 rounded overflow-hidden ml-2'>
-                <div className='bg-yellow-400 h-2' style={{ width: `${percent}%` }}></div>
-              </div>
-              <div className='ml-2 text-sm'>{percent.toFixed(0)}%</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom'
 import CourseEditLayout from '@/layouts/CourseEditLayout.tsx'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import { CourseInfo } from '@/pages/course-page/CoursePage.tsx'
 
 const IndexCourseEnhancePage: React.FC = () => {
   return (

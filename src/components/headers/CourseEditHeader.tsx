@@ -2,7 +2,7 @@ import React from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { PiGear } from 'react-icons/pi'
 import useSWR from 'swr'
-import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import { CourseInfo } from '@/pages/course-page/CoursePage.tsx'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 

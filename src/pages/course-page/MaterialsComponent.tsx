@@ -1,5 +1,5 @@
 import React from 'react'
-import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import { CourseInfo } from '@/pages/course-page/CoursePage.tsx'
 
 type MaterialsComponentProps = {
   courseInfo: CourseInfo

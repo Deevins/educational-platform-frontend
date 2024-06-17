@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNotification } from '@/utils/contexts/notificationContext.tsx'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
+import { CourseInfo } from '@/pages/course-page/CoursePage.tsx'
 
 const SettingsPage: React.FC = () => {
   const { showMessage } = useNotification() // Use the notification hook

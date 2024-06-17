@@ -3,14 +3,14 @@ import ReactPlayer from 'react-player'
 import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa'
 import { GoVideo } from 'react-icons/go'
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom'
-import { LearnComponent } from '@/pages/unregistered-course-page/LearnComponent.tsx'
-import { MaterialsComponent } from '@/pages/unregistered-course-page/MaterialsComponent.tsx'
-import { InstructorComponent } from '@/pages/unregistered-course-page/InstructorComponent.tsx'
+import { LearnComponent } from '@/pages/course-page/LearnComponent.tsx'
+import { MaterialsComponent } from '@/pages/course-page/MaterialsComponent.tsx'
+import { InstructorComponent } from '@/pages/course-page/InstructorComponent.tsx'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { selectUserID } from '@/utils/redux/store/authSlice.ts'
-import useSWR from 'swr'
 import { Review, ReviewList } from '@/components/ReviewList.tsx'
+import { ReviewForm } from '@/ReviewForm.tsx'
 
 interface Instructor {
   id: number
@@ -64,18 +64,28 @@ type IsStudentRegistered = {
   is_registered: boolean
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
-const UnregisteredCoursePage: React.FC = () => {
+const CoursePage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('learn')
   const userID = useSelector(selectUserID)
   const { courseID } = useParams<ParamsType>()
   const [isStudentRegistered, setIsStudentRegistered] = useState<boolean>(false)
+  const [courseData, setCourseData] = useState<CourseInfo>()
   const navigate = useNavigate()
-  const { data, error } = useSWR<CourseInfo>(
-    `http://localhost:8080/courses/get-full-course/${courseID}`,
-    fetcher
-  )
+
+  const [isReviewAdded, setIsReviewAdded] = useState(false)
+
+  useEffect(() => {
+    const getCourseData = async () => {
+      const res = await axios.get<CourseInfo>(
+        `http://localhost:8080/courses/get-full-course/${courseID}`
+      )
+
+      setCourseData(res.data)
+    }
+
+    getCourseData()
+  }, [isReviewAdded])
+
   useEffect(() => {
     axios
       .get<IsStudentRegistered>(
@@ -89,33 +99,38 @@ const UnregisteredCoursePage: React.FC = () => {
       })
   }, [courseID, userID])
 
-  if (!data) {
+  if (!courseData) {
     return <div>Loading...</div>
   }
 
   const renderContent = () => {
     switch (activeSection) {
       case 'learn':
-        return <LearnComponent courseInfo={data} />
+        return <LearnComponent courseInfo={courseData} />
       case 'materials':
-        return <MaterialsComponent courseInfo={data} />
+        return <MaterialsComponent courseInfo={courseData} />
       case 'reviews':
-        return <ReviewList reviews={data.reviews} />
+        return (
+          <>
+            <ReviewForm onReviewSubmitted={() => setIsReviewAdded((prev) => !prev)} />
+            <ReviewList reviews={courseData.reviews} />
+          </>
+        )
       case 'instructor':
         return (
           <InstructorComponent
-            id={data.instructor.id}
-            name={data.instructor.full_name}
-            rating={data.instructor.rating}
-            reviewCount={data.instructor.ratings_count}
-            studentCount={data.instructor.students_count}
-            courseCount={data.instructor.courses_count}
-            description={data.instructor.description}
-            avatarURL={data.instructor.avatar_url}
+            id={courseData.instructor.id}
+            name={courseData.instructor.full_name}
+            rating={courseData.instructor.rating}
+            reviewCount={courseData.instructor.ratings_count}
+            studentCount={courseData.instructor.students_count}
+            courseCount={courseData.instructor.courses_count}
+            description={courseData.instructor.description}
+            avatarURL={courseData.instructor.avatar_url}
           />
         )
       default:
-        return <LearnComponent courseInfo={data} />
+        return <LearnComponent courseInfo={courseData} />
     }
   }
 
@@ -128,43 +143,41 @@ const UnregisteredCoursePage: React.FC = () => {
     navigate(`/courses/course/${courseID}/learn/`)
   }
 
-  if (error) return <div>Failed to load</div>
-
   return (
     <div className={'lg:w-full min-h-screen'}>
       <div className='bg-white p-5 flex lg:items-center flex-col '>
         <div className='flex mb-5'>
           {/*<div className='flex-col lg:flex lg:items-center w-full'> FIXME: adaptiv snizy*/}
           <div className='flex '>
-            <ReactPlayer url={data.preview_video_URL} controls={true} />
+            <ReactPlayer url={courseData.preview_video_URL} controls={true} />
             <div className={'ml-6'}>
               <h1 className='textdata-3xl font-bold text-gray-900 max-w-2xl truncate mb-4'>
-                {data.title}
+                {courseData.title}
               </h1>
               <div className={'flex flex-col justify-center'}>
                 <p className='text-xl text-gray-700 max-w-4xl truncate hover:text-clip mb-4'>
-                  {data.subtitle}
+                  {courseData.subtitle}
                 </p>
                 <div className={'flex text-center items-center justify-center'}>
                   <RatingComponent
-                    rating={data.rating}
-                    totalRatings={data.reviews_count}
+                    rating={courseData.rating}
+                    totalRatings={courseData.reviews_count}
                   />
                   <div className='text-gray-600'>|</div>
-                  <p className={'ml-auto'}> {data.students_count} студентов</p>
+                  <p className={'ml-auto'}> {courseData.students_count} студентов</p>
                 </div>
                 <p className={'flex items-center text-center'}>
                   <GoVideo className={'mr-2 mt-0.5'} />
-                  {Math.floor(data.lectures_length / 60)}ч {data.lectures_count} мин
-                  видеоматериала лекций
+                  {Math.floor(courseData.lectures_length / 60)}ч{' '}
+                  {courseData.lectures_count} мин видеоматериала лекций
                 </p>
                 <p>
                   Автор:{' '}
                   <NavLink
-                    to={`/users/user/${data.instructor.id}/profile`}
+                    to={`/users/user/${courseData.instructor.id}/profile`}
                     className={'hover:text-blue-500 text-purple-700'}
                   >
-                    {data.instructor.full_name}
+                    {courseData.instructor.full_name}
                   </NavLink>
                 </p>
               </div>
@@ -221,15 +234,15 @@ const UnregisteredCoursePage: React.FC = () => {
         </div>
         {renderContent()}
         <InstructorCourses
-          instructor_id={data.instructor.id}
-          courses={data.instructor.courses}
+          instructor_id={courseData.instructor.id}
+          courses={courseData.instructor.courses}
         />
       </div>
     </div>
   )
 }
 
-export default UnregisteredCoursePage
+export default CoursePage
 
 interface CourseProps {
   course_id: number // Unique identifier for each course
