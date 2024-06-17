@@ -46,7 +46,10 @@ const CurriculumPage = () => {
     setTriggerReload(!triggerReload) // Функция для триггера
   }
 
-  const sortedSections = stateSections.sort((a, b) => a.serial_number - b.serial_number)
+  const sortedSections =
+    stateSections && stateSections.length > 0
+      ? stateSections.sort((a, b) => a.serial_number - b.serial_number)
+      : []
 
   return (
     <div className='mx-auto max-w-4xl bg-white p-6 rounded-lg shadow-2xl w-full'>

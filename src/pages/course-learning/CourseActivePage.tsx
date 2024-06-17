@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-import video from '/videovideo.mp4'
 import ReactPlayer from 'react-player'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx'
 import TestSection from '@/pages/course-learning/TestSection.tsx'
-import { TestQuestion } from '@/pages/course-creation/curriculum/types.ts'
 import logo from '/platform_logo.png'
 import {
   averageRating,
@@ -12,153 +10,157 @@ import {
   Review,
   ReviewList,
 } from '@/components/ReviewList.tsx'
+import useSWR from 'swr'
+import { api_lecture, api_section } from '@/pages/course-creation/curriculum/types.ts'
 
-interface CourseSection {
-  id: number
-  title: string
-  duration: string
-  lectures: Lecture[]
-  tests: Test[]
-}
-
-interface Lecture {
-  id: number
-  title: string
-  duration: string
-  description?: string
-  videoUrl: string
-}
-
-interface Test {
-  id: number
-  title: string
-  isAlreadyPassed: boolean
-  attempts: number
-}
+// interface CourseSection {
+//   id: number
+//   title: string
+//   duration: string
+//   lectures: Lecture[]
+//   tests: Test[]
+// }
+//
+// interface Lecture {
+//   id: number
+//   title: string
+//   duration: string
+//   description?: string
+//   videoUrl: string
+// }
+//
+// interface Test {
+//   id: number
+//   title: string
+//   isAlreadyPassed: boolean
+//   attempts: number
+// }
 
 // Sample data for courses, including lectures and tests
-const courseData: CourseSection[] = [
-  {
-    id: 1,
-    title: 'Секция 1: Frontend - разработка',
-    duration: '2h 14m',
-    lectures: [
-      {
-        id: 123,
-        title: 'Лекция 1: Начало!',
-        duration: '1h 34m',
-        videoUrl: 'https://youtu.be/gb7gMluAeao?list=PLcvhF2Wqh7DNVy1OCUpG3i5lyxyBWhGZ8',
-        description:
-          'В данной лекции мы начнём наше погружение в мир интерфейсов и разработки адаптивных дизайнов.',
-      },
-      {
-        id: 321,
-        title: 'Лекция 2: Продолжение',
-        duration: '2h 40m',
-        videoUrl: video,
-        description:
-          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
-      },
-    ],
-    tests: [
-      {
-        id: 456,
-        attempts: 2,
-        isAlreadyPassed: false,
-        title: 'Тест по пройденному материалу',
-      },
-    ],
-  },
-  {
-    id: 1,
-    title: 'Секция 2: Занимаемся бэкендом',
-    duration: '4h 14m',
-    lectures: [
-      {
-        id: 123,
-        title: 'Part 1: Basic Framework Writing',
-        duration: '1h 34m',
-        videoUrl: 'https://youtu.be/6wbckQjhA4Y',
-        description:
-          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
-      },
-      {
-        id: 321,
-        title: 'Part 2: User Interface Development',
-        duration: '2h 40m',
-        videoUrl: video,
-        description:
-          'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
-      },
-    ],
-    tests: [
-      {
-        id: 456,
-        attempts: 2,
-        isAlreadyPassed: false,
-        title: 'Framework Basics Test',
-      },
-    ],
-  },
-]
+// const courseData: CourseSection[] = [
+//   {
+//     id: 1,
+//     title: 'Секция 1: Frontend - разработка',
+//     duration: '2h 14m',
+//     lectures: [
+//       {
+//         id: 123,
+//         title: 'Лекция 1: Начало!',
+//         duration: '1h 34m',
+//         videoUrl: 'https://youtu.be/gb7gMluAeao?list=PLcvhF2Wqh7DNVy1OCUpG3i5lyxyBWhGZ8',
+//         description:
+//           'В данной лекции мы начнём наше погружение в мир интерфейсов и разработки адаптивных дизайнов.',
+//       },
+//       {
+//         id: 321,
+//         title: 'Лекция 2: Продолжение',
+//         duration: '2h 40m',
+//         videoUrl: video,
+//         description:
+//           'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
+//       },
+//     ],
+//     tests: [
+//       {
+//         id: 456,
+//         attempts: 2,
+//         isAlreadyPassed: false,
+//         title: 'Тест по пройденному материалу',
+//       },
+//     ],
+//   },
+//   {
+//     id: 1,
+//     title: 'Секция 2: Занимаемся бэкендом',
+//     duration: '4h 14m',
+//     lectures: [
+//       {
+//         id: 123,
+//         title: 'Part 1: Basic Framework Writing',
+//         duration: '1h 34m',
+//         videoUrl: 'https://youtu.be/6wbckQjhA4Y',
+//         description:
+//           'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
+//       },
+//       {
+//         id: 321,
+//         title: 'Part 2: User Interface Development',
+//         duration: '2h 40m',
+//         videoUrl: video,
+//         description:
+//           'In this lecture, we will cover the basics of writing a framework from scratch. We will discuss the core concepts and how to structure your codebase.',
+//       },
+//     ],
+//     tests: [
+//       {
+//         id: 456,
+//         attempts: 2,
+//         isAlreadyPassed: false,
+//         title: 'Framework Basics Test',
+//       },
+//     ],
+//   },
+// ]
+//
+// const questions: TestQuestion[] = [
+//   {
+//     question_body: 'Question 1: What is React?',
+//     answers: [
+//       {
+//         answer: 'Library',
+//         answerIsCorrect: true,
+//         answerDescription: 'React is a JavaScript library for building user interfaces.',
+//       },
+//       {
+//         answer: 'Framework',
+//         answerIsCorrect: false,
+//         answerDescription: "React is not considered a framework; it's a library.",
+//       },
+//       {
+//         answer: 'Application',
+//         answerIsCorrect: false,
+//         answerDescription:
+//           'React is used to build applications, not an application itself.',
+//       },
+//       {
+//         answer: 'Language',
+//         answerIsCorrect: false,
+//         answerDescription: 'React is a library, not a programming language.',
+//       },
+//     ],
+//   },
+//   {
+//     question_body: 'Question 2: What is useState used for in React?',
+//     answers: [
+//       {
+//         answer: 'State management',
+//         answerIsCorrect: true,
+//         answerDescription:
+//           'useState is a Hook that allows you to have state variables in functional components.',
+//       },
+//       {
+//         answer: 'Data fetching',
+//         answerIsCorrect: false,
+//         answerDescription:
+//           'Data fetching is typically handled by other means like useEffect or dedicated libraries.',
+//       },
+//       {
+//         answer: 'Performing calculations',
+//         answerIsCorrect: false,
+//         answerDescription:
+//           'Calculations can be done directly in the component or useEffect.',
+//       },
+//       {
+//         answer: 'None of the above',
+//         answerIsCorrect: false,
+//         answerDescription:
+//           'useState is specifically used for state management in functional components.',
+//       },
+//     ],
+//   },
+// ]
 
-const questions: TestQuestion[] = [
-  {
-    question_body: 'Question 1: What is React?',
-    answers: [
-      {
-        answer: 'Library',
-        answerIsCorrect: true,
-        answerDescription: 'React is a JavaScript library for building user interfaces.',
-      },
-      {
-        answer: 'Framework',
-        answerIsCorrect: false,
-        answerDescription: "React is not considered a framework; it's a library.",
-      },
-      {
-        answer: 'Application',
-        answerIsCorrect: false,
-        answerDescription:
-          'React is used to build applications, not an application itself.',
-      },
-      {
-        answer: 'Language',
-        answerIsCorrect: false,
-        answerDescription: 'React is a library, not a programming language.',
-      },
-    ],
-  },
-  {
-    question_body: 'Question 2: What is useState used for in React?',
-    answers: [
-      {
-        answer: 'State management',
-        answerIsCorrect: true,
-        answerDescription:
-          'useState is a Hook that allows you to have state variables in functional components.',
-      },
-      {
-        answer: 'Data fetching',
-        answerIsCorrect: false,
-        answerDescription:
-          'Data fetching is typically handled by other means like useEffect or dedicated libraries.',
-      },
-      {
-        answer: 'Performing calculations',
-        answerIsCorrect: false,
-        answerDescription:
-          'Calculations can be done directly in the component or useEffect.',
-      },
-      {
-        answer: 'None of the above',
-        answerIsCorrect: false,
-        answerDescription:
-          'useState is specifically used for state management in functional components.',
-      },
-    ],
-  },
-]
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const CourseActivePage: React.FC = () => {
   const [openSections, setOpenSections] = useState<number[]>([])
@@ -168,6 +170,14 @@ const CourseActivePage: React.FC = () => {
     item: number
   } | null>(null)
   const [activeTab, setActiveTab] = useState<string>('overview')
+  const { courseID } = useParams<{ courseID: string }>()
+
+  const { data, error, isLoading } = useSWR<api_section[]>(
+    `http://localhost:8080/courses/get-course-materials/${courseID}`,
+    fetcher
+  )
+
+  console.log(data)
 
   const toggleSection = (index: number) => {
     const currentIndex = openSections.indexOf(index)
@@ -190,12 +200,16 @@ const CourseActivePage: React.FC = () => {
     setSelectedItem({ section: sectionIndex, type: itemType, item: itemIndex })
   }
 
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error loading course data</div>
+  if (!data) return <div>No course data found</div>
+
   return (
     <div className='flex flex-col ml-[15%] mt-[3%]'>
       <Header />
       <div className='flex w-full h-full'>
         <SectionList
-          sections={courseData}
+          sections={data}
           toggleSection={toggleSection}
           selectItem={selectItem}
           openSections={openSections}
@@ -205,10 +219,14 @@ const CourseActivePage: React.FC = () => {
             {selectedItem ? (
               selectedItem.type === 'lecture' ? (
                 <LectureComponent
-                  lecture={courseData[selectedItem.section].lectures[selectedItem.item]}
+                  lecture={data[selectedItem.section].lectures[selectedItem.item]}
                 />
               ) : (
-                <TestSection questions={questions} />
+                <TestSection
+                  questions={
+                    data[selectedItem.section].tests[selectedItem.item].questions
+                  }
+                />
               )
             ) : (
               <div className='flex justify-center items-center w-full h-full'>
@@ -344,7 +362,7 @@ const DetailContent: React.FC<DetailContentProps> = ({ activeTab }) => {
 }
 
 interface SectionListProps {
-  sections: CourseSection[]
+  sections: api_section[]
   toggleSection: (index: number) => void
   selectItem: (
     sectionIndex: number,
@@ -368,7 +386,7 @@ const SectionList: React.FC<SectionListProps> = ({
             className='text-lg font-semibold cursor-pointer px-4 py-2 hover:bg-gray-200'
             onClick={() => toggleSection(idx)}
           >
-            {section.title}
+            {section.section_title}
           </h3>
           {openSections.includes(idx) && (
             <ul className='list-disc pl-8 pr-4 pb-4 bg-gray-50'>
@@ -387,7 +405,7 @@ const SectionList: React.FC<SectionListProps> = ({
                   className='cursor-pointer py-1 hover:bg-gray-100'
                   onClick={() => selectItem(idx, 'test', testIdx)}
                 >
-                  {test.title}
+                  {test.test_name}
                 </li>
               ))}
             </ul>
@@ -399,7 +417,7 @@ const SectionList: React.FC<SectionListProps> = ({
 }
 
 interface LectureComponentProps {
-  lecture: Lecture
+  lecture: api_lecture
 }
 
 const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
@@ -411,8 +429,8 @@ const LectureComponent: React.FC<LectureComponentProps> = ({ lecture }) => {
   return (
     <div className='flex flex-col items-center w-full min-h-screen bg-white shadow-md p-5'>
       <h1 className='text-3xl font-bold'>{lecture.title}</h1>
-      <p>Длительность лекции: {lecture.duration}</p>
-      <VideoPlayer url={lecture.videoUrl} />
+      <p>Длительность лекции: {0}</p>
+      <VideoPlayer url={lecture.video_url} />
       <div className='flex items-start flex-col truncate max-w-7xl max-h-7xl mx-16 lg:ml-52 xl:ml-0'>
         <p className='text-xl'>
           <strong>Подробности лекции:</strong>

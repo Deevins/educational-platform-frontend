@@ -129,7 +129,7 @@ const UnregisteredCoursePage: React.FC = () => {
   }
 
   if (error) return <div>Failed to load</div>
-  console.log(data.preview_video_URL)
+
   return (
     <div className={'lg:w-full min-h-screen'}>
       <div className='bg-white p-5 flex lg:items-center flex-col '>

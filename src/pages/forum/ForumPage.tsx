@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Helmet } from 'react-helmet'
+
+// import { Helmet } from 'react-helmet'
 
 interface ITag {
   id: number
@@ -16,14 +17,14 @@ interface Thread {
   tags: ITag[]
 }
 
-interface ThreadCardProps {
-  title: string
-  author: string
-  createdDate: string
-  lastReplyDate: string
-  repliesCount: number
-  tags: ITag[]
-}
+// interface ThreadCardProps {
+//   title: string
+//   author: string
+//   createdDate: string
+//   lastReplyDate: string
+//   repliesCount: number
+//   tags: ITag[]
+// }
 
 const initialThreads: Thread[] = [
   {
@@ -119,76 +120,76 @@ const initialThreads: Thread[] = [
   },
 ]
 
-const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }> = ({
-  title,
-  author,
-  createdDate,
-  lastReplyDate,
-  repliesCount,
-  tags,
-  onTagClick,
-}) => {
-  const [showTagsPopup, setShowTagsPopup] = useState(false)
-
-  const handleMouseEnter = () => {
-    setShowTagsPopup(true)
-  }
-
-  const handleMouseLeave = () => {
-    setShowTagsPopup(false)
-  }
-
-  return (
-    <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4 -z-10'>
-      <Helmet>
-        <title>Форум</title>
-      </Helmet>
-      <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
-        <h2 className='text-lg font-semibold mb-2'>{title}</h2>
-        <div className='flex items-center mb-2'>
-          <span className='text-sm text-gray-600 mr-2'>Автор: {author}</span>
-          <span className='text-sm text-gray-600'>Дата создания: {createdDate}</span>
-        </div>
-        <div className='flex items-center'>
-          {tags.slice(0, 3).map((tag, index) => (
-            <TagCard key={index} tag={tag} handleTagSelect={() => onTagClick(tag)} />
-          ))}
-          {tags.length > 3 && (
-            <div
-              className='relative'
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'>
-                + {tags.length - 3} more
-              </div>
-              {showTagsPopup && (
-                <div
-                  className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex z-50'
-                  onClick={() => setShowTagsPopup(false)}
-                >
-                  {tags.slice(3).map((tag, index) => (
-                    <TagCard
-                      key={index}
-                      tag={tag}
-                      handleTagSelect={() => onTagClick(tag)}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className='flex flex-col  md:items-center justify-start items-start'>
-        <span className='text-sm text-gray-600 mb-2'>Ответов: {repliesCount}</span>
-        <span className='text-sm text-gray-600'>
-          Дата последнего ответа: {lastReplyDate}
-        </span>
-      </div>
-    </div>
-  )
-}
+// const ThreadCard: React.FC<ThreadCardProps & { onTagClick: (tag: ITag) => void }> = ({
+//   title,
+//   author,
+//   createdDate,
+//   lastReplyDate,
+//   repliesCount,
+//   tags,
+//   onTagClick,
+// }) => {
+//   const [showTagsPopup, setShowTagsPopup] = useState(false)
+//
+//   const handleMouseEnter = () => {
+//     setShowTagsPopup(true)
+//   }
+//
+//   const handleMouseLeave = () => {
+//     setShowTagsPopup(false)
+//   }
+//
+//   return (
+//     <div className='flex flex-col md:flex-row items-center justify-between border border-gray-200 rounded-lg p-4 mb-4 -z-10'>
+//       <Helmet>
+//         <title>Форум</title>
+//       </Helmet>
+//       <div className='flex flex-col md:flex-row md:items-center md:space-x-4'>
+//         <h2 className='text-lg font-semibold mb-2'>{title}</h2>
+//         <div className='flex items-center mb-2'>
+//           <span className='text-sm text-gray-600 mr-2'>Автор: {author}</span>
+//           <span className='text-sm text-gray-600'>Дата создания: {createdDate}</span>
+//         </div>
+//         <div className='flex items-center'>
+//           {tags.slice(0, 3).map((tag, index) => (
+//             <TagCard key={index} tag={tag} handleTagSelect={() => onTagClick(tag)} />
+//           ))}
+//           {tags.length > 3 && (
+//             <div
+//               className='relative'
+//               onMouseEnter={handleMouseEnter}
+//               onMouseLeave={handleMouseLeave}
+//             >
+//               <div className='bg-gray-200 text-xs px-2 py-1 mr-1 cursor-pointer'>
+//                 + {tags.length - 3} more
+//               </div>
+//               {showTagsPopup && (
+//                 <div
+//                   className='absolute right-[calc(100% + 10px)] top-0 mt-6 py-2 px-4 bg-white border border-gray-300 rounded shadow-lg flex z-50'
+//                   onClick={() => setShowTagsPopup(false)}
+//                 >
+//                   {tags.slice(3).map((tag, index) => (
+//                     <TagCard
+//                       key={index}
+//                       tag={tag}
+//                       handleTagSelect={() => onTagClick(tag)}
+//                     />
+//                   ))}
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//       <div className='flex flex-col  md:items-center justify-start items-start'>
+//         <span className='text-sm text-gray-600 mb-2'>Ответов: {repliesCount}</span>
+//         <span className='text-sm text-gray-600'>
+//           Дата последнего ответа: {lastReplyDate}
+//         </span>
+//       </div>
+//     </div>
+//   )
+// }
 
 const ForumPage: React.FC = () => {
   const [filter, setFilter] = useState<'hot' | 'newest'>('hot')
@@ -304,23 +305,23 @@ const ForumPage: React.FC = () => {
     }
   }
 
-  const handleTagSelect = (tag: ITag) => {
-    setActiveTags((prevTags) => [...prevTags, tag])
-    setTags(tags.filter((t) => t.id !== tag.id))
-  }
-
-  const handleRemoveTag = (tag: ITag) => {
-    setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag.id !== tag.id))
-  }
-
-  const handleTagClick = (tag: ITag) => {
-    if (activeTags.some((activeTag) => activeTag.id === tag.id)) {
-      setActiveTags(activeTags.filter((item) => item.id !== tag.id))
-    } else {
-      setActiveTags([...activeTags, tag])
-    }
-    console.log(`Clicked on tag: ${tag.title}`)
-  }
+  // const handleTagSelect = (tag: ITag) => {
+  //   setActiveTags((prevTags) => [...prevTags, tag])
+  //   setTags(tags.filter((t) => t.id !== tag.id))
+  // }
+  //
+  // const handleRemoveTag = (tag: ITag) => {
+  //   setActiveTags((prevTags) => prevTags.filter((prevTag) => prevTag.id !== tag.id))
+  // }
+  //
+  // const handleTagClick = (tag: ITag) => {
+  //   if (activeTags.some((activeTag) => activeTag.id === tag.id)) {
+  //     setActiveTags(activeTags.filter((item) => item.id !== tag.id))
+  //   } else {
+  //     setActiveTags([...activeTags, tag])
+  //   }
+  //   console.log(`Clicked on tag: ${tag.title}`)
+  // }
 
   // Валидация и обработка блокировки скроллинга
   useEffect(() => {

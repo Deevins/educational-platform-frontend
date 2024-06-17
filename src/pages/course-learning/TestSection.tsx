@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { TestQuestion } from '@/pages/course-creation/curriculum/types.ts'
+import { api_question } from '@/pages/course-creation/curriculum/types.ts'
 
-const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => {
+const TestSection: React.FC<{ questions: api_question[] }> = ({ questions }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({})
   const [testCompleted, setTestCompleted] = useState(false)
@@ -17,10 +17,17 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
   }
 
   const handleNextQuestion = () => {
+    console.log(
+      currentQuestionIndex,
+      questions.length - 1,
+      currentQuestionIndex < questions.length - 1
+    )
     if (currentQuestionIndex < questions.length - 1) {
+      console.log('2')
       setCurrentQuestionIndex(currentQuestionIndex + 1)
       setSelectedAnswer(userAnswers[currentQuestionIndex + 1] || null)
     } else {
+      console.log('3')
       handleSubmitResults()
     }
   }
@@ -56,7 +63,7 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
       ) : !testCompleted ? (
         <div className='bg-white shadow-md rounded-lg p-6'>
           <div className='text-xl font-semibold mb-4'>
-            {questions[currentQuestionIndex].question}
+            {questions[currentQuestionIndex].question_body}
           </div>
           <div className='space-y-4'>
             {questions[currentQuestionIndex].answers.map((answer, index) => (
@@ -69,7 +76,7 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
                     : 'border-gray-300 hover:bg-gray-100'
                 }`}
               >
-                {answer.answer}
+                {answer.response_text}
               </button>
             ))}
           </div>
@@ -101,22 +108,22 @@ const TestSection: React.FC<{ questions: TestQuestion[] }> = ({ questions }) => 
           </p>
           {questions.map((question, index) => (
             <div key={index} className='mb-8 bg-gray-50 p-4 rounded-lg shadow'>
-              <div className='text-lg font-semibold mb-2'>{question.question}</div>
+              <div className='text-lg font-semibold mb-2'>{question.question_body}</div>
               {question.answers.map((answer, ansIndex) => (
                 <div
                   key={ansIndex}
                   className={`p-3 rounded-lg mb-2 ${
                     userAnswers[index] === ansIndex
-                      ? answer.answerIsCorrect
+                      ? answer.is_correct
                         ? 'bg-green-100 border-green-500'
                         : 'bg-red-100 border-red-500'
                       : 'bg-white'
                   } border-2`}
                 >
-                  {answer.answer}
-                  {(userAnswers[index] === ansIndex || !answer.answerIsCorrect) && (
+                  {answer.response_text}
+                  {(userAnswers[index] === ansIndex || !answer.is_correct) && (
                     <div className='text-sm text-gray-600 italic mt-2'>
-                      — {answer.answerDescription}
+                      — {answer.description}
                     </div>
                   )}
                 </div>

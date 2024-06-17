@@ -6,15 +6,9 @@ import { ru } from 'date-fns/locale'
 import axios from 'axios'
 import { ScrollToTop } from '@/utils/routes/scroll-to-top.ts'
 
-// const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
 const CoursesCheckList: React.FC = () => {
   const [changed, setChanged] = useState(false)
   const [courses, setCourses] = useState<Course[]>([])
-  // const { data, error, isLoading } = useSWR<Course[]>(
-  //   `http://localhost:8080/courses/get-courses-waiting-for-approval`,
-  //   fetcher
-  // )
 
   useEffect(() => {
     const getCourses = async () => {
