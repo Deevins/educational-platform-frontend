@@ -1,12 +1,19 @@
 import React, { useState } from 'react'
 import { api_question } from '@/pages/course-creation/curriculum/types.ts'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectUserID } from '@/utils/redux/store/authSlice.ts'
 
-const TestSection: React.FC<{ questions: api_question[] }> = ({ questions }) => {
+const TestSection: React.FC<{ questions: api_question[]; id: number }> = ({
+  questions,
+  id,
+}) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({})
   const [testCompleted, setTestCompleted] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [testStarted, setTestStarted] = useState(false)
+  const userID = useSelector(selectUserID)
 
   const handleAnswerSelect = (index: number) => {
     setUserAnswers((prev) => ({
@@ -17,17 +24,10 @@ const TestSection: React.FC<{ questions: api_question[] }> = ({ questions }) => 
   }
 
   const handleNextQuestion = () => {
-    console.log(
-      currentQuestionIndex,
-      questions.length - 1,
-      currentQuestionIndex < questions.length - 1
-    )
     if (currentQuestionIndex < questions.length - 1) {
-      console.log('2')
       setCurrentQuestionIndex(currentQuestionIndex + 1)
       setSelectedAnswer(userAnswers[currentQuestionIndex + 1] || null)
     } else {
-      console.log('3')
       handleSubmitResults()
     }
   }
@@ -39,8 +39,32 @@ const TestSection: React.FC<{ questions: api_question[] }> = ({ questions }) => 
     }
   }
 
-  const handleSubmitResults = () => {
+  const handleSubmitResults = async () => {
+    const totalQuestionsCount = questions.length
+    const correctAnsweredCount = Object.keys(userAnswers).reduce((count, key) => {
+      const questionIndex = parseInt(key)
+      const userAnswerIndex = userAnswers[questionIndex]
+      const isCorrect = questions[questionIndex].answers[userAnswerIndex!]?.is_correct
+      return isCorrect ? count + 1 : count
+    }, 0)
+
+    const result = {
+      user_id: userID,
+      total_questions_count: totalQuestionsCount,
+      correct_answered_count: correctAnsweredCount,
+    }
+
+    await axios.post(`http://localhost:8080/courses/submit-test/${id}`, result)
+
     setTestCompleted(true)
+  }
+
+  const handleRestartTest = () => {
+    setCurrentQuestionIndex(0)
+    setUserAnswers({})
+    setSelectedAnswer(null)
+    setTestCompleted(false)
+    setTestStarted(false)
   }
 
   const handleStartTest = () => {
@@ -106,6 +130,12 @@ const TestSection: React.FC<{ questions: api_question[] }> = ({ questions }) => 
             Thank you for completing the test. Your results have been submitted
             successfully.
           </p>
+          <button
+            onClick={handleRestartTest}
+            className='px-6 py-2 mt-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700'
+          >
+            Restart Test
+          </button>
           {questions.map((question, index) => (
             <div key={index} className='mb-8 bg-gray-50 p-4 rounded-lg shadow'>
               <div className='text-lg font-semibold mb-2'>{question.question_body}</div>

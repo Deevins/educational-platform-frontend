@@ -223,6 +223,7 @@ const CourseActivePage: React.FC = () => {
                 />
               ) : (
                 <TestSection
+                  id={data[selectedItem.section].tests[selectedItem.item].test_id}
                   questions={
                     data[selectedItem.section].tests[selectedItem.item].questions
                   }
