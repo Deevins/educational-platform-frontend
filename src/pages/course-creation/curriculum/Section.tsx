@@ -63,9 +63,9 @@ const Section: React.FC<SectionProps> = ({ onSectionUpdate, section }) => {
   ])
   const [isTitleButtonsShown, setIsTitleButtonsShown] = React.useState(false)
   const [isComponentAdditionActive, setIsComponentAdditionActive] = React.useState(false)
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState<SectionComponentType>('lecture') // "lecture", "test", "task"
+
   const handleAddComponent = () => {
     setIsComponentAdditionActive(!isComponentAdditionActive)
   }

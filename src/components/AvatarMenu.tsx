@@ -31,7 +31,6 @@ const AvatarMenu: React.FC = () => {
     `http://localhost:8080/users/get-one/${userID}`,
     fetcher
   )
-  console.log(error, isLoading)
 
   const handleLogout = () => {
     dispatch(logout())
@@ -92,6 +91,9 @@ const AvatarMenu: React.FC = () => {
     },
     { label: 'Выйти', onClick: handleLogout, showCondition: true },
   ]
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
 
   return (
     <div className='relative' ref={menuRef}>

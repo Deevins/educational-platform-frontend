@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNotification } from '@/utils/contexts/notificationContext.tsx'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { CourseInfo } from '@/pages/unregistered-course-page/UnregisteredCoursePage.tsx'
 
@@ -8,8 +8,9 @@ const SettingsPage: React.FC = () => {
   const { showMessage } = useNotification() // Use the notification hook
   const courseID = useParams<{ courseID: string }>().courseID
   const [course, setCourse] = useState<CourseInfo | null>(null)
+  const [isDone, setIsDone] = useState(false)
+  const navigate = useNavigate()
 
-  // Custom handler functions that would communicate with the backend
   const handleCancelPublication = async (courseStatus: string) => {
     if (courseStatus !== 'READY') {
       return
@@ -22,6 +23,8 @@ const SettingsPage: React.FC = () => {
     try {
       await axios.post(`http://localhost:8080/courses/cancel-publishing/${courseID}`)
       showMessage('Курс успешно отменен.', 'success')
+      setIsDone((prev) => !prev)
+      navigate('/instructor/courses')
     } catch (error) {
       showMessage(
         'Ошибка при отмене публикации. Просмотрите консоль для дополнительной информации',
@@ -39,6 +42,7 @@ const SettingsPage: React.FC = () => {
       await axios.delete(`http://localhost:8080/courses/delete/${courseID}`)
 
       alert('Курс удален.')
+      navigate('/instructor/courses')
     } catch (error) {
       console.error('Error deleting course:', error)
     }
@@ -54,7 +58,7 @@ const SettingsPage: React.FC = () => {
     }
 
     fetchData()
-  }, [courseID])
+  }, [courseID, isDone])
 
   if (!courseID) {
     return <div>Курс не найден</div>
@@ -62,7 +66,7 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
-      <div className='bg-white shadow-xl  p-8'>
+      <div className='bg-white shadow-xl p-8'>
         <div className='border-b pb-4'>
           <h1 className='text-2xl font-semibold text-gray-800'>Настройки курса</h1>
         </div>
@@ -74,8 +78,8 @@ const SettingsPage: React.FC = () => {
           <div className='mt-3'>
             <button
               onClick={() => handleCancelPublication(course?.status || '')}
-              disabled={course?.status !== 'draft'}
-              className={`text-black bg-white hover:bg-gray-200 font-medium px-4 py-1 border-2 border-black w-6/12 ${course?.status !== 'draft' && 'opacity-50 hover:cursor-not-allowed hover:bg-white'}`}
+              disabled={course?.status !== 'READY'}
+              className={`text-black bg-white hover:bg-gray-200 font-medium px-4 py-1 border-2 border-black w-6/12 ${course?.status !== 'READY' && 'opacity-50 hover:cursor-not-allowed hover:bg-white'}`}
             >
               Отменить публикацию
             </button>
